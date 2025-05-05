@@ -1,17 +1,16 @@
+import { BookingEntriesDialog } from '@/components/booking/BookingEntriesDialog '
 import { BookingForm } from '@/components/booking/BookingForm'
-import { BookingSheet } from '@/components/booking/BookingSheet'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import calculateBookingValues from '@/lib/actions/calculateBookingValues'
 import db from '@/lib/db'
 import { STATUS_COLORS, formatCurrency, getDifferenceInDays } from '@/lib/utils'
-import { Plus } from 'lucide-react'
 
 export default async function BookingId({
   params,
 }: { params: { id: string } }) {
   const { id } = await params
+
   const booking = await db.booking.findUnique({
     where: { id: Number(id) },
     include: {
@@ -27,7 +26,8 @@ export default async function BookingId({
     throw new Error('Reserva não encontrada')
   }
 
-  const { totalAll, totalPayment, totalServices, totalDiscount , totalAmount } = calculateBookingValues(booking)
+  const { totalAll, totalPayment, totalServices, totalDiscount, totalAmount } =
+    calculateBookingValues(booking)
 
   const balance = totalAll - totalPayment
 
@@ -35,11 +35,7 @@ export default async function BookingId({
     <main>
       <div className="flex items-center justify-between px-8 py-4 border-b border-gray-700 bg-blue-200">
         <span className={`font-semibold transition-opacity`}>RESERVA</span>
-        <BookingSheet>
-          <Button variant={'default'}>
-            <Plus size={20} />
-          </Button>
-        </BookingSheet>
+        <BookingEntriesDialog booking={booking} />
       </div>
       <div className="p-6 overflow-auto">
         <div className="flex flex-col lg:flex-row gap-6">
@@ -79,11 +75,13 @@ export default async function BookingId({
                         Valor diária
                       </TableCell>
                       <TableCell className="text-right">
-                        {formatCurrency(totalAmount /
-                          getDifferenceInDays({
-                            from: booking?.startDate,
-                            to: booking?.endDate,
-                          }))}
+                        {formatCurrency(
+                          totalAmount /
+                            getDifferenceInDays({
+                              from: booking?.startDate,
+                              to: booking?.endDate,
+                            })
+                        )}
                       </TableCell>
                     </TableRow>
                     <TableRow>
