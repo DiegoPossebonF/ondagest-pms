@@ -1,0 +1,146 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/app/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  image     String? // URL da imagem de perfil (opcional)
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Guest {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  phone     String?
+  bookings  Booking[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model UnitType {
+  id             String   @id @default(uuid())
+  name           String   @unique
+  description    String
+  numberOfPeople Int
+  units          Unit[]
+  rates          Rate[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Unit {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  type      UnitType  @relation(fields: [typeId], references: [id])
+  typeId    String
+  bookings  Booking[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Booking {
+  id             Int           @id @default(autoincrement())
+  guest          Guest         @relation(fields: [guestId], references: [id])
+  guestId        String
+  unit           Unit          @relation(fields: [unitId], references: [id])
+  unitId         String
+  startDate      DateTime
+  endDate        DateTime
+  status         BookingStatus @default(PENDING)
+  numberOfPeople Int
+  totalAmount    Float
+  payments       Payment[]
+  paymentStatus  PaymentStatus @default(PENDING)
+  services       Service[]
+  discounts      Discount[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model Service {
+  id        String   @id @default(cuid())
+  bookingId Int
+  booking   Booking  @relation(fields: [bookingId], references: [id])
+  name      String
+  amount    Float
+  createdAt DateTime @default(now())
+}
+
+model Discount {
+  id        String   @id @default(cuid())
+  bookingId Int
+  booking   Booking  @relation(fields: [bookingId], references: [id])
+  reason    String
+  amount    Float
+  createdAt DateTime @default(now())
+}
+
+model Rate {
+  id             String   @id @default(uuid())
+  type           UnitType @relation(fields: [typeId], references: [id])
+  typeId         String
+  name           String
+  value          Float
+  numberOfPeople Int
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Payment {
+  id          String      @id @default(uuid())
+  booking     Booking     @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  bookingId   Int
+  amount      Float
+  paymentType PaymentType
+  paidAt      DateTime
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum BookingStatus {
+  PENDING // Reserva criada, aguardando pagamento
+  CONFIRMED // Pagamento recebido, reserva confirmada
+  CHECKED_IN // Check-in automático na data de entrada
+  IN_PROGRESS // Hóspede hospedado (gestor clicou em "Hospedar")
+  CHECKED_OUT // Check-out automático na data de saída
+  FINALIZED // Reserva encerrada manualmente pelo gestor
+  CANCELLED // Cancelada manualmente
+  NO_SHOW // Hóspede não compareceu
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+}
+
+enum PaymentType {
+  PIX
+  CREDIT_CARD
+  DEBIT_CARD
+  CASH
+  BANK_TRANSFER
+  OTHER
+}

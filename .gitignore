@@ -1,0 +1,26 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-lock.yaml
+package-lock.json
+
+# Next.js
+.next/
+out/
+.vercel/
+
+# Prisma
+*.sqlite
+*.db
+.env
+.env.local
+.env.development
+.env.production
+
+# Logs
+*.log
+
+# VS Code
+.vscode/
