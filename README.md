@@ -43,3 +43,11 @@ npx prisma migrate dev --name init
 
 # Rode o projeto em ambiente de desenvolvimento
 npm run dev
+
+## 📄 Licença
+
+Este projeto está licenciado sob a licença **MIT**.
+
+---
+
+🔗 Desenvolvido por DPFDEV 
