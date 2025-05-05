@@ -3,8 +3,9 @@ import { BookingSheet } from '@/components/booking/BookingSheet'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
+import calculateBookingValues from '@/lib/actions/calculateBookingValues'
 import db from '@/lib/db'
-import { STATUS_COLORS, getDifferenceInDays } from '@/lib/utils'
+import { STATUS_COLORS, formatCurrency, getDifferenceInDays } from '@/lib/utils'
 import { Plus } from 'lucide-react'
 
 export default async function BookingId({
@@ -22,18 +23,11 @@ export default async function BookingId({
     },
   })
 
-  const totalAmount = booking?.totalAmount ?? 0
+  if (!booking) {
+    throw new Error('Reserva não encontrada')
+  }
 
-  const totalPayment =
-    booking?.payments.reduce((sum, payment) => sum + payment.amount, 0) ?? 0
-
-  const totalServices =
-    booking?.services.reduce((sum, service) => sum + service.amount, 0) ?? 0
-
-  const totalDiscount =
-    booking?.discounts.reduce((sum, discount) => sum + discount.amount, 0) ?? 0
-
-  const totalAll = totalAmount + totalServices - totalDiscount
+  const { totalAll, totalPayment, totalServices, totalDiscount , totalAmount } = calculateBookingValues(booking)
 
   const balance = totalAll - totalPayment
 
@@ -85,16 +79,11 @@ export default async function BookingId({
                         Valor diária
                       </TableCell>
                       <TableCell className="text-right">
-                        {(
-                          totalAmount /
+                        {formatCurrency(totalAmount /
                           getDifferenceInDays({
                             from: booking?.startDate,
                             to: booking?.endDate,
-                          })
-                        ).toLocaleString('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL',
-                        })}
+                          }))}
                       </TableCell>
                     </TableRow>
                     <TableRow>
@@ -102,46 +91,31 @@ export default async function BookingId({
                         Total diárias
                       </TableCell>
                       <TableCell className="text-right">
-                        {totalAmount.toLocaleString('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL',
-                        })}
+                        {formatCurrency(totalAmount)}
                       </TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell className="font-medium">Serviços</TableCell>
                       <TableCell className="text-right">
-                        {totalServices?.toLocaleString('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL',
-                        })}
+                        {formatCurrency(totalServices)}
                       </TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell className="font-medium">Desconto</TableCell>
                       <TableCell className="text-right">
-                        {totalDiscount?.toLocaleString('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL',
-                        })}
+                        {formatCurrency(totalDiscount)}
                       </TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell className="font-medium">Total</TableCell>
                       <TableCell className="text-right">
-                        {totalAll.toLocaleString('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL',
-                        })}{' '}
+                        {formatCurrency(totalAll)}
                       </TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell className="font-medium">Recebido</TableCell>
                       <TableCell className="text-right">
-                        {totalPayment.toLocaleString('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL',
-                        })}
+                        {formatCurrency(totalPayment)}
                       </TableCell>
                     </TableRow>
                     <TableRow>
@@ -151,10 +125,7 @@ export default async function BookingId({
                       <TableCell
                         className={`text-right font-semibold ${balance > 0 ? 'text-red-500' : 'text-green-500'}`}
                       >
-                        {balance?.toLocaleString('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL',
-                        })}
+                        {formatCurrency(balance)}
                       </TableCell>
                     </TableRow>
                   </TableBody>
