@@ -24,6 +24,8 @@ export async function getUnits() {
           payments: {
             orderBy: { paidAt: 'desc' },
           },
+          services: true,
+          discounts: true,
         },
       },
     },

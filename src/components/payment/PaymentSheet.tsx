@@ -81,7 +81,7 @@ export function PaymentSheet({ booking, children }: PaymentSheetProps) {
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
         <SheetTrigger asChild>{children}</SheetTrigger>
         <SheetContent
-          onInteractOutside={event => {
+          onInteractOutside={(event: MouseEvent) => {
             dialogOpen && event.preventDefault()
           }}
           className="flex flex-col max-h-screen"
@@ -143,7 +143,7 @@ export function PaymentSheet({ booking, children }: PaymentSheetProps) {
           {/* Total */}
           <div className="flex flex-col justify-between font-semibold text-base p-4 border-2 rounded-lg bg-slate-100">
             <div className="w-full flex justify-between">
-              <span>Total Pago</span>
+              <span>Total pago</span>
               <span className="font-extrabold text-green-700">
                 {formatCurrency(
                   booking?.payments.reduce((sum, p) => sum + p.amount, 0) || 0
@@ -151,9 +151,9 @@ export function PaymentSheet({ booking, children }: PaymentSheetProps) {
               </span>
             </div>
             <div className="w-full flex justify-between">
-              <span>Falta Pagar</span>
+              <span>Falta lançar</span>
               <span className="font-extrabold text-red-500">
-                {getValueTotalBooking(booking)}
+                {formatCurrency(getValueTotalBooking(booking) || 0)}
               </span>
             </div>
           </div>
