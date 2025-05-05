@@ -44,6 +44,7 @@ npx prisma migrate dev --name init
 # Rode o projeto em ambiente de desenvolvimento
 npm run dev
 
+```
 
 ## 📄 Licença
 
