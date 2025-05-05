@@ -1,34 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌊 OndaGest PMS
 
-## Getting Started
+**OndaGest PMS** é uma aplicação de gestão de hospedagens desenvolvida para facilitar o controle de reservas, pagamentos, serviços e descontos. Ideal para pequenas pousadas e casas de temporada, a plataforma oferece uma interface moderna, clara e eficiente para o gestor acompanhar toda a jornada do hóspede.
 
-First, run the development server:
+---
+
+## 🚀 Funcionalidades
+
+- 📅 Gerenciamento de reservas
+- 💵 Controle de pagamentos com atualização automática de status
+- 🧾 Lançamento de serviços e descontos
+- 🛏️ Cadastro de unidades e tipos
+- 👤 Autenticação com controle de acesso (Admin / Usuário)
+
+---
+
+## 🛠️ Tecnologias utilizadas
+
+| Tecnologia       | Descrição                                 |
+|------------------|---------------------------------------------|
+| 🧩 **Next.js 15**     | Framework React fullstack com App Router    |
+| 💅 **Tailwind CSS**   | Estilização rápida e responsiva             |
+| 🧠 **Prisma ORM**     | Acesso e modelagem de dados                 |
+| 🧪 **Zod**            | Validação de schemas e formulários         |
+| 🔐 **Auth.js (v5)**   | Autenticação moderna e segura               |
+| 💽 **SQLite** (dev)   | Banco leve e prático para desenvolvimento   |
+| 🧾 **Lucide Icons**   | Ícones modernos para interface              |
+| 🎨 **shadcn/ui**      | Componentes UI acessíveis e elegantes       |
+
+---
+
+## 📦 Instalação e uso
 
 ```bash
+# Clone o repositório
+git clone https://github.com/seu-usuario/ondagest-pms.git
+
+# Instale as dependências
+npm install
+
+# Crie e aplique o banco de dados
+npx prisma migrate dev --name init
+
+# Rode o projeto em ambiente de desenvolvimento
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
