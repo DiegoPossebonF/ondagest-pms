@@ -238,7 +238,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\DPFDEV\\Documents\\Projetos\\ondagest\\src\\app\\generated\\prisma",
+      "value": "C:\\Users\\DPFDEV\\Documents\\Projetos\\ondagest-pms\\src\\app\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -252,7 +252,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\DPFDEV\\Documents\\Projetos\\ondagest\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\DPFDEV\\Documents\\Projetos\\ondagest-pms\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
