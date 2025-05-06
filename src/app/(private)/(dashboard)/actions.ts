@@ -37,3 +37,16 @@ export async function getUnits() {
   }
   return units
 }
+
+export async function getServices() {
+  const services = await db.service.findMany({
+    distinct: ['name'],
+    orderBy: { createdAt: 'desc' },
+  })
+
+  if (!services) {
+    return []
+  }
+
+  return services
+}

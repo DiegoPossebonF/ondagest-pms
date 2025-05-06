@@ -81,7 +81,8 @@ export function PaymentSheet({ booking, children }: PaymentSheetProps) {
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
         <SheetTrigger asChild>{children}</SheetTrigger>
         <SheetContent
-          onInteractOutside={(event: MouseEvent) => {
+          // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+          onInteractOutside={(event: any) => {
             dialogOpen && event.preventDefault()
           }}
           className="flex flex-col max-h-screen"

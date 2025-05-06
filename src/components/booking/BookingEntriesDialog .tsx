@@ -12,6 +12,7 @@ import type { BookingAllIncludes } from '@/types/booking'
 import { Plus } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
+import { DiscountForm } from '../discount/DiscountForm'
 import { PaymentForm } from '../payment/PaymentForm'
 import { ServiceForm } from '../service/ServiceForm'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
@@ -51,7 +52,7 @@ export function BookingEntriesDialog({ booking }: BookingEntriesDialogProps) {
             <ServiceForm booking={booking} />
           </TabsContent>
           <TabsContent value="discount">
-            Change your fjsdçljfslçdfjdsfj
+            <DiscountForm booking={booking} />
           </TabsContent>
         </Tabs>
       </DialogContent>

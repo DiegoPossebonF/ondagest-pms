@@ -1,4 +1,6 @@
 'use client'
+import { getServices } from '@/app/(private)/(dashboard)/actions'
+import { createService } from '@/app/actions/service/createService'
 import type { Service } from '@/app/generated/prisma'
 import { Button } from '@/components/ui/button'
 import {
@@ -10,18 +12,27 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { cn, formatCurrency } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect } from 'react'
+import { Check, ChevronsUpDown } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '../ui/command'
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 
 const ServiceSchema = z.object({
+  bookingId: z.number().min(1, { message: 'Reserva não informada!' }),
   name: z.string().min(1, { message: 'O nome é obrigatório' }),
-  amount: z
-    .string()
-    .min(1, { message: 'O valor é obrigatório' })
-    .transform(value => Number(value)),
+  amount: z.string().min(1, 'Valor é obrigatório'),
 })
 
 export type ServiceFormValues = z.infer<typeof ServiceSchema>
@@ -32,23 +43,59 @@ interface ServiceFormProps {
 }
 
 export function ServiceForm({ booking, service }: ServiceFormProps) {
+  const triggerRef = useRef<HTMLButtonElement | null>(null)
+  const [width, setWidth] = useState('auto')
+  const [services, setServices] = useState<Service[]>([])
+  const [filteredServices, setFilteredServices] = useState<Service[]>([])
+  const [openPopover, setOpenPopover] = useState(false)
+
   const form = useForm<ServiceFormValues>({
     resolver: zodResolver(ServiceSchema),
     defaultValues: {
+      bookingId: service?.bookingId || booking.id,
       name: service?.name || '',
-      amount: service?.amount || 0,
+      amount: service ? formatCurrency(service.amount) : '',
     },
   })
 
   useEffect(() => {
+    if (triggerRef.current) {
+      setWidth(`${triggerRef.current.offsetWidth}px`)
+    }
+  }, [])
+
+  useEffect(() => {
+    const getInitialServices = async () => {
+      setServices(await getServices())
+    }
+
     form.reset({
+      bookingId: service?.bookingId || booking.id,
       name: service?.name || '',
-      amount: service?.amount || 0,
+      amount: service ? formatCurrency(service.amount) : '',
     })
-  }, [service, form])
+
+    getInitialServices()
+  }, [service, form, booking.id])
 
   async function onSubmitHandle(values: ServiceFormValues) {
-    alert(JSON.stringify(values, null, 2))
+    console.log(values)
+    const data = await createService({
+      ...values,
+      amount: Number(values.amount),
+    })
+
+    console.log(data)
+  }
+
+  const setServicesHandler = async (input: string) => {
+    form.setValue('name', input)
+
+    setFilteredServices(
+      services.filter(service =>
+        service.name.toLowerCase().includes(input.toLowerCase())
+      ) || []
+    )
   }
 
   return (
@@ -64,15 +111,68 @@ export function ServiceForm({ booking, service }: ServiceFormProps) {
             render={({ field }) => (
               <FormItem className="flex flex-col">
                 <FormLabel>Serviço</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    value={field.value}
-                    placeholder="Informe o serviço"
-                    className="focus-visible:ring-0 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none border-2 border-blue-200"
-                    autoFocus
-                  />
-                </FormControl>
+                <Popover
+                  open={openPopover}
+                  onOpenChange={setOpenPopover}
+                  modal={openPopover}
+                >
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        ref={triggerRef}
+                        // biome-ignore lint/a11y/useSemanticElements: <explanation>
+                        role="combobox"
+                        className={cn(
+                          'w-full justify-between',
+                          !field.value && 'text-muted-foreground'
+                        )}
+                      >
+                        {field.value
+                          ? services.find(
+                              service => service.name === field.value
+                            )?.name || field.value
+                          : 'Selecione o serviço'}
+                        <ChevronsUpDown className="opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="p-0" style={{ width }}>
+                    <Command>
+                      <CommandInput
+                        placeholder="Procure o serviço..."
+                        className="h-9"
+                        onValueChange={setServicesHandler}
+                      />
+                      <CommandList>
+                        <CommandEmpty>Serviço não encontrado</CommandEmpty>
+                        <CommandGroup>
+                          {filteredServices.map(service => (
+                            <CommandItem
+                              className="cursor-pointer"
+                              value={service.name}
+                              key={service.id}
+                              onSelect={() => {
+                                form.setValue('name', service.name)
+                                setOpenPopover(false)
+                              }}
+                            >
+                              {service.name}
+                              <Check
+                                className={cn(
+                                  'ml-auto',
+                                  service.name === field.value
+                                    ? 'opacity-100'
+                                    : 'opacity-0'
+                                )}
+                              />
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
                 <FormMessage />
               </FormItem>
             )}
@@ -99,11 +199,21 @@ export function ServiceForm({ booking, service }: ServiceFormProps) {
                       field.onChange(formatted)
                     }}
                     value={field.value}
-                    placeholder="Informe o valor"
+                    placeholder="Valor do serviço"
                     className="focus-visible:ring-0 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none border-2 border-blue-200"
                     autoFocus
                   />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="bookingId"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
                 <FormMessage />
               </FormItem>
             )}
