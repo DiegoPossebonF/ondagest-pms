@@ -1,6 +1,7 @@
 'use server'
 import type { Service } from '@/app/generated/prisma'
 import db from '@/lib/db'
+import { revalidatePath } from 'next/cache'
 
 type ServiceWithoutId = Omit<Service, 'id' | 'createdAt'>
 
@@ -20,17 +21,18 @@ export async function createService(service: ServiceWithoutId) {
       }
     }
 
+    revalidatePath(`/booking/${service.bookingId}`)
     return {
       success: true,
       service: newService,
-      msg: 'Servico criado com sucesso',
+      msg: 'Serviço lançado com sucesso',
     }
   } catch (error) {
-    console.error('Erro ao criar servico', error)
+    console.error('Erro ao criar serviço', error)
     return {
       success: false,
       service: null,
-      msg: 'Erro ao criar servico',
+      msg: 'Erro ao criar serviço',
     }
   }
 }

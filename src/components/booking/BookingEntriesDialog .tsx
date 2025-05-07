@@ -49,7 +49,7 @@ export function BookingEntriesDialog({ booking }: BookingEntriesDialogProps) {
             <PaymentForm booking={booking} />
           </TabsContent>
           <TabsContent value="service">
-            <ServiceForm booking={booking} />
+            <ServiceForm booking={booking} setDialogOpen={setDialogOpen} />
           </TabsContent>
           <TabsContent value="discount">
             <DiscountForm booking={booking} />

@@ -17,6 +17,8 @@ export async function GET(
         guest: true,
         unit: { include: { type: { include: { rates: true } } } },
         payments: true,
+        services: true,
+        discounts: true,
       },
     })
 

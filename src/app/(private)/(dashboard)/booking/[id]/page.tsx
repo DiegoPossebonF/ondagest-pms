@@ -1,7 +1,12 @@
 import { BookingEntriesDialog } from '@/components/booking/BookingEntriesDialog '
 import { BookingForm } from '@/components/booking/BookingForm'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import calculateBookingValues from '@/lib/actions/calculateBookingValues'
 import db from '@/lib/db'
 import { STATUS_COLORS, formatCurrency, getDifferenceInDays } from '@/lib/utils'
@@ -56,78 +61,132 @@ export default async function BookingId({
               <CardHeader>
                 <CardTitle>RESUMO DA RESERVA</CardTitle>
               </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell className="font-medium">
-                        Nº de diárias
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {getDifferenceInDays({
-                          from: booking?.startDate,
-                          to: booking?.endDate,
-                        })}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">
-                        Valor diária
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {formatCurrency(
-                          totalAmount /
-                            getDifferenceInDays({
-                              from: booking?.startDate,
-                              to: booking?.endDate,
-                            })
-                        )}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">
-                        Total diárias
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {formatCurrency(totalAmount)}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">Serviços</TableCell>
-                      <TableCell className="text-right">
-                        {formatCurrency(totalServices)}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">Desconto</TableCell>
-                      <TableCell className="text-right">
-                        {formatCurrency(totalDiscount)}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">Total</TableCell>
-                      <TableCell className="text-right">
-                        {formatCurrency(totalAll)}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">Recebido</TableCell>
-                      <TableCell className="text-right">
-                        {formatCurrency(totalPayment)}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">
-                        Falta lançar
-                      </TableCell>
-                      <TableCell
-                        className={`text-right font-semibold ${balance > 0 ? 'text-red-500' : 'text-green-500'}`}
+
+              <CardContent className="text-sm">
+                <Accordion type="multiple" className="w-full space-y-1">
+                  {/* Nº de diárias */}
+                  <AccordionItem
+                    value="nights"
+                    className="border-none flex justify-between flex-row"
+                  >
+                    <span className="font-medium">Nº de diárias</span>
+                    <span>
+                      {getDifferenceInDays({
+                        from: booking?.startDate,
+                        to: booking?.endDate,
+                      })}
+                    </span>
+                  </AccordionItem>
+
+                  {/* Valor diária */}
+                  <AccordionItem
+                    value="daily-value"
+                    className="border-none flex justify-between flex-row"
+                  >
+                    <span className="font-medium">Valor diária</span>
+                    <span>
+                      {formatCurrency(
+                        totalAmount /
+                          getDifferenceInDays({
+                            from: booking?.startDate,
+                            to: booking?.endDate,
+                          })
+                      )}
+                    </span>
+                  </AccordionItem>
+
+                  {/* Total diárias */}
+                  <AccordionItem value="daily-total" className="border-none">
+                    <AccordionTrigger className="pointer-events-none justify-between text-left">
+                      <span className="font-medium">Total diárias</span>
+                      <span>{formatCurrency(totalAmount)}</span>
+                    </AccordionTrigger>
+                  </AccordionItem>
+
+                  {/* Serviços */}
+                  <AccordionItem value="services">
+                    <AccordionTrigger>Serviços</AccordionTrigger>
+                    <AccordionContent>
+                      {booking.services.length > 0 ? (
+                        <ul className="pl-4 list-disc">
+                          {booking.services.map(service => (
+                            <li key={service.id}>
+                              {service.name} — {formatCurrency(service.amount)}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-muted-foreground text-xs">
+                          Nenhum serviço lançado
+                        </p>
+                      )}
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  {/* Descontos */}
+                  <AccordionItem value="discounts">
+                    <AccordionTrigger>Desconto</AccordionTrigger>
+                    <AccordionContent>
+                      {booking.discounts.length > 0 ? (
+                        <ul className="pl-4 list-disc">
+                          {booking.discounts.map(discount => (
+                            <li key={discount.id}>
+                              {discount.reason} —{' '}
+                              {formatCurrency(discount.amount)}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-muted-foreground text-xs">
+                          Nenhum desconto aplicado
+                        </p>
+                      )}
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  {/* Total */}
+                  <AccordionItem value="total" className="border-none">
+                    <AccordionTrigger className="pointer-events-none justify-between text-left">
+                      <span className="font-medium">Total</span>
+                      <span>{formatCurrency(totalAll)}</span>
+                    </AccordionTrigger>
+                  </AccordionItem>
+
+                  {/* Pagamentos */}
+                  <AccordionItem value="payments">
+                    <AccordionTrigger>Recebido</AccordionTrigger>
+                    <AccordionContent>
+                      {booking.payments.length > 0 ? (
+                        <ul className="pl-4 list-disc">
+                          {booking.payments.map(payment => (
+                            <li key={payment.id}>
+                              {payment.paymentType} —{' '}
+                              {formatCurrency(payment.amount)}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-muted-foreground text-xs">
+                          Nenhum pagamento registrado
+                        </p>
+                      )}
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  {/* Falta lançar */}
+                  <AccordionItem value="balance" className="border-none">
+                    <AccordionTrigger className="pointer-events-none justify-between text-left font-semibold">
+                      <span className="font-medium">Falta lançar</span>
+                      <span
+                        className={
+                          balance > 0 ? 'text-red-500' : 'text-green-500'
+                        }
                       >
                         {formatCurrency(balance)}
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
+                      </span>
+                    </AccordionTrigger>
+                  </AccordionItem>
+                </Accordion>
               </CardContent>
             </Card>
           </div>

@@ -12,11 +12,18 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { cn, formatCurrency } from '@/lib/utils'
+import { toast } from '@/hooks/use-toast'
+import { cn, formatCurrency, parseCurrencyToNumber } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Check, ChevronsUpDown } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import {
+  type Dispatch,
+  type SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import {
@@ -40,9 +47,14 @@ export type ServiceFormValues = z.infer<typeof ServiceSchema>
 interface ServiceFormProps {
   booking: BookingAllIncludes
   service?: Service
+  setDialogOpen: Dispatch<SetStateAction<boolean>>
 }
 
-export function ServiceForm({ booking, service }: ServiceFormProps) {
+export function ServiceForm({
+  booking,
+  service,
+  setDialogOpen,
+}: ServiceFormProps) {
   const triggerRef = useRef<HTMLButtonElement | null>(null)
   const [width, setWidth] = useState('auto')
   const [services, setServices] = useState<Service[]>([])
@@ -78,17 +90,30 @@ export function ServiceForm({ booking, service }: ServiceFormProps) {
     getInitialServices()
   }, [service, form, booking.id])
 
-  async function onSubmitHandle(values: ServiceFormValues) {
-    console.log(values)
+  async function onSubmit(values: ServiceFormValues) {
     const data = await createService({
       ...values,
-      amount: Number(values.amount),
+      amount: parseCurrencyToNumber(values.amount),
     })
 
-    console.log(data)
+    if (data.success) {
+      toast({
+        title: 'Sucesso',
+        description: data.msg,
+        variant: 'success',
+      })
+      setDialogOpen(false)
+      form.reset()
+    } else {
+      toast({
+        title: 'Erro',
+        description: data.msg,
+        variant: 'destructive',
+      })
+    }
   }
 
-  const setServicesHandler = async (input: string) => {
+  const handleSetFilteredServices = async (input: string) => {
     form.setValue('name', input)
 
     setFilteredServices(
@@ -101,10 +126,7 @@ export function ServiceForm({ booking, service }: ServiceFormProps) {
   return (
     <div className="flex flex-col gap-4 max-w-6xl">
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmitHandle)}
-          className="space-y-4"
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
             name="name"
@@ -142,7 +164,7 @@ export function ServiceForm({ booking, service }: ServiceFormProps) {
                       <CommandInput
                         placeholder="Procure o serviço..."
                         className="h-9"
-                        onValueChange={setServicesHandler}
+                        onValueChange={handleSetFilteredServices}
                       />
                       <CommandList>
                         <CommandEmpty>Serviço não encontrado</CommandEmpty>
