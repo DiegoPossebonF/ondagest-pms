@@ -1,5 +1,5 @@
 'use client'
-import { Button } from '@/components/ui/button'
+import type { Discount, Payment, Service } from '@/app/generated/prisma'
 import {
   Dialog,
   DialogContent,
@@ -9,7 +9,6 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import type { BookingAllIncludes } from '@/types/booking'
-import { Plus } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
 import { DiscountForm } from '../discount/DiscountForm'
@@ -18,18 +17,35 @@ import { ServiceForm } from '../service/ServiceForm'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
 
 type BookingEntriesDialogProps = {
+  children?: React.ReactNode
   booking: BookingAllIncludes
+  payment?: Payment
+  service?: Service
+  discount?: Discount
+  open?: boolean
+  setOpen?: (open: boolean) => void
 }
 
-export function BookingEntriesDialog({ booking }: BookingEntriesDialogProps) {
+export function BookingEntriesDialog({
+  children,
+  booking,
+  payment,
+  service,
+  discount,
+  open,
+  setOpen,
+}: BookingEntriesDialogProps) {
   const [dialogOpen, setDialogOpen] = useState(false)
+  //const [payment, setPayment] = useState<Payment>()
+  //const [service, setService] = useState<Service>()
+  //const [discount, setDiscount] = useState<Discount>()
+
   return (
-    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-      <DialogTrigger asChild>
-        <Button variant={'default'}>
-          <Plus size={20} />
-        </Button>
-      </DialogTrigger>
+    <Dialog
+      open={open ? open : dialogOpen}
+      onOpenChange={setOpen ? setOpen : setDialogOpen}
+    >
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{'Lançar pagamentos, Serviços e Descontos'}</DialogTitle>
@@ -39,17 +55,24 @@ export function BookingEntriesDialog({ booking }: BookingEntriesDialogProps) {
             </Link>
           </DialogDescription>
         </DialogHeader>
-        <Tabs defaultValue="account" className="w-full">
+        <Tabs
+          defaultValue={service ? 'service' : discount ? 'discount' : 'payment'}
+          className="w-full"
+        >
           <TabsList className="grid w-full grid-cols-3 mb-6">
             <TabsTrigger value="payment">Pagamento</TabsTrigger>
             <TabsTrigger value="service">Serviço</TabsTrigger>
             <TabsTrigger value="discount">Desconto</TabsTrigger>
           </TabsList>
           <TabsContent value="payment">
-            <PaymentForm booking={booking} />
+            <PaymentForm booking={booking} payment={payment} />
           </TabsContent>
           <TabsContent value="service">
-            <ServiceForm booking={booking} setDialogOpen={setDialogOpen} />
+            <ServiceForm
+              booking={booking}
+              service={service}
+              setDialogOpen={setDialogOpen}
+            />
           </TabsContent>
           <TabsContent value="discount">
             <DiscountForm booking={booking} />

@@ -1,6 +1,5 @@
 'use client'
 import type { Payment } from '@/app/generated/prisma'
-import { Button } from '@/components/ui/button'
 import {
   Sheet,
   SheetContent,
@@ -11,13 +10,12 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import calculateBookingValues from '@/lib/actions/calculateBookingValues'
-import { PAYMENT_TYPE_LABELS, formatCurrency } from '@/lib/utils'
+import { formatCurrency } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import dayjs from 'dayjs'
-import { Pencil, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { Badge } from '../ui/badge'
+import { ItemList } from '../ItemList'
 import { PaymentAlertDialogDelete } from './PaymentAlertDialogDelete'
 import { PaymentDialog } from './PaymentDialog'
 
@@ -100,43 +98,13 @@ export function PaymentSheet({ booking, children }: PaymentSheetProps) {
           <div className="flex-1 overflow-y-auto p-4 border-2 rounded-lg bg-slate-100">
             <div className="flex flex-col gap-2">
               {booking?.payments.map(p => (
-                <div
+                <ItemList
                   key={p.id}
-                  className={`flex justify-between min-w-[300px] items-center border rounded-lg p-2 px-3 shadow-sm  ${payment?.id === p.id ? 'bg-orange-200' : 'bg-white'}`}
-                >
-                  <div className="flex flex-col gap-1">
-                    <p className="font-semibold">{formatCurrency(p.amount)}</p>
-                    <div className="flex gap-1">
-                      <Badge className="font-mono text-[10px] text-blue-300">
-                        {dayjs(p.paidAt).format('DD/MM/YYYY')}
-                      </Badge>
-                      <Badge
-                        className="font-mono text-[10px] text-blue-300"
-                        title={PAYMENT_TYPE_LABELS[p.paymentType]}
-                      >
-                        {PAYMENT_TYPE_LABELS[p.paymentType]}
-                      </Badge>
-                    </div>
-                  </div>
-                  <div className="flex items-center pl-2 w-12">
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="h-6 w-6 p-1"
-                      onClick={() => openEditDialog(p)}
-                    >
-                      <Pencil className="!w-3 !h-3" />
-                    </Button>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="h-6 w-6 p-1"
-                      onClick={() => openDeleteDialog(p)}
-                    >
-                      <Trash2 className="!w-3 !h-3 text-destructive" />
-                    </Button>
-                  </div>
-                </div>
+                  amount={p.amount}
+                  date={dayjs(p.paidAt)}
+                  paymentType={p.paymentType}
+                  classname={`${p.id === payment?.id ? 'bg-orange-200' : 'bg-white'} p-2`}
+                />
               ))}
             </div>
           </div>

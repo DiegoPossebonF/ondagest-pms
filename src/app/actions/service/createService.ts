@@ -1,9 +1,10 @@
 'use server'
-import type { Service } from '@/app/generated/prisma'
+import type { Discount, Service } from '@/app/generated/prisma'
 import db from '@/lib/db'
 import { revalidatePath } from 'next/cache'
 
-type ServiceWithoutId = Omit<Service, 'id' | 'createdAt'>
+export type ServiceWithoutId = Omit<Service, 'id' | 'createdAt'>
+export type DiscountWithoutId = Omit<Discount, 'id' | 'createdAt'>
 
 export async function createService(service: ServiceWithoutId) {
   try {

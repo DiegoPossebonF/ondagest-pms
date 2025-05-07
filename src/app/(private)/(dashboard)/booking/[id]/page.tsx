@@ -1,3 +1,4 @@
+import { ItemList } from '@/components/ItemList'
 import { BookingEntriesDialog } from '@/components/booking/BookingEntriesDialog '
 import { BookingForm } from '@/components/booking/BookingForm'
 import {
@@ -6,10 +7,12 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import calculateBookingValues from '@/lib/actions/calculateBookingValues'
 import db from '@/lib/db'
 import { STATUS_COLORS, formatCurrency, getDifferenceInDays } from '@/lib/utils'
+import { Plus } from 'lucide-react'
 
 export default async function BookingId({
   params,
@@ -40,7 +43,11 @@ export default async function BookingId({
     <main>
       <div className="flex items-center justify-between px-8 py-4 border-b border-gray-700 bg-blue-200">
         <span className={`font-semibold transition-opacity`}>RESERVA</span>
-        <BookingEntriesDialog booking={booking} />
+        <BookingEntriesDialog booking={booking}>
+          <Button variant={'default'}>
+            <Plus size={20} />
+          </Button>
+        </BookingEntriesDialog>
       </div>
       <div className="p-6 overflow-auto">
         <div className="flex flex-col lg:flex-row gap-6">
@@ -57,20 +64,22 @@ export default async function BookingId({
             </Card>
           </div>
           <div className="flex flex-col md:basis-2/5 gap-4">
-            <Card>
-              <CardHeader>
+            <Card className="overflow-hidden">
+              <CardHeader
+                className={`${booking && STATUS_COLORS[booking.status]}`}
+              >
                 <CardTitle>RESUMO DA RESERVA</CardTitle>
               </CardHeader>
 
-              <CardContent className="text-sm">
+              <CardContent className="text-sm p-6">
                 <Accordion type="multiple" className="w-full space-y-1">
                   {/* Nº de diárias */}
                   <AccordionItem
                     value="nights"
-                    className="border-none flex justify-between flex-row"
+                    className="flex justify-between flex-row py-2"
                   >
                     <span className="font-medium">Nº de diárias</span>
-                    <span>
+                    <span className="text-muted-foreground">
                       {getDifferenceInDays({
                         from: booking?.startDate,
                         to: booking?.endDate,
@@ -81,10 +90,10 @@ export default async function BookingId({
                   {/* Valor diária */}
                   <AccordionItem
                     value="daily-value"
-                    className="border-none flex justify-between flex-row"
+                    className="flex justify-between flex-row py-2"
                   >
                     <span className="font-medium">Valor diária</span>
-                    <span>
+                    <span className="text-muted-foreground">
                       {formatCurrency(
                         totalAmount /
                           getDifferenceInDays({
@@ -96,19 +105,30 @@ export default async function BookingId({
                   </AccordionItem>
 
                   {/* Total diárias */}
-                  <AccordionItem value="daily-total" className="border-none">
-                    <AccordionTrigger className="pointer-events-none justify-between text-left">
-                      <span className="font-medium">Total diárias</span>
-                      <span>{formatCurrency(totalAmount)}</span>
-                    </AccordionTrigger>
+                  <AccordionItem
+                    value="daily-total"
+                    className="flex justify-between flex-row py-2"
+                  >
+                    <span className="font-medium">Total diárias</span>
+                    <span className="text-muted-foreground">
+                      {formatCurrency(totalAmount)}
+                    </span>
                   </AccordionItem>
 
                   {/* Serviços */}
                   <AccordionItem value="services">
-                    <AccordionTrigger>Serviços</AccordionTrigger>
+                    <div className="flex justify-between flex-row py-2">
+                      <AccordionTrigger className="py-0">
+                        <span className="font-medium">Serviços</span>
+                      </AccordionTrigger>
+                      <span className="text-muted-foreground">
+                        {formatCurrency(totalServices)}
+                      </span>
+                    </div>
+
                     <AccordionContent>
                       {booking.services.length > 0 ? (
-                        <ul className="pl-4 list-disc">
+                        <ul className="pl-4">
                           {booking.services.map(service => (
                             <li key={service.id}>
                               {service.name} — {formatCurrency(service.amount)}
@@ -125,7 +145,14 @@ export default async function BookingId({
 
                   {/* Descontos */}
                   <AccordionItem value="discounts">
-                    <AccordionTrigger>Desconto</AccordionTrigger>
+                    <div className="flex justify-between flex-row py-2">
+                      <AccordionTrigger className="py-0">
+                        <span className="font-medium">Descontos</span>
+                      </AccordionTrigger>
+                      <span className="text-muted-foreground">
+                        {formatCurrency(totalDiscount)}
+                      </span>
+                    </div>
                     <AccordionContent>
                       {booking.discounts.length > 0 ? (
                         <ul className="pl-4 list-disc">
@@ -145,46 +172,59 @@ export default async function BookingId({
                   </AccordionItem>
 
                   {/* Total */}
-                  <AccordionItem value="total" className="border-none">
-                    <AccordionTrigger className="pointer-events-none justify-between text-left">
-                      <span className="font-medium">Total</span>
-                      <span>{formatCurrency(totalAll)}</span>
-                    </AccordionTrigger>
+                  <AccordionItem
+                    value="total"
+                    className="flex justify-between flex-row py-2"
+                  >
+                    <span className="font-medium">Total</span>
+                    <span className="text-muted-foreground">
+                      {formatCurrency(totalAll)}
+                    </span>
                   </AccordionItem>
 
                   {/* Pagamentos */}
                   <AccordionItem value="payments">
-                    <AccordionTrigger>Recebido</AccordionTrigger>
+                    <div className="flex justify-between flex-row py-2">
+                      <AccordionTrigger className="py-0">
+                        <span className="font-medium">Pagamentos</span>
+                      </AccordionTrigger>
+                      <span className="text-muted-foreground">
+                        {formatCurrency(totalPayment)}
+                      </span>
+                    </div>
                     <AccordionContent>
                       {booking.payments.length > 0 ? (
-                        <ul className="pl-4 list-disc">
-                          {booking.payments.map(payment => (
-                            <li key={payment.id}>
-                              {payment.paymentType} —{' '}
-                              {formatCurrency(payment.amount)}
-                            </li>
-                          ))}
-                        </ul>
+                        booking.payments.map(payment => (
+                          <ItemList
+                            key={payment.id}
+                            amount={payment.amount}
+                            paymentType={payment.paymentType}
+                            booking={booking}
+                          />
+                        ))
                       ) : (
                         <p className="text-muted-foreground text-xs">
-                          Nenhum pagamento registrado
+                          Nenhum pagamento lançado
                         </p>
                       )}
                     </AccordionContent>
                   </AccordionItem>
 
                   {/* Falta lançar */}
-                  <AccordionItem value="balance" className="border-none">
-                    <AccordionTrigger className="pointer-events-none justify-between text-left font-semibold">
-                      <span className="font-medium">Falta lançar</span>
-                      <span
-                        className={
-                          balance > 0 ? 'text-red-500' : 'text-green-500'
-                        }
-                      >
-                        {formatCurrency(balance)}
-                      </span>
-                    </AccordionTrigger>
+                  <AccordionItem
+                    value="balance"
+                    className="border-none flex justify-between flex-row py-2"
+                  >
+                    <span className="font-medium">Saldo pendente</span>
+                    <span
+                      className={
+                        balance > 0
+                          ? 'text-red-500 font-semibold'
+                          : 'text-green-500 font-semibold'
+                      }
+                    >
+                      {formatCurrency(balance)}
+                    </span>
                   </AccordionItem>
                 </Accordion>
               </CardContent>

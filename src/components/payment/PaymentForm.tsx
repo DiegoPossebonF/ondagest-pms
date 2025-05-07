@@ -76,6 +76,7 @@ export function PaymentForm({ booking, payment, onClose }: PaymentFormProps) {
 
   // 🔁 Atualiza o valor quando a edição muda (ex: abrir o dialog com outro pagamento)
   useEffect(() => {
+    console.log('payment', payment)
     form.reset({
       bookingId: booking.id.toString(),
       amount: payment ? formatCurrency(payment?.amount) : '',
