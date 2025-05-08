@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dialog'
 import type { BookingAllIncludes } from '@/types/booking'
 import Link from 'next/link'
-import { useState } from 'react'
+import { type Dispatch, type SetStateAction, useState } from 'react'
 import { DiscountForm } from '../discount/DiscountForm'
 import { PaymentForm } from '../payment/PaymentForm'
 import { ServiceForm } from '../service/ServiceForm'
@@ -23,7 +23,7 @@ type BookingEntriesDialogProps = {
   service?: Service
   discount?: Discount
   open?: boolean
-  setOpen?: (open: boolean) => void
+  setOpen?: Dispatch<SetStateAction<boolean>>
 }
 
 export function BookingEntriesDialog({
@@ -65,13 +65,17 @@ export function BookingEntriesDialog({
             <TabsTrigger value="discount">Desconto</TabsTrigger>
           </TabsList>
           <TabsContent value="payment">
-            <PaymentForm booking={booking} payment={payment} />
+            <PaymentForm
+              booking={booking}
+              payment={payment}
+              openDialog={setOpen ? setOpen : setDialogOpen}
+            />
           </TabsContent>
           <TabsContent value="service">
             <ServiceForm
               booking={booking}
               service={service}
-              setDialogOpen={setDialogOpen}
+              setDialogOpen={setOpen ? setOpen : setDialogOpen}
             />
           </TabsContent>
           <TabsContent value="discount">

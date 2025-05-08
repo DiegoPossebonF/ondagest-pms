@@ -1,6 +1,6 @@
 'use client'
-import { createPayment } from '@/actions/payment/createPayment'
-import { updatePayment } from '@/actions/payment/updatePayment'
+import { createPayment } from '@/app/actions/payment/createPayment'
+import { updatePayment } from '@/app/actions/payment/updatePayment'
 import type { Payment } from '@/app/generated/prisma'
 import { Button } from '@/components/ui/button'
 import {
@@ -14,13 +14,13 @@ import {
 import { Input } from '@/components/ui/input'
 import { useToast } from '@/hooks/use-toast'
 import { updateBookingPaymentStatus } from '@/lib/actions/updateBookingPaymentStatus'
-import { cn, formatCurrency } from '@/lib/utils'
+import { cn, formatCurrency, parseCurrencyToNumber } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import { zodResolver } from '@hookform/resolvers/zod'
 import dayjs from 'dayjs'
 import { CalendarIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { type Dispatch, type SetStateAction, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Calendar } from '../ui/calendar'
@@ -54,10 +54,14 @@ export type PaymentFormValues = z.infer<typeof PaymentSchema>
 interface PaymentFormProps {
   booking: BookingAllIncludes
   payment?: Payment
-  onClose?: () => void
+  openDialog?: Dispatch<SetStateAction<boolean>>
 }
 
-export function PaymentForm({ booking, payment, onClose }: PaymentFormProps) {
+export function PaymentForm({
+  booking,
+  payment,
+  openDialog,
+}: PaymentFormProps) {
   const [openPopover, setOpenPopover] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
@@ -76,7 +80,6 @@ export function PaymentForm({ booking, payment, onClose }: PaymentFormProps) {
 
   // 🔁 Atualiza o valor quando a edição muda (ex: abrir o dialog com outro pagamento)
   useEffect(() => {
-    console.log('payment', payment)
     form.reset({
       bookingId: booking.id.toString(),
       amount: payment ? formatCurrency(payment?.amount) : '',
@@ -90,10 +93,22 @@ export function PaymentForm({ booking, payment, onClose }: PaymentFormProps) {
     setLoading(true)
 
     try {
-      const action = payment ? updatePayment : createPayment
-      const data = await action(values, payment?.id || '')
+      const action = payment
+        ? await updatePayment({
+            id: payment.id,
+            bookingId: booking.id,
+            amount: parseCurrencyToNumber(values.amount),
+            paidAt: values.paidAt,
+            paymentType: values.paymentType as Payment['paymentType'],
+          })
+        : await createPayment({
+            bookingId: booking.id,
+            amount: parseCurrencyToNumber(values.amount),
+            paidAt: values.paidAt,
+            paymentType: values.paymentType as Payment['paymentType'],
+          })
 
-      if (!data.error) {
+      if (action.success) {
         toast({
           variant: 'success',
           title: 'Sucesso',
@@ -103,11 +118,11 @@ export function PaymentForm({ booking, payment, onClose }: PaymentFormProps) {
         })
         await updateBookingPaymentStatus(booking.id)
         router.refresh()
-        onClose?.()
+        openDialog?.(false)
       } else {
         toast({
           title: 'Erro',
-          description: data.error,
+          description: action.msg,
           variant: 'destructive',
         })
       }
@@ -117,7 +132,7 @@ export function PaymentForm({ booking, payment, onClose }: PaymentFormProps) {
         description:
           err instanceof Error
             ? err.message
-            : 'Erro não tratado - fale com o desenvolvedor',
+            : 'Erro interno - fale com o desenvolvedor',
         variant: 'destructive',
       })
     } finally {

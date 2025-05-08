@@ -12,12 +12,11 @@ import {
 import calculateBookingValues from '@/lib/actions/calculateBookingValues'
 import { formatCurrency } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
-import dayjs from 'dayjs'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { ItemList } from '../ItemList'
+import { BookingEntriesDialog } from '../booking/BookingEntriesDialog '
 import { PaymentAlertDialogDelete } from './PaymentAlertDialogDelete'
-import { PaymentDialog } from './PaymentDialog'
+import { PaymentItemList } from './PaymentItemList'
 
 interface PaymentSheetProps {
   booking?: BookingAllIncludes
@@ -71,8 +70,6 @@ export function PaymentSheet({ booking, children }: PaymentSheetProps) {
           open={alertDialogOpen}
           setOpen={setAlertDialogOpen}
           payment={payment}
-          bookingId={booking?.id}
-          setPayment={setPayment}
         />
       )}
 
@@ -98,12 +95,12 @@ export function PaymentSheet({ booking, children }: PaymentSheetProps) {
           <div className="flex-1 overflow-y-auto p-4 border-2 rounded-lg bg-slate-100">
             <div className="flex flex-col gap-2">
               {booking?.payments.map(p => (
-                <ItemList
+                <PaymentItemList
                   key={p.id}
-                  amount={p.amount}
-                  date={dayjs(p.paidAt)}
-                  paymentType={p.paymentType}
-                  classname={`${p.id === payment?.id ? 'bg-orange-200' : 'bg-white'} p-2`}
+                  payment={p}
+                  setPayment={setPayment}
+                  setOpenDialog={setDialogOpen}
+                  setOpenDeletePaymentDialog={setAlertDialogOpen}
                 />
               ))}
             </div>
@@ -130,11 +127,10 @@ export function PaymentSheet({ booking, children }: PaymentSheetProps) {
             {/* Novo Pagamento */}
             <div className="flex justify-end">
               {booking && (
-                <PaymentDialog
-                  dialogOpen={dialogOpen}
-                  sheetOpen={sheetOpen}
-                  setDialogOpen={setDialogOpen}
+                <BookingEntriesDialog
                   booking={booking}
+                  open={dialogOpen}
+                  setOpen={setDialogOpen}
                   payment={payment || undefined}
                 />
               )}

@@ -1,4 +1,4 @@
-import { deletePayment } from '@/actions/payment/deletePayment'
+import { deletePayment } from '@/app/actions/payment/deletePayment'
 import type { Payment } from '@/app/generated/prisma'
 import { useToast } from '@/hooks/use-toast'
 import { PAYMENT_TYPE_LABELS, formatCurrency } from '@/lib/utils'
@@ -18,28 +18,25 @@ import { Badge } from '../ui/badge'
 
 interface PaymentAlertDialogDeleteProps {
   payment: Payment
-  bookingId?: number
   open: boolean
   setOpen: (open: boolean) => void
-  setPayment: (payment: Payment | null) => void
 }
 
 export function PaymentAlertDialogDelete({
   payment,
   open,
   setOpen,
-  setPayment,
 }: PaymentAlertDialogDeleteProps) {
   const { toast } = useToast()
   const router = useRouter()
 
   const handleDelete = async (payment: Payment) => {
-    const result = await deletePayment(payment)
+    const result = await deletePayment(payment.id)
 
-    if (result?.error) {
+    if (!result.success) {
       toast({
         title: 'Erro ao excluir',
-        description: result.error,
+        description: result.msg,
         variant: 'destructive',
       })
     } else {
