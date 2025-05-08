@@ -36,6 +36,8 @@ export function BookingEntriesDialog({
   setOpen,
 }: BookingEntriesDialogProps) {
   const [dialogOpen, setDialogOpen] = useState(false)
+  const [selectedForm, setSelectedForm] = useState('payment')
+
   //const [payment, setPayment] = useState<Payment>()
   //const [service, setService] = useState<Service>()
   //const [discount, setDiscount] = useState<Discount>()
@@ -48,7 +50,15 @@ export function BookingEntriesDialog({
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{'Lançar pagamentos, Serviços e Descontos'}</DialogTitle>
+          <DialogTitle>
+            {service && selectedForm === 'service'
+              ? 'Editar'
+              : discount && selectedForm === 'discount'
+                ? 'Editar'
+                : payment && selectedForm === 'payment'
+                  ? 'Editar'
+                  : 'Lançar'}
+          </DialogTitle>
           <DialogDescription>
             <Link href={`/booking/${booking?.id}`}>
               {`RES:${String(booking?.id).padStart(6, '0')} - ${booking?.unit.name} - ${booking?.unit.type.name}`}
@@ -56,15 +66,18 @@ export function BookingEntriesDialog({
           </DialogDescription>
         </DialogHeader>
         <Tabs
-          defaultValue={service ? 'service' : discount ? 'discount' : 'payment'}
+          defaultValue={selectedForm}
           className="w-full"
+          onValueChange={value => {
+            setSelectedForm(value)
+          }}
         >
           <TabsList className="grid w-full grid-cols-3 mb-6">
             <TabsTrigger value="payment">Pagamento</TabsTrigger>
             <TabsTrigger value="service">Serviço</TabsTrigger>
             <TabsTrigger value="discount">Desconto</TabsTrigger>
           </TabsList>
-          <TabsContent value="payment">
+          <TabsContent value="payment" className="flex flex-col gap-2">
             <PaymentForm
               booking={booking}
               payment={payment}

@@ -10,7 +10,7 @@ import { Button } from '../ui/button'
 interface PaymentItemListProps {
   payment: Payment
   classname?: string
-  setOpenDialog: Dispatch<SetStateAction<boolean>>
+  setOpenDialog?: Dispatch<SetStateAction<boolean>>
   setOpenDeletePaymentDialog?: Dispatch<SetStateAction<boolean>>
   setPayment?: (payment: Payment) => void
 }
@@ -24,7 +24,7 @@ export function PaymentItemList({
 }: PaymentItemListProps) {
   const onEditPayment = (paymentEdit: Payment) => {
     setPayment?.(paymentEdit)
-    setOpenDialog(true)
+    setOpenDialog?.(true)
   }
 
   const onDeletePayment = (paymentEdit: Payment) => {
@@ -38,22 +38,22 @@ export function PaymentItemList({
         className={cn(
           'flex justify-between min-w-[300px] items-center border rounded-lg px-2 py-1 shadow-sm',
           classname
-          // ${payment?.id === p.id ? 'bg-orange-200' : 'bg-white'}
         )}
       >
         <div className="flex flex-row gap-4">
-          <Badge
-            className="font-mono text-[10px] text-blue-300"
-            variant={'default'}
-          >
-            {formatCurrency(payment.amount)}
-          </Badge>
           <Badge
             className="font-mono text-[10px] text-blue-300"
             variant={'secondary'}
           >
             {dayjs(payment.paidAt).format('DD/MM/YYYY')}
           </Badge>
+          <Badge
+            className="font-mono text-[10px] text-blue-300"
+            variant={'default'}
+          >
+            {formatCurrency(payment.amount)}
+          </Badge>
+
           <Badge
             className="font-mono text-[10px] text-blue-300"
             title={PAYMENT_TYPE_LABELS[payment.paymentType]}

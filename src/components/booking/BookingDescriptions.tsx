@@ -9,7 +9,7 @@ import {
   CircleUserRound,
   Smartphone,
 } from 'lucide-react'
-import Whatsapp from '../icons/WhatsAppIcon'
+import { WhatsAppIcon } from '../icons/WhatsAppIcon'
 import { CardDescription } from '../ui/card'
 
 interface BookingDescriptionsProps {
@@ -32,7 +32,7 @@ export function BookingDescriptions({ booking }: BookingDescriptionsProps) {
         <div className="text-xs flex flex-row items-center gap-4 ">
           <Smartphone size="16" className="text-teal-700" />
           {booking?.guest.phone}
-          <Whatsapp size="16" color="green" />
+          <WhatsAppIcon color="green" className="w-4 h-4" />
         </div>
         <div className="flex flex-row items-center gap-4 text-xs">
           <CalendarArrowUp size="16" className="text-green-500" />

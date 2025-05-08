@@ -15,6 +15,7 @@ import type { BookingAllIncludes } from '@/types/booking'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { BookingEntriesDialog } from '../booking/BookingEntriesDialog '
+import { Button } from '../ui/button'
 import { PaymentAlertDialogDelete } from './PaymentAlertDialogDelete'
 import { PaymentItemList } from './PaymentItemList'
 
@@ -41,16 +42,6 @@ export function PaymentSheet({ booking, children }: PaymentSheetProps) {
     }
   }, [alertDialogOpen])
 
-  const openEditDialog = (payment: Payment) => {
-    setPayment(payment)
-    setDialogOpen(true)
-  }
-
-  const openDeleteDialog = (payment: Payment) => {
-    setPayment(payment)
-    setAlertDialogOpen(true)
-  }
-
   const getValueTotalBooking = (booking?: BookingAllIncludes) => {
     if (!booking) return
 
@@ -58,9 +49,9 @@ export function PaymentSheet({ booking, children }: PaymentSheetProps) {
 
     if (!values) return
 
-    const resto = values.totalAll - values.totalPayment
+    const balance = values.totalAll - values.totalPayment
 
-    return resto
+    return balance
   }
 
   return (
@@ -92,18 +83,18 @@ export function PaymentSheet({ booking, children }: PaymentSheetProps) {
           </SheetHeader>
 
           {/* Lista de Pagamentos */}
-          <div className="flex-1 overflow-y-auto p-4 border-2 rounded-lg bg-slate-100">
-            <div className="flex flex-col gap-2">
-              {booking?.payments.map(p => (
-                <PaymentItemList
-                  key={p.id}
-                  payment={p}
-                  setPayment={setPayment}
-                  setOpenDialog={setDialogOpen}
-                  setOpenDeletePaymentDialog={setAlertDialogOpen}
-                />
-              ))}
-            </div>
+
+          <div className="flex flex-col gap-2">
+            {booking?.payments.map(p => (
+              <PaymentItemList
+                key={p.id}
+                payment={p}
+                setPayment={setPayment}
+                setOpenDialog={setDialogOpen}
+                setOpenDeletePaymentDialog={setAlertDialogOpen}
+                classname={p.id === payment?.id ? 'bg-orange-200' : 'bg-white'}
+              />
+            ))}
           </div>
 
           {/* Total */}
@@ -132,7 +123,9 @@ export function PaymentSheet({ booking, children }: PaymentSheetProps) {
                   open={dialogOpen}
                   setOpen={setDialogOpen}
                   payment={payment || undefined}
-                />
+                >
+                  <Button variant="default">Novo pagamento</Button>
+                </BookingEntriesDialog>
               )}
             </div>
           </SheetFooter>
