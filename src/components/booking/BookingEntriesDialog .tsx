@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dialog'
 import type { BookingAllIncludes } from '@/types/booking'
 import Link from 'next/link'
-import { type Dispatch, type SetStateAction, useState } from 'react'
+import { type Dispatch, type SetStateAction, useEffect, useState } from 'react'
 import { DiscountForm } from '../discount/DiscountForm'
 import { PaymentForm } from '../payment/PaymentForm'
 import { ServiceForm } from '../service/ServiceForm'
@@ -36,11 +36,24 @@ export function BookingEntriesDialog({
   setOpen,
 }: BookingEntriesDialogProps) {
   const [dialogOpen, setDialogOpen] = useState(false)
-  const [selectedForm, setSelectedForm] = useState('payment')
+  const [selectedForm, setSelectedForm] = useState('')
 
   //const [payment, setPayment] = useState<Payment>()
   //const [service, setService] = useState<Service>()
   //const [discount, setDiscount] = useState<Discount>()
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    if (payment) {
+      setSelectedForm('payment')
+    } else if (service) {
+      setSelectedForm('service')
+    } else if (discount) {
+      setSelectedForm('discount')
+    }
+  }, [payment, service, discount, selectedForm])
+
+  const isCreate = !payment && !service && !discount
 
   return (
     <Dialog
@@ -73,9 +86,24 @@ export function BookingEntriesDialog({
           }}
         >
           <TabsList className="grid w-full grid-cols-3 mb-6">
-            <TabsTrigger value="payment">Pagamento</TabsTrigger>
-            <TabsTrigger value="service">Serviço</TabsTrigger>
-            <TabsTrigger value="discount">Desconto</TabsTrigger>
+            <TabsTrigger
+              value="payment"
+              disabled={selectedForm !== 'payment' && !isCreate}
+            >
+              Pagamento
+            </TabsTrigger>
+            <TabsTrigger
+              value="service"
+              disabled={selectedForm !== 'service' && !isCreate}
+            >
+              Serviço
+            </TabsTrigger>
+            <TabsTrigger
+              value="discount"
+              disabled={selectedForm !== 'discount' && !isCreate}
+            >
+              Desconto
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="payment" className="flex flex-col gap-2">
             <PaymentForm

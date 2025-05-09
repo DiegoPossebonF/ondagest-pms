@@ -1,6 +1,7 @@
 'use client'
 import { getServices } from '@/app/(private)/(dashboard)/actions'
 import { createService } from '@/app/actions/service/createService'
+import { updateService } from '@/app/actions/service/updateService'
 import type { Service } from '@/app/generated/prisma'
 import { Button } from '@/components/ui/button'
 import {
@@ -17,6 +18,7 @@ import { cn, formatCurrency, parseCurrencyToNumber } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Check, ChevronsUpDown } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import {
   type Dispatch,
   type SetStateAction,
@@ -47,7 +49,7 @@ export type ServiceFormValues = z.infer<typeof ServiceSchema>
 interface ServiceFormProps {
   booking: BookingAllIncludes
   service?: Service
-  setDialogOpen: Dispatch<SetStateAction<boolean>>
+  setDialogOpen?: Dispatch<SetStateAction<boolean>>
 }
 
 export function ServiceForm({
@@ -57,6 +59,7 @@ export function ServiceForm({
 }: ServiceFormProps) {
   const triggerRef = useRef<HTMLButtonElement | null>(null)
   const [width, setWidth] = useState('auto')
+  const router = useRouter()
   const [services, setServices] = useState<Service[]>([])
   const [filteredServices, setFilteredServices] = useState<Service[]>([])
   const [openPopover, setOpenPopover] = useState(false)
@@ -91,23 +94,30 @@ export function ServiceForm({
   }, [service, form, booking.id])
 
   async function onSubmit(values: ServiceFormValues) {
-    const data = await createService({
-      ...values,
-      amount: parseCurrencyToNumber(values.amount),
-    })
+    const action = service
+      ? await updateService({
+          id: service.id,
+          ...values,
+          amount: parseCurrencyToNumber(values.amount),
+        })
+      : await createService({
+          ...values,
+          amount: parseCurrencyToNumber(values.amount),
+        })
 
-    if (data.success) {
+    if (action.success) {
       toast({
         title: 'Sucesso',
-        description: data.msg,
+        description: action.msg,
         variant: 'success',
       })
-      setDialogOpen(false)
+      setDialogOpen?.(false)
+      router.refresh()
       form.reset()
     } else {
       toast({
         title: 'Erro',
-        description: data.msg,
+        description: action.msg,
         variant: 'destructive',
       })
     }

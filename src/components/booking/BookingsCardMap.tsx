@@ -2,7 +2,6 @@
 import type { BookingAllIncludes } from '@/types/booking'
 import dayjs from 'dayjs'
 import 'dayjs/locale/pt-br'
-import Whatsapp from '../icons/WhatsAppIcon'
 import {
   Card,
   CardContent,
@@ -20,6 +19,7 @@ dayjs.locale('pt-br')
 
 import { STATUS_COLORS } from '@/lib/utils'
 import Link from 'next/link'
+import { WhatsAppIcon } from '../icons/WhatsAppIcon'
 
 interface BookingsCardMapProps {
   booking: BookingAllIncludes
@@ -82,7 +82,7 @@ export function BookingsCardMap({
                 {booking.guest.phone}
                 {phone && (
                   <Link href={`https://wa.me/55${phone}`} target="_blank">
-                    <Whatsapp size="16" color="green" />
+                    <WhatsAppIcon className="w-4 h-4" />
                   </Link>
                 )}
               </div>

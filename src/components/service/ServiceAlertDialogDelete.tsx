@@ -1,6 +1,6 @@
 'use client'
-import { deletePayment } from '@/app/actions/payment/deletePayment'
-import type { Payment } from '@/app/generated/prisma'
+import { deleteService } from '@/app/actions/service/deleteService'
+import type { Service } from '@/app/generated/prisma'
 import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
 import {
@@ -14,26 +14,26 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '../ui/alert-dialog'
-import { PaymentItemList } from './PaymentItemList'
+import { ServiceItemList } from './ServiceItemList'
 
-interface PaymentAlertDialogDeleteProps {
+interface ServiceAlertDialogDeleteProps {
   children?: React.ReactNode
-  payment: Payment
+  service: Service
   open: boolean
   setOpen: (open: boolean) => void
 }
 
-export function PaymentAlertDialogDelete({
+export function ServiceAlertDialogDelete({
   children,
-  payment,
+  service,
   open,
   setOpen,
-}: PaymentAlertDialogDeleteProps) {
+}: ServiceAlertDialogDeleteProps) {
   const { toast } = useToast()
   const router = useRouter()
 
-  const handleDelete = async (payment: Payment) => {
-    const result = await deletePayment(payment.id)
+  const handleDelete = async (service: Service) => {
+    const result = await deleteService(service.id)
 
     if (!result.success) {
       toast({
@@ -57,16 +57,16 @@ export function PaymentAlertDialogDelete({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            Tem certeza que deseja deletar este pagamento?
+            Tem certeza que deseja deletar este serviço?
           </AlertDialogTitle>
           <AlertDialogDescription className="hidden">
             Deletar
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <PaymentItemList payment={payment} />
+        <ServiceItemList service={service} />
         <AlertDialogFooter>
           <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction onClick={() => handleDelete(payment)}>
+          <AlertDialogAction onClick={() => handleDelete(service)}>
             Deletar
           </AlertDialogAction>
         </AlertDialogFooter>

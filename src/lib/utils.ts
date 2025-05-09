@@ -1,3 +1,9 @@
+import IcBaselinePix from '@/components/icons/IcBaselinePix'
+import MaterialSymbolsLightOtherAdmission from '@/components/icons/MaterialSymbolsLightOtherAdmission'
+import MdiCreditCardCheck from '@/components/icons/MdiCreditCardCheck'
+import MdiCreditCardClock from '@/components/icons/MdiCreditCardClock'
+import { NimbusTransferReal } from '@/components/icons/NimbusTransferReal'
+import SolarSquareTransferHorizontalBold from '@/components/icons/SolarSquareTransferHorizontalBold'
 import { type ClassValue, clsx } from 'clsx'
 import dayjs from 'dayjs'
 import type { DateRange } from 'react-day-picker'
@@ -19,6 +25,15 @@ export const PAYMENT_TYPE_LABELS = {
   CASH: 'Dinheiro',
   BANK_TRANSFER: 'Transferência Bancária',
   OTHER: 'Outro',
+}
+
+export const PAYMENT_TYPE_ICONS = {
+  PIX: IcBaselinePix,
+  CREDIT_CARD: MdiCreditCardClock,
+  DEBIT_CARD: MdiCreditCardCheck,
+  CASH: NimbusTransferReal,
+  BANK_TRANSFER: SolarSquareTransferHorizontalBold,
+  OTHER: MaterialSymbolsLightOtherAdmission,
 }
 
 export const STATUS_COLORS = {

@@ -4,7 +4,6 @@ import {
   Sheet,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -12,9 +11,11 @@ import {
 import calculateBookingValues from '@/lib/actions/calculateBookingValues'
 import { formatCurrency } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
+import { AlertCircle, CreditCard } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { BookingEntriesDialog } from '../booking/BookingEntriesDialog '
+import HugeiconsPayment01 from '../icons/HugeiconsPayment01'
 import { Button } from '../ui/button'
 import { PaymentAlertDialogDelete } from './PaymentAlertDialogDelete'
 import { PaymentItemList } from './PaymentItemList'
@@ -75,48 +76,13 @@ export function PaymentSheet({ booking, children }: PaymentSheetProps) {
         >
           <SheetHeader>
             <SheetTitle className="text-2xl">Pagamentos</SheetTitle>
-            <SheetDescription>
-              <Link href={`/booking/${booking?.id}`}>
+            <SheetDescription className="flex items-center justify-between gap-2 rounded-2xl border bg-slate-50 p-4 shadow-sm">
+              <Link
+                href={`/booking/${booking?.id}`}
+                className="text-sm font-medium text-slate-500 mb-3"
+              >
                 {`RES:${String(booking?.id).padStart(6, '0')} - ${booking?.unit.name} - ${booking?.unit.type.name}`}
               </Link>
-            </SheetDescription>
-          </SheetHeader>
-
-          {/* Lista de Pagamentos */}
-
-          <div className="flex flex-col gap-2">
-            {booking?.payments.map(p => (
-              <PaymentItemList
-                key={p.id}
-                payment={p}
-                setPayment={setPayment}
-                setOpenDialog={setDialogOpen}
-                setOpenDeletePaymentDialog={setAlertDialogOpen}
-                classname={p.id === payment?.id ? 'bg-orange-200' : 'bg-white'}
-              />
-            ))}
-          </div>
-
-          {/* Total */}
-          <div className="flex flex-col justify-between font-semibold text-base p-4 border-2 rounded-lg bg-slate-100">
-            <div className="w-full flex justify-between">
-              <span>Total pago</span>
-              <span className="font-extrabold text-green-700">
-                {formatCurrency(
-                  booking?.payments.reduce((sum, p) => sum + p.amount, 0) || 0
-                )}
-              </span>
-            </div>
-            <div className="w-full flex justify-between">
-              <span>Falta lançar</span>
-              <span className="font-extrabold text-red-500">
-                {formatCurrency(getValueTotalBooking(booking) || 0)}
-              </span>
-            </div>
-          </div>
-          <SheetFooter>
-            {/* Novo Pagamento */}
-            <div className="flex justify-end">
               {booking && (
                 <BookingEntriesDialog
                   booking={booking}
@@ -124,11 +90,58 @@ export function PaymentSheet({ booking, children }: PaymentSheetProps) {
                   setOpen={setDialogOpen}
                   payment={payment || undefined}
                 >
-                  <Button variant="default">Novo pagamento</Button>
+                  <Button className="py-0 px-6 rounded-2xl ">
+                    <HugeiconsPayment01 className="" />
+                  </Button>
                 </BookingEntriesDialog>
               )}
+            </SheetDescription>
+          </SheetHeader>
+
+          {/* Lista de Pagamentos */}
+
+          <div className="flex flex-col gap-2 rounded-2xl border bg-slate-50 p-4 shadow-sm">
+            {booking?.payments.map(p => (
+              <PaymentItemList
+                key={p.id}
+                payment={p}
+                setPayment={setPayment}
+                setOpenDialog={setDialogOpen}
+                setOpenDeletePaymentDialog={setAlertDialogOpen}
+                classname={
+                  p.id === payment?.id ? 'bg-orange-200' : 'bg-blue-200'
+                }
+              />
+            ))}
+          </div>
+
+          {/* Total */}
+          <div className="rounded-2xl border bg-slate-50 p-4 shadow-sm">
+            <h3 className="text-sm font-medium text-slate-500 mb-3">
+              Resumo Financeiro
+            </h3>
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2 text-green-700 font-semibold">
+                <CreditCard className="w-4 h-4" />
+                <span>Total pago</span>
+              </div>
+              <span className="font-bold text-green-800">
+                {formatCurrency(
+                  booking?.payments.reduce((sum, p) => sum + p.amount, 0) || 0
+                )}
+              </span>
             </div>
-          </SheetFooter>
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-red-600 font-semibold">
+                <AlertCircle className="w-4 h-4" />
+                <span>Falta lançar</span>
+              </div>
+              <span className="font-bold text-red-700">
+                {formatCurrency(getValueTotalBooking(booking) || 0)}
+              </span>
+            </div>
+          </div>
         </SheetContent>
       </Sheet>
     </>

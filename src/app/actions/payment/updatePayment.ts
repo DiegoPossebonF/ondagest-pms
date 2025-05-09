@@ -36,7 +36,7 @@ export async function updatePayment(payment: PaymentPayload) {
     console.error('Erro ao atualizar pagamento', err)
     return {
       success: false,
-      msg: 'Erro ao atualizar pagamento',
+      msg: 'Erro interno ao atualizar pagamento - entre em contato com o suporte',
     }
   }
 }
