@@ -16,7 +16,6 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { BookingEntriesDialog } from '../booking/BookingEntriesDialog '
 import HugeiconsPayment01 from '../icons/HugeiconsPayment01'
-import { Button } from '../ui/button'
 import { PaymentAlertDialogDelete } from './PaymentAlertDialogDelete'
 import { PaymentItemList } from './PaymentItemList'
 
@@ -72,14 +71,14 @@ export function PaymentSheet({ booking, children }: PaymentSheetProps) {
           onInteractOutside={(event: any) => {
             dialogOpen && event.preventDefault()
           }}
-          className="flex flex-col max-h-screen"
+          className="flex flex-col gap-0 max-h-screen"
         >
-          <SheetHeader>
+          <SheetHeader className="flex flex-col rounded-tl-2xl rounded-tr-2xl border bg-slate-50 p-4 shadow-sm mt-4">
             <SheetTitle className="text-2xl">Pagamentos</SheetTitle>
-            <SheetDescription className="flex items-center justify-between gap-2 rounded-2xl border bg-slate-50 p-4 shadow-sm">
+            <SheetDescription className="flex flex-row items-center justify-between gap-2">
               <Link
                 href={`/booking/${booking?.id}`}
-                className="text-sm font-medium text-slate-500 mb-3"
+                className="text-sm font-medium text-slate-500"
               >
                 {`RES:${String(booking?.id).padStart(6, '0')} - ${booking?.unit.name} - ${booking?.unit.type.name}`}
               </Link>
@@ -90,9 +89,12 @@ export function PaymentSheet({ booking, children }: PaymentSheetProps) {
                   setOpen={setDialogOpen}
                   payment={payment || undefined}
                 >
-                  <Button className="py-0 px-6 rounded-2xl ">
-                    <HugeiconsPayment01 className="" />
-                  </Button>
+                  <div
+                    title="Adicionar Pagamento"
+                    className="flex items-center justify-center py-1 px-4 bg-gray-900 hover:bg-gray-800 text-blue-200 hover:text-blue-300 cursor-pointer rounded-lg overflow-hidden"
+                  >
+                    <HugeiconsPayment01 className="w-5 h-5" />
+                  </div>
                 </BookingEntriesDialog>
               )}
             </SheetDescription>
@@ -100,23 +102,29 @@ export function PaymentSheet({ booking, children }: PaymentSheetProps) {
 
           {/* Lista de Pagamentos */}
 
-          <div className="flex flex-col gap-2 rounded-2xl border bg-slate-50 p-4 shadow-sm">
-            {booking?.payments.map(p => (
-              <PaymentItemList
-                key={p.id}
-                payment={p}
-                setPayment={setPayment}
-                setOpenDialog={setDialogOpen}
-                setOpenDeletePaymentDialog={setAlertDialogOpen}
-                classname={
-                  p.id === payment?.id ? 'bg-orange-200' : 'bg-blue-200'
-                }
-              />
-            ))}
+          <div className="flex flex-col gap-2 border p-4 shadow-sm">
+            {booking && booking?.payments.length > 0 ? (
+              booking?.payments.map(p => (
+                <PaymentItemList
+                  key={p.id}
+                  payment={p}
+                  setPayment={setPayment}
+                  setOpenDialog={setDialogOpen}
+                  setOpenDeletePaymentDialog={setAlertDialogOpen}
+                  classname={
+                    p.id === payment?.id ? 'bg-orange-200' : 'bg-blue-200'
+                  }
+                />
+              ))
+            ) : (
+              <span className="text-sm font-bold text-slate-500">
+                Nenhum pagamento registrado
+              </span>
+            )}
           </div>
 
           {/* Total */}
-          <div className="rounded-2xl border bg-slate-50 p-4 shadow-sm">
+          <div className="rounded-br-2xl rounded-bl-2xl border bg-slate-50 p-4 shadow-sm">
             <h3 className="text-sm font-medium text-slate-500 mb-3">
               Resumo Financeiro
             </h3>
