@@ -43,7 +43,7 @@ export function PaymentItemList({
     <>
       <div
         className={cn(
-          'flex justify-between min-w-[300px] items-center border rounded-2xl px-4 py-1 shadow-sm bg-blue-200 hover:bg-blue-100',
+          'flex justify-between items-center border rounded-2xl px-4 py-1 shadow-sm bg-blue-200 hover:bg-blue-100',
           classname
         )}
       >
@@ -51,7 +51,7 @@ export function PaymentItemList({
           <div className="text-xs font-mono">
             {dayjs(payment.paidAt).format('DD/MM/YYYY')}
           </div>
-          <div className="text-xs font-mono">
+          <div className="text-xs font-mono font-bold">
             {formatCurrency(payment.amount)}
           </div>
           <HoverCard>

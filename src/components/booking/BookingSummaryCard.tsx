@@ -154,8 +154,8 @@ export function BookingSummaryCard({ booking }: BookingSummaryCardProps) {
                 <AccordionTrigger className="py-0 gap-2">
                   <span className="font-medium">Descontos</span>
                 </AccordionTrigger>
-                <span className="text-sm font-mono">
-                  {formatCurrency(totalDiscount)}
+                <span className="text-sm font-mono text-destructive">
+                  {formatCurrency(totalDiscount * -1)}
                 </span>
               </div>
               <AccordionContent className="flex flex-col gap-1 border bg-slate-50 p-2 shadow-sm">
@@ -232,7 +232,7 @@ export function BookingSummaryCard({ booking }: BookingSummaryCardProps) {
                     : 'text-green-500 text-sm font-mono'
                 }
               >
-                {formatCurrency(balance)}
+                {formatCurrency(balance * -1)}
               </span>
             </AccordionItem>
           </Accordion>
