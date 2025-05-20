@@ -39,11 +39,22 @@ export function BookingSummaryCard({ booking }: BookingSummaryCardProps) {
   const balance = totalAll - totalPayment
 
   useEffect(() => {
-    if (!openDialog && !openDeletePaymentDialog && !openDeleteServiceDialog) {
+    if (
+      !openDialog &&
+      !openDeletePaymentDialog &&
+      !openDeleteServiceDialog &&
+      !openDeleteDiscountDialog
+    ) {
       setPayment(undefined)
       setService(undefined)
+      setDiscount(undefined)
     }
-  }, [openDialog, openDeletePaymentDialog, openDeleteServiceDialog])
+  }, [
+    openDialog,
+    openDeletePaymentDialog,
+    openDeleteServiceDialog,
+    openDeleteDiscountDialog,
+  ])
 
   return (
     <>
