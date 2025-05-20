@@ -10,6 +10,7 @@ import calculateBookingValues from '@/lib/actions/calculateBookingValues'
 import { STATUS_COLORS, formatCurrency, getDifferenceInDays } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import { useEffect, useState } from 'react'
+import { DiscountAlertDialogDelete } from '../discount/DiscountAlertDialogDelete'
 import { DiscountItemList } from '../discount/DiscountItemList'
 import { PaymentAlertDialogDelete } from '../payment/PaymentAlertDialogDelete'
 import { PaymentItemList } from '../payment/PaymentItemList'
@@ -26,6 +27,8 @@ export function BookingSummaryCard({ booking }: BookingSummaryCardProps) {
   const [openDialog, setOpenDialog] = useState(false)
   const [openDeletePaymentDialog, setOpenDeletePaymentDialog] = useState(false)
   const [openDeleteServiceDialog, setOpenDeleteServiceDialog] = useState(false)
+  const [openDeleteDiscountDialog, setOpenDeleteDiscountDialog] =
+    useState(false)
   const [payment, setPayment] = useState<Payment>()
   const [service, setService] = useState<Service>()
   const [discount, setDiscount] = useState<Discount>()
@@ -50,6 +53,7 @@ export function BookingSummaryCard({ booking }: BookingSummaryCardProps) {
         setOpen={setOpenDialog}
         payment={payment}
         service={service}
+        discount={discount}
       />
 
       {payment && (
@@ -65,6 +69,14 @@ export function BookingSummaryCard({ booking }: BookingSummaryCardProps) {
           open={openDeleteServiceDialog}
           setOpen={setOpenDeleteServiceDialog}
           service={service}
+        />
+      )}
+
+      {discount && (
+        <DiscountAlertDialogDelete
+          open={openDeleteDiscountDialog}
+          setOpen={setOpenDeleteDiscountDialog}
+          discount={discount}
         />
       )}
 
@@ -165,8 +177,10 @@ export function BookingSummaryCard({ booking }: BookingSummaryCardProps) {
                       key={d.id}
                       discount={d}
                       setOpenDialog={setOpenDialog}
-                      setOpenDelete={setOpenDeleteServiceDialog}
-                      setDiscount={(discount: Discount) => setDiscount(d)}
+                      setOpenDelete={setOpenDeleteDiscountDialog}
+                      setDiscount={(discount: Discount) =>
+                        setDiscount(discount)
+                      }
                       classname={discount?.id === d.id ? 'bg-orange-200' : ''}
                     />
                   ))

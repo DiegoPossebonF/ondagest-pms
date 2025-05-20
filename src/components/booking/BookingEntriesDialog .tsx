@@ -54,6 +54,7 @@ export function BookingEntriesDialog({
   }, [payment, service, discount, selectedForm])
 
   const isCreate = !payment && !service && !discount
+  console.log('isCreate', isCreate)
 
   return (
     <Dialog
@@ -120,7 +121,11 @@ export function BookingEntriesDialog({
             />
           </TabsContent>
           <TabsContent value="discount">
-            <DiscountForm booking={booking} />
+            <DiscountForm
+              booking={booking}
+              discount={discount}
+              openDialog={setOpen ? setOpen : setDialogOpen}
+            />
           </TabsContent>
         </Tabs>
       </DialogContent>

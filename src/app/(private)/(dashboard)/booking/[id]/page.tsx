@@ -18,9 +18,9 @@ export default async function BookingId({
     include: {
       guest: true,
       unit: { include: { type: { include: { rates: true } } } },
-      payments: true,
-      discounts: true,
-      services: true,
+      payments: { orderBy: { paidAt: 'desc' } },
+      discounts: { orderBy: { createdAt: 'desc' } },
+      services: { orderBy: { createdAt: 'desc' } },
     },
   })
 

@@ -18,7 +18,7 @@ import { formatCurrency, parseCurrencyToNumber } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { type Dispatch, type SetStateAction, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -33,9 +33,14 @@ export type DiscountFormValues = z.infer<typeof DiscountSchema>
 interface DiscountFormProps {
   booking: BookingAllIncludes
   discount?: Discount
+  openDialog?: Dispatch<SetStateAction<boolean>>
 }
 
-export function DiscountForm({ booking, discount }: DiscountFormProps) {
+export function DiscountForm({
+  booking,
+  discount,
+  openDialog,
+}: DiscountFormProps) {
   const router = useRouter()
   const { toast } = useToast()
 
@@ -77,6 +82,7 @@ export function DiscountForm({ booking, discount }: DiscountFormProps) {
         })
         await updateBookingPaymentStatus(booking.id)
         router.refresh()
+        openDialog?.(false)
       } else {
         toast({
           title: 'Erro',
