@@ -75,7 +75,10 @@ export function PaymentSheet({ booking, children }: PaymentSheetProps) {
         >
           <SheetHeader className="flex flex-col rounded-tl-2xl rounded-tr-2xl border bg-slate-50 p-4 shadow-sm mt-4">
             <SheetTitle className="text-2xl">Pagamentos</SheetTitle>
-            <SheetDescription className="flex flex-row items-center justify-between gap-2">
+            <SheetDescription className="hidden">
+              {`Este painel permite consultar e adicionar pagamentos para a reserva ${booking?.id}.`}
+            </SheetDescription>
+            <div className="flex flex-row items-center justify-between gap-2">
               <Link
                 href={`/booking/${booking?.id}`}
                 className="text-sm font-medium text-slate-500"
@@ -97,7 +100,7 @@ export function PaymentSheet({ booking, children }: PaymentSheetProps) {
                   </div>
                 </BookingEntriesDialog>
               )}
-            </SheetDescription>
+            </div>
           </SheetHeader>
 
           {/* Lista de Pagamentos */}

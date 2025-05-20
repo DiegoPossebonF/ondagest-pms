@@ -104,9 +104,9 @@ export function SigninForm() {
         <Button
           type="submit"
           className="w-full"
-          disabled={form.formState.isSubmitSuccessful}
+          disabled={form.formState.isSubmitting}
         >
-          {form.formState.isSubmitSuccessful ? 'Entrando...' : 'Entrar'}
+          {form.formState.isSubmitting ? 'Entrando...' : 'Entrar'}
         </Button>
         <Button
           type="button"

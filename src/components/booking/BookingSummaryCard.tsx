@@ -1,5 +1,5 @@
 'use client'
-import type { Payment, Service } from '@/app/generated/prisma'
+import type { Discount, Payment, Service } from '@/app/generated/prisma'
 import {
   Accordion,
   AccordionContent,
@@ -10,6 +10,7 @@ import calculateBookingValues from '@/lib/actions/calculateBookingValues'
 import { STATUS_COLORS, formatCurrency, getDifferenceInDays } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import { useEffect, useState } from 'react'
+import { DiscountItemList } from '../discount/DiscountItemList'
 import { PaymentAlertDialogDelete } from '../payment/PaymentAlertDialogDelete'
 import { PaymentItemList } from '../payment/PaymentItemList'
 import { ServiceAlertDialogDelete } from '../service/ServiceAlertDialogDelete'
@@ -27,6 +28,7 @@ export function BookingSummaryCard({ booking }: BookingSummaryCardProps) {
   const [openDeleteServiceDialog, setOpenDeleteServiceDialog] = useState(false)
   const [payment, setPayment] = useState<Payment>()
   const [service, setService] = useState<Service>()
+  const [discount, setDiscount] = useState<Discount>()
 
   const { totalAll, totalPayment, totalServices, totalDiscount, totalAmount } =
     calculateBookingValues(booking)
@@ -156,15 +158,18 @@ export function BookingSummaryCard({ booking }: BookingSummaryCardProps) {
                   {formatCurrency(totalDiscount)}
                 </span>
               </div>
-              <AccordionContent className="flex flex-col gap-1 border bg-slate-50 p-4 shadow-sm">
+              <AccordionContent className="flex flex-col gap-1 border bg-slate-50 p-2 shadow-sm">
                 {booking.discounts.length > 0 ? (
-                  <ul className="pl-4 list-disc">
-                    {booking.discounts.map(discount => (
-                      <li key={discount.id}>
-                        {discount.reason} — {formatCurrency(discount.amount)}
-                      </li>
-                    ))}
-                  </ul>
+                  booking.discounts.map(d => (
+                    <DiscountItemList
+                      key={d.id}
+                      discount={d}
+                      setOpenDialog={setOpenDialog}
+                      setOpenDelete={setOpenDeleteServiceDialog}
+                      setDiscount={(discount: Discount) => setDiscount(d)}
+                      classname={discount?.id === d.id ? 'bg-orange-200' : ''}
+                    />
+                  ))
                 ) : (
                   <p className="text-muted-foreground text-xs">
                     Nenhum desconto aplicado

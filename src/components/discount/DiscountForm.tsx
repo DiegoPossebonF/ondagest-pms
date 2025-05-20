@@ -1,4 +1,6 @@
 'use client'
+import { createDiscount } from '@/app/actions/discount/createDiscount'
+import { updateDiscount } from '@/app/actions/discount/updateDiscount'
 import type { Discount } from '@/app/generated/prisma'
 import { Button } from '@/components/ui/button'
 import {
@@ -10,9 +12,12 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { formatCurrency } from '@/lib/utils'
+import { useToast } from '@/hooks/use-toast'
+import { updateBookingPaymentStatus } from '@/lib/actions/updateBookingPaymentStatus'
+import { formatCurrency, parseCurrencyToNumber } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -31,10 +36,13 @@ interface DiscountFormProps {
 }
 
 export function DiscountForm({ booking, discount }: DiscountFormProps) {
+  const router = useRouter()
+  const { toast } = useToast()
+
   const form = useForm<DiscountFormValues>({
     resolver: zodResolver(DiscountSchema),
     defaultValues: {
-      bookingId: discount?.bookingId || 1,
+      bookingId: discount?.bookingId || booking.id,
       reason: discount?.reason || '',
       amount: discount ? formatCurrency(discount.amount) : '',
     },
@@ -42,14 +50,50 @@ export function DiscountForm({ booking, discount }: DiscountFormProps) {
 
   useEffect(() => {
     form.reset({
-      bookingId: discount?.bookingId || 1,
+      bookingId: discount?.bookingId || booking.id,
       reason: discount?.reason || '',
       amount: discount ? formatCurrency(discount.amount) : '',
     })
-  }, [discount, form])
+  }, [discount, booking, form])
 
   async function onSubmitHandle(values: DiscountFormValues) {
-    alert(JSON.stringify(values, null, 2))
+    try {
+      const action = discount
+        ? await updateDiscount({
+            id: discount.id,
+            ...values,
+            amount: parseCurrencyToNumber(values.amount),
+          })
+        : await createDiscount({
+            ...values,
+            amount: parseCurrencyToNumber(values.amount),
+          })
+
+      if (action.success) {
+        toast({
+          variant: 'success',
+          title: 'Sucesso',
+          description: action.msg,
+        })
+        await updateBookingPaymentStatus(booking.id)
+        router.refresh()
+      } else {
+        toast({
+          title: 'Erro',
+          description: action.msg,
+          variant: 'destructive',
+        })
+      }
+    } catch (err) {
+      toast({
+        title: 'Erro',
+        description:
+          err instanceof Error
+            ? err.message
+            : 'Erro interno - fale com o desenvolvedor',
+        variant: 'destructive',
+      })
+    }
   }
 
   return (
