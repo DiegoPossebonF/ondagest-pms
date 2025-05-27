@@ -1,4 +1,5 @@
 'use client'
+import calculateBookingValues from '@/app/actions/booking/calculateBookingValues'
 import type { Discount, Payment, Service } from '@/app/generated/prisma'
 import {
   Accordion,
@@ -6,7 +7,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import calculateBookingValues from '@/lib/actions/calculateBookingValues'
 import { STATUS_COLORS, formatCurrency, getDifferenceInDays } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import { useEffect, useState } from 'react'

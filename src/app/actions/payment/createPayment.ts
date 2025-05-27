@@ -26,6 +26,28 @@ export async function createPayment(payment: PaymentPayload) {
       }
     }
 
+    // 2. Buscar a reserva
+    const booking = await db.booking.findUnique({
+      where: { id: payment.bookingId },
+      include: { payments: true },
+    })
+
+    if (!booking) {
+      return {
+        success: false,
+        msg: 'Erro ao criar pagamento - Reserva nao encontrada',
+      }
+    }
+
+    // 3. Checar se está PENDING
+    if (booking.status === 'PENDING') {
+      // 4. Atualizar para CONFIRMED
+      await db.booking.update({
+        where: { id: payment.bookingId },
+        data: { status: 'CONFIRMED' },
+      })
+    }
+
     return {
       success: true,
       payment: paymentCreated,

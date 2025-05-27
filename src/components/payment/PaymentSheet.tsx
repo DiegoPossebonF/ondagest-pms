@@ -1,4 +1,5 @@
 'use client'
+import calculateBookingValues from '@/app/actions/booking/calculateBookingValues'
 import type { Payment } from '@/app/generated/prisma'
 import {
   Sheet,
@@ -8,7 +9,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
-import calculateBookingValues from '@/lib/actions/calculateBookingValues'
 import { formatCurrency } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import { AlertCircle, CreditCard } from 'lucide-react'
@@ -132,11 +132,11 @@ export function PaymentSheet({ booking, children }: PaymentSheetProps) {
               Resumo Financeiro
             </h3>
             <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2 text-green-700 font-semibold">
+              <div className="flex items-center gap-2 text-green-600 font-semibold">
                 <CreditCard className="w-4 h-4" />
                 <span>Total pago</span>
               </div>
-              <span className="font-bold text-green-800">
+              <span className="font-bold text-green-600">
                 {formatCurrency(
                   booking?.payments.reduce((sum, p) => sum + p.amount, 0) || 0
                 )}
@@ -148,7 +148,9 @@ export function PaymentSheet({ booking, children }: PaymentSheetProps) {
                 <AlertCircle className="w-4 h-4" />
                 <span>Falta lançar</span>
               </div>
-              <span className="font-bold text-red-700">
+              <span
+                className={`font-bold ${(getValueTotalBooking(booking) || 0) < 0 ? 'text-green-600' : 'text-red-600'}`}
+              >
                 {formatCurrency(getValueTotalBooking(booking) || 0)}
               </span>
             </div>
