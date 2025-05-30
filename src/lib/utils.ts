@@ -49,6 +49,45 @@ export const STATUS_ICONS = {
 
 export const STATUS_COLORS = {
   PENDING:
+    'bg-yellow-500 hover:bg-yellow-600 transition-colors duration-300 ease-in-out',
+  CONFIRMED:
+    'bg-emerald-500 hover:bg-emerald-600 transition-colors duration-300 ease-in-out',
+  CHECKED_IN:
+    'bg-orange-500 hover:bg-orange-600 transition-colors duration-300 ease-in-out',
+  IN_PROGRESS:
+    'bg-sky-500 hover:bg-sky-600 transition-colors duration-300 ease-in-out',
+  CHECKED_OUT:
+    'bg-rose-500 hover:bg-rose-600 transition-colors duration-300 ease-in-out',
+  FINALIZED:
+    'bg-gray-500 hover:bg-gray-600 transition-colors duration-300 ease-in-out',
+  CANCELLED:
+    'bg-red-600 hover:bg-red-700 transition-colors duration-300 ease-in-out',
+  NO_SHOW:
+    'bg-zinc-600 hover:bg-zinc-700 transition-colors duration-300 ease-in-out',
+}
+
+export const STATUS_COLORS_TEXT = {
+  PENDING:
+    'text-yellow-500 hover:text-yellow-600 transition-colors duration-300 ease-in-out',
+  CONFIRMED:
+    'text-emerald-500 hover:text-emerald-600 transition-colors duration-300 ease-in-out',
+  CHECKED_IN:
+    'text-orange-500 hover:text-orange-600 transition-colors duration-300 ease-in-out',
+  IN_PROGRESS:
+    'text-sky-500 hover:text-sky-600 transition-colors duration-300 ease-in-out',
+  CHECKED_OUT:
+    'text-rose-500 hover:text-rose-600 transition-colors duration-300 ease-in-out',
+  FINALIZED:
+    'text-gray-500 hover:text-gray-600 transition-colors duration-300 ease-in-out',
+  CANCELLED:
+    'text-red-600 hover:text-red-700 transition-colors duration-300 ease-in-out',
+  NO_SHOW:
+    'text-zinc-600 hover:text-zinc-700 transition-colors duration-300 ease-in-out',
+}
+
+/*
+export const STATUS_COLORS = {
+  PENDING:
     'bg-yellow-400 hover:bg-yellow-500 transition-colors duration-300 ease-in-out',
   CONFIRMED:
     'bg-green-400 hover:bg-green-500 transition-colors duration-300 ease-in-out',
@@ -65,6 +104,7 @@ export const STATUS_COLORS = {
   NO_SHOW:
     'bg-gray-800 hover:bg-gray-900 transition-colors duration-300 ease-in-out',
 }
+    
 
 export const STATUS_COLORS_TEXT = {
   PENDING:
@@ -84,6 +124,8 @@ export const STATUS_COLORS_TEXT = {
   NO_SHOW:
     'text-gray-800 hover:text-gray-900 transition-colors duration-300 ease-in-out',
 }
+
+*/
 
 export const PAYMENT_TYPE_LABELS = {
   NONE: 'Selecione o tipo de pagamento...',
@@ -105,8 +147,17 @@ export const PAYMENT_TYPE_ICONS = {
 }
 
 export const STATUS_PAYMENT_COLORS = {
-  PENDING: 'text-red-300 hover:text-red-400',
-  COMPLETED: 'text-green-300 hover:text-green-400',
+  PENDING:
+    'bg-yellow-500 hover:bg-yellow-600 transition-colors duration-300 ease-in-out',
+  COMPLETED:
+    'bg-emerald-500 hover:bg-emerald-600 transition-colors duration-300 ease-in-out',
+}
+
+export const STATUS_PAYMENT_COLORS_TEXT = {
+  PENDING:
+    'text-yellow-500 hover:text-yellow-600 transition-colors duration-300 ease-in-out',
+  COMPLETED:
+    'text-emerald-500 hover:text-emerald-600 transition-colors duration-300 ease-in-out',
 }
 
 export const formatCurrency = (amount: number) =>

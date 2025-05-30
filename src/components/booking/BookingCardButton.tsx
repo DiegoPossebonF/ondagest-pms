@@ -11,7 +11,10 @@ const BookingCardButton = React.forwardRef<
   return (
     <Button
       variant={'default'}
-      className={cn('p-1 m-0 h-auto', className)}
+      className={cn(
+        'px-2 py-1 m-0 h-auto flex items-center justify-center',
+        className
+      )}
       {...props}
     >
       {children}

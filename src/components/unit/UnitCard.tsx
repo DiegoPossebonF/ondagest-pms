@@ -7,7 +7,7 @@ import {
   STATUS_COLORS,
   STATUS_COLORS_TEXT,
   STATUS_ICONS,
-  STATUS_PAYMENT_COLORS,
+  STATUS_PAYMENT_COLORS_TEXT,
   formatCurrency,
 } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
@@ -188,14 +188,17 @@ export default function UnitCard({ unit }: UnitCardProps) {
   return (
     <Card className="flex flex-col justify-between">
       <CardHeader
-        className={`p-6 pb-2 border-grey-200 border-b-[5px] rounded-t-xl ${booking ? STATUS_COLORS[booking.status] : 'bg-gray-900'}`}
+        className={`flex flex-row px-6 py-4 border-grey-200 border-b-[5px] rounded-t-xl ${booking ? STATUS_COLORS[booking.status] : 'bg-gray-900'}`}
       >
-        <CardTitle className="text-white font-bold">{unit.name}</CardTitle>
-        <CardDescription className="text-white font">
-          {unit.type.name}
+        <CardTitle className="flex flex-row gap-2 justify-center items-center text-white">
+          <h1 className="text-base font-bold">{unit.name}</h1>
+          <p className="text-sm"> {unit.type.name}</p>
+        </CardTitle>
+        <CardDescription className="text-white font sr-only">
+          {unit.name} - {unit.type.name} - {unit.type.description}
         </CardDescription>
       </CardHeader>
-      <CardContent className="p-6 border-grey-200 ">
+      <CardContent className="px-6 py-2 border-grey-200 ">
         {booking ? (
           <BookingDescriptions booking={booking} />
         ) : (
@@ -205,21 +208,21 @@ export default function UnitCard({ unit }: UnitCardProps) {
         )}
       </CardContent>
       <CardFooter
-        className={`${booking ? 'p-2' : 'p-[12px]'} bg-orange-100 gap-1 rounded-b-xl flex flex-row justify-center items-center border-t-[5px]`}
+        className={`p-2 bg-orange-100 gap-1 rounded-b-xl flex flex-row justify-center items-center border-t-[5px]`}
       >
         {booking ? (
           <>
             <PaymentSheet booking={booking}>
               <BookingCardButton
-                className={`${STATUS_PAYMENT_COLORS[booking.paymentStatus]}`}
+                className={`${STATUS_PAYMENT_COLORS_TEXT[booking.paymentStatus]}`}
                 title="Lançar pagamento"
               >
-                <MaterialSymbolsRealEstateAgent className="h-6 w-6" />
+                <MaterialSymbolsRealEstateAgent className="h-4 w-4" />
               </BookingCardButton>
             </PaymentSheet>
-            <Link href={`/bookings/${booking.id}`} title="Ir para a reserva">
-              <BookingCardButton className="text-blue-200 hover:text-blue-300">
-                <MdiBookEdit className="h-6 w-6" />
+            <Link href={`/booking/${booking.id}`} title="Ir para a reserva">
+              <BookingCardButton className="text-blue-300 hover:text-blue-200">
+                <MdiBookEdit className="h-4 w-4" />
               </BookingCardButton>
             </Link>
             {managerAction && booking.status === 'PENDING' && (
@@ -229,7 +232,7 @@ export default function UnitCard({ unit }: UnitCardProps) {
                     className={`${STATUS_COLORS_TEXT[booking.status]}`}
                     title="Confirmar reserva sem pagamento"
                   >
-                    {StatusIcon && <StatusIcon className="h-6 w-6" />}
+                    {StatusIcon && <StatusIcon className="h-4 w-4" />}
                   </BookingCardButton>
                 </AlertDialogTrigger>
 
@@ -259,7 +262,7 @@ export default function UnitCard({ unit }: UnitCardProps) {
                 className={`${STATUS_COLORS_TEXT[booking.status]}`}
                 title="Fazer Check-in"
               >
-                {StatusIcon && <StatusIcon className="h-6 w-6" />}
+                {StatusIcon && <StatusIcon className="h-4 w-4" />}
               </BookingCardButton>
             )}
             {managerAction && booking.status === 'CHECKED_OUT' && (
@@ -268,15 +271,16 @@ export default function UnitCard({ unit }: UnitCardProps) {
                 className={`${STATUS_COLORS_TEXT[booking.status]}`}
                 title="Fazer Check-out"
               >
-                {StatusIcon && <StatusIcon className="h-6 w-6" />}
+                {StatusIcon && (
+                  <StatusIcon className="h-4 w-4 ml-[1.95px] mr-[-1.95px]" />
+                )}
               </BookingCardButton>
             )}
           </>
         ) : (
           <BookingSheet startDate={dayjs()} unit={unit}>
-            <BookingCardButton className="px-2">
-              <MageCalendarPlusFill className="w-6 h-6" />
-              Hospedar
+            <BookingCardButton>
+              <MageCalendarPlusFill className="w-4 h-4" />
             </BookingCardButton>
           </BookingSheet>
         )}
