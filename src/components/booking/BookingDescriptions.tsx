@@ -1,6 +1,6 @@
 'use client'
 
-import { getDifferenceInDays } from '@/lib/utils'
+import { STATUS_COLORS_TEXT, STATUS_ICONS, STATUS_LABELS } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import dayjs from 'dayjs'
 import {
@@ -17,30 +17,35 @@ interface BookingDescriptionsProps {
 }
 
 export function BookingDescriptions({ booking }: BookingDescriptionsProps) {
-  const daily = getDifferenceInDays({
-    from: booking?.startDate,
-    to: booking?.endDate,
-  })
+  const StatusIcon = STATUS_ICONS[booking.status]
 
   return (
     <>
       <CardDescription className="flex flex-col gap-2 text-sm font-semibold">
         <div className="text-sm font-semibold flex flex-row items-center gap-4 ">
-          <CircleUserRound size="16" className="text-blue-500" />
+          <CircleUserRound className=" w-5 h-5" />
           {booking?.guest.name}
         </div>
         <div className="text-xs flex flex-row items-center gap-4 ">
-          <Smartphone size="16" className="text-teal-700" />
+          <Smartphone className="w-5 h-5" />
           {booking?.guest.phone}
           <WhatsAppIcon color="green" className="w-4 h-4" />
         </div>
         <div className="flex flex-row items-center gap-4 text-xs">
-          <CalendarArrowUp size="16" className="text-green-500" />
+          <CalendarArrowUp className="w-5 h-5" />
           {dayjs(booking?.startDate).format('DD/MM/YYYY')}
         </div>
         <div className="flex flex-row items-center gap-4 text-xs">
-          <CalendarArrowDown size="16" className="text-red-500" />
+          <CalendarArrowDown className="w-5 h-5" />
           {dayjs(booking?.endDate).format('DD/MM/YYYY')}
+        </div>
+      </CardDescription>
+      <CardDescription className="flex flex-col gap-2 text-sm font-semibold mt-4">
+        <div className="text-sm font-semibold flex flex-row items-center gap-4 ">
+          <StatusIcon
+            className={`${STATUS_COLORS_TEXT[booking.status]} w-5 h-5`}
+          />
+          {STATUS_LABELS[booking.status]}
         </div>
       </CardDescription>
     </>

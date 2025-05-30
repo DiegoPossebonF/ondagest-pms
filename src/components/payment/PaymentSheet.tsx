@@ -15,7 +15,7 @@ import { AlertCircle, CreditCard } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { BookingEntriesDialog } from '../booking/BookingEntriesDialog '
-import HugeiconsPayment01 from '../icons/HugeiconsPayment01'
+import MaterialSymbolsRealEstateAgent from '../icons/MaterialSymbolsRealEstateAgent'
 import { PaymentAlertDialogDelete } from './PaymentAlertDialogDelete'
 import { PaymentItemList } from './PaymentItemList'
 
@@ -93,10 +93,10 @@ export function PaymentSheet({ booking, children }: PaymentSheetProps) {
                   payment={payment || undefined}
                 >
                   <div
-                    title="Adicionar Pagamento"
+                    title="Lançar Pagamento"
                     className="flex items-center justify-center py-1 px-4 bg-gray-900 hover:bg-gray-800 text-blue-200 hover:text-blue-300 cursor-pointer rounded-lg overflow-hidden"
                   >
-                    <HugeiconsPayment01 className="w-5 h-5" />
+                    <MaterialSymbolsRealEstateAgent className="w-5 h-5" />
                   </div>
                 </BookingEntriesDialog>
               )}

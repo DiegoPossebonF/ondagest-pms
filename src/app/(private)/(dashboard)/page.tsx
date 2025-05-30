@@ -4,12 +4,12 @@ import UnitCard from '@/components/unit/UnitCard'
 import dayjs from 'dayjs'
 import isBetween from 'dayjs/plugin/isBetween'
 import { Plus } from 'lucide-react'
-import { getUnits } from './actions'
+import { getUnitsWithUpdatedBookings } from './actions'
 
 dayjs.extend(isBetween)
 
 export default async function Dashboard() {
-  const units = await getUnits()
+  const units = await getUnitsWithUpdatedBookings()
 
   if (!units) {
     return <div>Erro ao buscar unidades</div>
@@ -32,24 +32,6 @@ export default async function Dashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {units.map(unit => {
               return <UnitCard key={unit.id} unit={unit} />
-              /*
-              const today = dayjs()
-
-              const hasActiveBookingToday = unit.bookings.find(booking => {
-                const start = dayjs(booking.startDate)
-                const end = dayjs(booking.endDate)
-
-                return today.isBetween(start, end, 'day', '[]')
-              })
-
-              return (
-                <UnitCard
-                  key={unit.id}
-                  unit={unit}
-                  booking={hasActiveBookingToday}
-                />
-              )
-                */
             })}
           </div>
         </div>
