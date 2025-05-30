@@ -13,13 +13,13 @@ import {
 import type { BookingAllIncludes } from '@/types/booking'
 import type { UnitWithTypeAndBookings } from '@/types/unit'
 import dayjs from 'dayjs'
-import { Plus } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { BookingCardButton } from '../booking/BookingCardButton'
 import { BookingDescriptions } from '../booking/BookingDescriptions'
 import { BookingSheet } from '../booking/BookingSheet'
 import MaterialSymbolsRealEstateAgent from '../icons/MaterialSymbolsRealEstateAgent'
+import MageCalendarPlusFill from '../icons/mage/MageCalendarPlusFill'
 import MdiBookEdit from '../icons/mdi/MdiBookEdit'
 import { PaymentSheet } from '../payment/PaymentSheet'
 import {
@@ -33,7 +33,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '../ui/alert-dialog'
-import { Button } from '../ui/button'
 import {
   Card,
   CardContent,
@@ -275,10 +274,10 @@ export default function UnitCard({ unit }: UnitCardProps) {
           </>
         ) : (
           <BookingSheet startDate={dayjs()} unit={unit}>
-            <Button variant={'default'} size={'sm'}>
-              <Plus />
+            <BookingCardButton className="px-2">
+              <MageCalendarPlusFill className="w-6 h-6" />
               Hospedar
-            </Button>
+            </BookingCardButton>
           </BookingSheet>
         )}
       </CardFooter>
