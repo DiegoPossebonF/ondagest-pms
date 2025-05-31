@@ -186,7 +186,7 @@ export default function UnitCard({ unit }: UnitCardProps) {
   }
 
   return (
-    <Card className="flex flex-col justify-between">
+    <Card className="flex flex-col justify-between overflow-hidden text-ellipsis">
       <CardHeader
         className={`flex flex-row px-6 py-4 border-grey-200 border-b-[5px] rounded-t-xl ${booking ? STATUS_COLORS[booking.status] : 'bg-gray-900'}`}
       >

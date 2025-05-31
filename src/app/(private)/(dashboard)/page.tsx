@@ -1,5 +1,6 @@
 import { BookingCardButton } from '@/components/booking/BookingCardButton'
 import { BookingSheet } from '@/components/booking/BookingSheet'
+import { BookingStatusLegend } from '@/components/booking/BookingStatusLegend'
 import MageCalendarPlusFill from '@/components/icons/mage/MageCalendarPlusFill'
 import UnitCard from '@/components/unit/UnitCard'
 import dayjs from 'dayjs'
@@ -28,7 +29,8 @@ export default async function Dashboard() {
             </BookingCardButton>
           </BookingSheet>
         </div>
-        <div className="p-6 overflow-auto">
+        <div className="p-6 overflow-auto flex flex-col gap-4">
+          <BookingStatusLegend />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {units.map(unit => {
               return <UnitCard key={unit.id} unit={unit} />

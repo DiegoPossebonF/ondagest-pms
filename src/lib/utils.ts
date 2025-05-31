@@ -29,7 +29,7 @@ export const STATUS_LABELS = {
   PENDING: 'Pendente de pagamento',
   CONFIRMED: 'Confirmado',
   CHECKED_IN: 'Fazer Check-in',
-  IN_PROGRESS: 'Em andamento',
+  IN_PROGRESS: 'Hospedado',
   CHECKED_OUT: 'Fazer Check-out',
   FINALIZED: 'Finalizado',
   CANCELLED: 'Cancelado',
