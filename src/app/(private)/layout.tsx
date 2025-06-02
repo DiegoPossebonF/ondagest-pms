@@ -1,12 +1,5 @@
 import { AppSidebar } from '@/components/dashboard/AppSidebar'
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
+import { DynamicBreadcrumb } from '@/components/dashboard/DynamicBreadcrumb'
 import { Separator } from '@/components/ui/separator'
 import {
   SidebarInset,
@@ -23,9 +16,9 @@ export default async function DashboardLayout({
   children,
 }: DashboardLayoutProps) {
   return (
-    <SidebarProvider>
+    <SidebarProvider className="overflow-hidden">
       <AppSidebar />
-      <SidebarInset>
+      <SidebarInset className="bg-sidebar overflow-hidden">
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
@@ -33,22 +26,10 @@ export default async function DashboardLayout({
               orientation="vertical"
               className="mr-2 data-[orientation=vertical]:h-4"
             />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    Building Your Application
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
+            <DynamicBreadcrumb />
           </div>
         </header>
-        <main className="flex-1 p-0 bg-[var(--sidebar-background-gradient)] overflow-auto">
+        <main className="flex-1 p-0 overflow-hidden bg-slate-50">
           {children}
         </main>
       </SidebarInset>

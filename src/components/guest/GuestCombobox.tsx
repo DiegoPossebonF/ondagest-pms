@@ -79,7 +79,7 @@ export function GuestCombobox({
       <PopoverTrigger asChild>
         <FormControl>
           <Button
-            variant="bookingform"
+            variant="default"
             ref={triggerRef}
             // biome-ignore lint/a11y/useSemanticElements: <explanation>
             role="combobox"
