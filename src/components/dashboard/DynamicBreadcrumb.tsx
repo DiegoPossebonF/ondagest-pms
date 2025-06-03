@@ -21,8 +21,9 @@ export function DynamicBreadcrumb() {
 
     const labelMap: Record<string, string> = {
       map: 'Mapa',
-      booking: 'Reservas',
-      guest: 'Hóspedes',
+      bookings: 'Reservas',
+      guests: 'Hóspedes',
+      settings: 'Configurações',
     }
 
     const label = labelMap[segment] || segment

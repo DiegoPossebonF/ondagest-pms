@@ -188,9 +188,9 @@ export default function UnitCard({ unit }: UnitCardProps) {
   return (
     <Card className="flex flex-col justify-between overflow-hidden text-ellipsis">
       <CardHeader
-        className={`flex flex-row px-6 py-4 border-grey-200 border-b-[5px] rounded-t-xl ${booking ? STATUS_COLORS[booking.status] : 'bg-gray-900'}`}
+        className={`flex flex-row px-6 py-4 border-grey-200 border-b-[5px] text-background ${booking ? STATUS_COLORS[booking.status] : 'bg-foreground dark:bg-gray-400'}`}
       >
-        <CardTitle className="flex flex-row gap-2 justify-center items-center text-white">
+        <CardTitle className="flex flex-row gap-2 justify-center items-center">
           <h1 className="text-base font-bold">{unit.name}</h1>
           <p className="text-sm"> {unit.type.name}</p>
         </CardTitle>
@@ -208,7 +208,7 @@ export default function UnitCard({ unit }: UnitCardProps) {
         )}
       </CardContent>
       <CardFooter
-        className={`p-2 bg-orange-100 gap-1 rounded-b-xl flex flex-row justify-center items-center border-t-[5px]`}
+        className={`p-2 bg-orange-100 gap-1 flex flex-row justify-center items-center border-t-[5px]`}
       >
         {booking ? (
           <>

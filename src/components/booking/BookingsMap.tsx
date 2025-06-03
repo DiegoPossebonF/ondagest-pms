@@ -95,10 +95,10 @@ export function BookingsMap() {
         </Popover>
       </div>
 
-      <div className="overflow-x-auto border-2">
+      <div className="overflow-x-auto border-2 rounded-lg overflow-hidden z-50">
         {/* Cabeçalho */}
-        <div className="flex flex-nowrap">
-          <div className="min-w-[160px] h-14 bg-gray-900 p-2 flex items-center justify-center border text-blue-200 font-semibold">
+        <div className="flex flex-nowrap rounded-lg">
+          <div className="min-w-[160px] h-14 p-2 flex items-center justify-center border text-blue-200 font-semibold">
             <span>UH</span>
           </div>
           {dates.map(date => (
