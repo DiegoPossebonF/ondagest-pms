@@ -220,7 +220,7 @@ export default function UnitCard({ unit }: UnitCardProps) {
                 <MaterialSymbolsRealEstateAgent className="h-4 w-4" />
               </BookingCardButton>
             </PaymentSheet>
-            <Link href={`/booking/${booking.id}`} title="Ir para a reserva">
+            <Link href={`/bookings/${booking.id}`} title="Ir para a reserva">
               <BookingCardButton className="text-blue-300 hover:text-blue-200">
                 <MdiBookEdit className="h-4 w-4" />
               </BookingCardButton>

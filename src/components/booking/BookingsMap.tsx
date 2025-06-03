@@ -260,28 +260,3 @@ export function BookingsMap() {
     </>
   )
 }
-
-/**
- * <div
-                    key={booking.id}
-                    className={`absolute h-6 rounded-md text-center text-white flex items-center justify-between shadow-md ${STATUS_COLORS[booking.status]}`}
-                    style={{
-                      left,
-                      width,
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                    }}
-                  >
-                    <ChevronRight
-                      className="text-green-500 ml-2 "
-                      strokeWidth={5}
-                      size={16}
-                    />
-                    {booking.guest.name}
-                    <ChevronRight
-                      className="text-red-500 mr-2"
-                      strokeWidth={5}
-                      size={16}
-                    />
-                  </div>
- */

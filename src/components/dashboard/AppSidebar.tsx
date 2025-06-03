@@ -1,20 +1,9 @@
 'use client'
-
-import {
-  BookOpen,
-  Bot,
-  Frame,
-  // biome-ignore lint/suspicious/noShadowRestrictedNames: <explanation>
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
-} from 'lucide-react'
 import type * as React from 'react'
 
+import { EnterpriseLogo } from '@/components/dashboard/EnterpriseLogo'
 import { NavMain } from '@/components/dashboard/NavMain'
 import { NavUser } from '@/components/dashboard/NavUser'
-import { TeamSwitcher } from '@/components/dashboard/TeamSwitcher'
 import {
   Sidebar,
   SidebarContent,
@@ -23,153 +12,73 @@ import {
   SidebarRail,
 } from '@/components/ui/sidebar'
 
+import type { User } from '@/app/generated/prisma'
 import logo from '@/public/images/LogoOndaGest.png'
+import {
+  IconBookFilled,
+  IconHomeFilled,
+  IconMapPinFilled,
+  IconSettings,
+  IconUserFilled,
+} from '@tabler/icons-react'
+import { NavSecondary } from './NavSecondary'
 
 // This is sample data.
 const data = {
-  user: {
-    name: 'shadcn',
-    email: 'm@example.com',
-    avatar: logo.src,
+  enterprise: {
+    name: 'OndaGest',
+    logo: logo.src,
+    subname: 'PMS',
   },
-  teams: [
-    {
-      name: 'OndaGest',
-      logo: logo.src,
-      plan: 'PMS',
-    },
-    {
-      name: 'Acme Corp.',
-      logo: logo.src,
-      plan: 'Startup',
-    },
-    {
-      name: 'Evil Corp.',
-      logo: logo.src,
-      plan: 'Free',
-    },
-  ],
   navMain: [
     {
-      title: 'Dashboard',
-      url: '#',
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        {
-          title: 'Início',
-          url: '/',
-        },
-        {
-          title: 'Mapa',
-          url: '/map',
-        },
-        {
-          title: 'Reservas',
-          url: '/booking',
-        },
-        {
-          title: 'Hóspedes',
-          url: '/guest',
-        },
-      ],
+      title: 'Início',
+      url: '/',
+      icon: IconHomeFilled,
     },
     {
-      title: 'Models',
-      url: '#',
-      icon: Bot,
-      items: [
-        {
-          title: 'Genesis',
-          url: '#',
-        },
-        {
-          title: 'Explorer',
-          url: '#',
-        },
-        {
-          title: 'Quantum',
-          url: '#',
-        },
-      ],
+      title: 'Mapa',
+      url: '/map',
+      icon: IconMapPinFilled,
     },
     {
-      title: 'Documentation',
-      url: '#',
-      icon: BookOpen,
-      items: [
-        {
-          title: 'Introduction',
-          url: '#',
-        },
-        {
-          title: 'Get Started',
-          url: '#',
-        },
-        {
-          title: 'Tutorials',
-          url: '#',
-        },
-        {
-          title: 'Changelog',
-          url: '#',
-        },
-      ],
+      title: 'Reservas',
+      url: '/bookings',
+      icon: IconBookFilled,
     },
     {
-      title: 'Settings',
-      url: '#',
-      icon: Settings2,
-      items: [
-        {
-          title: 'General',
-          url: '#',
-        },
-        {
-          title: 'Team',
-          url: '#',
-        },
-        {
-          title: 'Billing',
-          url: '#',
-        },
-        {
-          title: 'Limits',
-          url: '#',
-        },
-      ],
+      title: 'Hóspedes',
+      url: '/guests',
+      icon: IconUserFilled,
     },
   ],
-  projects: [
+  navSecondary: [
     {
-      name: 'Design Engineering',
-      url: '#',
-      icon: Frame,
-    },
-    {
-      name: 'Sales & Marketing',
-      url: '#',
-      icon: PieChart,
-    },
-    {
-      name: 'Travel',
-      url: '#',
-      icon: Map,
+      title: 'Configurações',
+      url: '/settings',
+      icon: IconSettings,
     },
   ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+type UserSession = Omit<User, 'createdAt' | 'updatedAt' | 'password'>
+
+interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  user?: UserSession
+}
+
+export function AppSidebar({ user, ...props }: AppSidebarProps) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <EnterpriseLogo enterprise={data.enterprise} />
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="justify-between">
         <NavMain items={data.navMain} />
+        <NavSecondary items={data.navSecondary} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

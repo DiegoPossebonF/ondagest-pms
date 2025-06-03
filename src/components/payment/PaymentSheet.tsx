@@ -71,7 +71,7 @@ export function PaymentSheet({ booking, children }: PaymentSheetProps) {
           onInteractOutside={(event: any) => {
             dialogOpen && event.preventDefault()
           }}
-          className="flex flex-col gap-0 max-h-screen"
+          className="flex flex-col gap-0 max-h-screen bg-sidebar"
         >
           <SheetHeader className="flex flex-col rounded-tl-2xl rounded-tr-2xl border bg-slate-50 p-4 shadow-sm mt-4">
             <SheetTitle className="text-2xl">Pagamentos</SheetTitle>
@@ -105,7 +105,7 @@ export function PaymentSheet({ booking, children }: PaymentSheetProps) {
 
           {/* Lista de Pagamentos */}
 
-          <div className="flex flex-col gap-2 border p-4 shadow-sm">
+          <div className="flex flex-col gap-2 border p-4 shadow-sm bg-slate-50">
             {booking && booking?.payments.length > 0 ? (
               booking?.payments.map(p => (
                 <PaymentItemList

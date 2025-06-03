@@ -1,6 +1,6 @@
 'use client'
 
-import { getUnits } from '@/app/(private)/(dashboard)/booking/actions'
+import { getUnits } from '@/app/(private)/(dashboard)/bookings/actions'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {

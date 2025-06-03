@@ -2,7 +2,7 @@ import BookingsTable from '@/components/booking/BookingsTable'
 import db from '@/lib/db'
 import type { BookingAllIncludes } from '@/types/booking'
 
-export default async function BookingPage() {
+export default async function BookingsPage() {
   const bookings: BookingAllIncludes[] = await db.booking.findMany({
     orderBy: { startDate: 'asc' },
     include: {
