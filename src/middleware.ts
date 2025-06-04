@@ -18,6 +18,7 @@ const adminRoutes = [
 ]
 
 export default auth(async req => {
+  const referer = req.headers.get('referer')
   const { pathname } = req.nextUrl
 
   const session = await auth()
@@ -35,7 +36,10 @@ export default auth(async req => {
   }
 
   if (isAdminRoute && session?.user.role !== 'ADMIN') {
-    return NextResponse.redirect(new URL('/?error=unauthorized', req.url))
+    const redirectUrl = new URL(referer || '/', req.url)
+    redirectUrl.searchParams.set('error', 'unauthorized')
+
+    return NextResponse.redirect(redirectUrl)
   }
 
   return NextResponse.next()

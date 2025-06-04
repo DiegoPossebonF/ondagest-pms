@@ -18,7 +18,7 @@ export function AccessDenied() {
   const isOpen = error === 'unauthorized'
 
   function handleClose() {
-    router.replace(window.location.pathname) // Remove query param da URL
+    router.back() // Remove query param da URL
   }
 
   return (
@@ -28,6 +28,8 @@ export function AccessDenied() {
           <AlertDialogTitle>Acesso Negado</AlertDialogTitle>
           <AlertDialogDescription>
             Você não tem permissão para acessar essa página.
+            <br />
+            Acesso somente para administradores.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
