@@ -1,3 +1,4 @@
+import { AccessDenied } from '@/components/dashboard/AccessDenied'
 import { AppSidebar } from '@/components/dashboard/AppSidebar'
 import { SiteHeader } from '@/components/dashboard/SiteHeader'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
@@ -22,6 +23,7 @@ export default async function DashboardLayout({
         <main className="flex-1 p-0 overflow-hidden bg-background">
           {children}
         </main>
+        <AccessDenied />
       </SidebarInset>
     </SidebarProvider>
   )

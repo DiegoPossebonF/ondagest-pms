@@ -53,7 +53,7 @@ export function NavMain({
               <Link href={item.url} className="w-full">
                 <SidebarMenuButton
                   tooltip={item.title}
-                  className={`${segments[0] === item.url.replace('/', '') ? 'bg-sidebar-accent text-sidebar-foreground' : (segments.length === 0 && item.url === '/') ? 'bg-sidebar-accent text-sidebar-foreground' : ''}`}
+                  className={`${segments[0] === item.url.replace('/', '') ? 'bg-sidebar-accent text-sidebar-primary-foreground' : (segments.length === 0 && item.url === '/') ? 'bg-sidebar-accent text-sidebar-foreground' : ''}`}
                 >
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>

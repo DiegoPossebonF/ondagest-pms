@@ -9,6 +9,7 @@ const privateRoutes = ['/']
 
 // rotas só para ADMIN
 const adminRoutes = [
+  '/settings',
   '/admin',
   '/admin/users',
   '/admin/units',
@@ -34,7 +35,7 @@ export default auth(async req => {
   }
 
   if (isAdminRoute && session?.user.role !== 'ADMIN') {
-    return NextResponse.redirect(new URL('/', req.url))
+    return NextResponse.redirect(new URL('/?error=unauthorized', req.url))
   }
 
   return NextResponse.next()
