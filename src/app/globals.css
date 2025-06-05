@@ -134,4 +134,8 @@
       hsl(var(--sidebar-primary))
     );
   }
+
+  .bg-sidebar-bg {
+    background-color: hsl(var(--sidebar-background));
+  }
 }

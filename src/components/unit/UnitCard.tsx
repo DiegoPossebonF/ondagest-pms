@@ -208,7 +208,7 @@ export default function UnitCard({ unit }: UnitCardProps) {
         )}
       </CardContent>
       <CardFooter
-        className={`p-2 bg-orange-100 gap-1 flex flex-row justify-center items-center border-t-[5px]`}
+        className={`p-2 bg-sidebar-bg gap-1 flex flex-row justify-center items-center border-t-[5px]`}
       >
         {booking ? (
           <>

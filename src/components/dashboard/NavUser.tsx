@@ -49,7 +49,7 @@ export function NavUser({ user }: { user?: UserSession }) {
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-20 rounded-lg"
+            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
             side={isMobile ? 'bottom' : 'right'}
             align="end"
             sideOffset={4}
@@ -84,6 +84,7 @@ export function NavUser({ user }: { user?: UserSession }) {
             */}
             <DropdownMenuSeparator />
             <DropdownMenuItem
+              className="text-red-500 focus:text-red-600"
               onClick={() => {
                 SignOut()
               }}

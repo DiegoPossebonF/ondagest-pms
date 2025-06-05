@@ -20,11 +20,20 @@ export function NavMain({
     title: string
     url: string
     icon?: Icon
+    iconFilled?: Icon
   }[]
 }) {
   const pathname = usePathname()
   const segments = pathname.split('/').filter(Boolean)
-  console.log(segments)
+
+  const active = (url: string) => {
+    return segments[0] === url.replace('/', '')
+      ? 'bg-sidebar-accent text-sidebar-primary-foreground'
+      : segments.length === 0 && url === '/'
+        ? 'bg-sidebar-accent text-sidebar-foreground'
+        : ''
+  }
+
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
@@ -53,9 +62,10 @@ export function NavMain({
               <Link href={item.url} className="w-full">
                 <SidebarMenuButton
                   tooltip={item.title}
-                  className={`${segments[0] === item.url.replace('/', '') ? 'bg-sidebar-accent text-sidebar-primary-foreground' : (segments.length === 0 && item.url === '/') ? 'bg-sidebar-accent text-sidebar-foreground' : ''}`}
+                  className={`${active(item.url)}`}
                 >
-                  {item.icon && <item.icon />}
+                  {active(item.url) && item.iconFilled && <item.iconFilled />}
+                  {!active(item.url) && item.icon && <item.icon />}
                   <span>{item.title}</span>
                 </SidebarMenuButton>
               </Link>

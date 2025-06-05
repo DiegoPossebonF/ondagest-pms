@@ -15,10 +15,15 @@ import {
 import type { User } from '@/app/generated/prisma'
 import logo from '@/public/images/LogoOndaGest.png'
 import {
+  IconBook,
   IconBookFilled,
+  IconHome,
   IconHomeFilled,
+  IconMapPin,
   IconMapPinFilled,
   IconSettings,
+  IconSettingsFilled,
+  IconUser,
   IconUserFilled,
 } from '@tabler/icons-react'
 import { NavSecondary } from './NavSecondary'
@@ -34,22 +39,26 @@ const data = {
     {
       title: 'Início',
       url: '/',
-      icon: IconHomeFilled,
+      icon: IconHome,
+      iconFilled: IconHomeFilled,
     },
     {
       title: 'Mapa',
       url: '/map',
-      icon: IconMapPinFilled,
+      icon: IconMapPin,
+      iconFilled: IconMapPinFilled,
     },
     {
       title: 'Reservas',
       url: '/bookings',
-      icon: IconBookFilled,
+      icon: IconBook,
+      iconFilled: IconBookFilled,
     },
     {
       title: 'Hóspedes',
       url: '/guests',
-      icon: IconUserFilled,
+      icon: IconUser,
+      iconFilled: IconUserFilled,
     },
   ],
   navSecondary: [
@@ -57,6 +66,7 @@ const data = {
       title: 'Configurações',
       url: '/settings',
       icon: IconSettings,
+      iconFilled: IconSettingsFilled,
     },
   ],
 }
