@@ -34,13 +34,13 @@ export function DynamicBreadcrumb() {
   return (
     <Breadcrumb>
       <BreadcrumbList>
-        <BreadcrumbItem className="hidden md:block">
+        <BreadcrumbItem>
           <BreadcrumbLink href="/">Painel</BreadcrumbLink>
         </BreadcrumbItem>
 
         {breadcrumbs.map((crumb, index) => (
           <Fragment key={`fragment-${crumb.label}`}>
-            <BreadcrumbSeparator className="hidden md:block" />
+            <BreadcrumbSeparator />
 
             <BreadcrumbItem>
               {index === breadcrumbs.length - 1 ? (

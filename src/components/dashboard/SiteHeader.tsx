@@ -22,7 +22,7 @@ export function SiteHeader() {
             variant="secondary"
             asChild
             size="icon"
-            className="hidden sm:flex rounded-full p-[10px] cursor-pointer dark:text-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+            className="flex rounded-full p-[10px] cursor-pointer dark:text-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
           >
             {theme === 'dark' ? (
