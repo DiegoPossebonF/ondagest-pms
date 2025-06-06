@@ -8,10 +8,10 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from '@/components/ui/sidebar'
 import type { Icon } from '@tabler/icons-react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
 export function NavSecondary({
   items,
@@ -24,6 +24,8 @@ export function NavSecondary({
     iconFilled: Icon
   }[]
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
+  const { isMobile, setOpenMobile } = useSidebar()
+  const router = useRouter()
   const pathname = usePathname()
   const segments = pathname.split('/').filter(Boolean)
 
@@ -35,22 +37,26 @@ export function NavSecondary({
         : ''
   }
 
+  const handleNavigate = (href: string) => {
+    router.push(href)
+    isMobile && setOpenMobile(false) // Fecha o sidebar ao navegar
+  }
+
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent>
         <SidebarMenu>
           {items.map(item => (
             <SidebarMenuItem key={item.title}>
-              <Link href={item.url} className="w-full">
-                <SidebarMenuButton
-                  tooltip={item.title}
-                  className={`${active(item.url)}`}
-                >
-                  {active(item.url) && item.iconFilled && <item.iconFilled />}
-                  {!active(item.url) && item.icon && <item.icon />}
-                  <span>{item.title}</span>
-                </SidebarMenuButton>
-              </Link>
+              <SidebarMenuButton
+                tooltip={item.title}
+                className={`${active(item.url)}`}
+                onClick={() => handleNavigate(item.url)}
+              >
+                {active(item.url) && item.iconFilled && <item.iconFilled />}
+                {!active(item.url) && item.icon && <item.icon />}
+                <span>{item.title}</span>
+              </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
