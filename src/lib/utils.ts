@@ -2,16 +2,18 @@ import IcBaselinePix from '@/components/icons/IcBaselinePix'
 import MaterialSymbolsLightOtherAdmission from '@/components/icons/MaterialSymbolsLightOtherAdmission'
 import { NimbusTransferReal } from '@/components/icons/NimbusTransferReal'
 import SolarSquareTransferHorizontalBold from '@/components/icons/SolarSquareTransferHorizontalBold'
-import MageCalendar2Fill from '@/components/icons/mage/MageCalendar2Fill'
-import MageCalendarCheckFill from '@/components/icons/mage/MageCalendarCheckFill'
-import MageCalendarCrossFill from '@/components/icons/mage/MageCalendarCrossFill'
-import MageCalendarDownloadFill from '@/components/icons/mage/MageCalendarDownloadFill'
-import MageCalendarFill from '@/components/icons/mage/MageCalendarFill'
-import MageCalendarMinusFill from '@/components/icons/mage/MageCalendarMinusFill'
-import MageCalendarQuestionMarkFill from '@/components/icons/mage/MageCalendarQuestionMarkFill'
-import MageCalendarUploadFill from '@/components/icons/mage/MageCalendarUploadFill'
 import MdiCreditCardCheck from '@/components/icons/mdi/MdiCreditCardCheck'
 import MdiCreditCardClock from '@/components/icons/mdi/MdiCreditCardClock'
+import {
+  IconAlertTriangleFilled,
+  IconBedFilled,
+  IconCircleCheckFilled,
+  IconCircleXFilled,
+  IconClockHour4Filled,
+  IconConfetti,
+  IconDoorEnter,
+  IconDoorExit,
+} from '@tabler/icons-react'
 import { type ClassValue, clsx } from 'clsx'
 import dayjs from 'dayjs'
 import type { DateRange } from 'react-day-picker'
@@ -37,14 +39,14 @@ export const STATUS_LABELS = {
 }
 
 export const STATUS_ICONS = {
-  PENDING: MageCalendarQuestionMarkFill,
-  CONFIRMED: MageCalendarCheckFill,
-  CHECKED_IN: MageCalendarUploadFill,
-  IN_PROGRESS: MageCalendar2Fill,
-  CHECKED_OUT: MageCalendarDownloadFill,
-  FINALIZED: MageCalendarFill,
-  CANCELLED: MageCalendarCrossFill,
-  NO_SHOW: MageCalendarMinusFill,
+  PENDING: IconClockHour4Filled,
+  CONFIRMED: IconConfetti,
+  CHECKED_IN: IconDoorEnter,
+  IN_PROGRESS: IconBedFilled,
+  CHECKED_OUT: IconDoorExit,
+  FINALIZED: IconCircleCheckFilled,
+  CANCELLED: IconCircleXFilled,
+  NO_SHOW: IconAlertTriangleFilled,
 }
 
 export const STATUS_COLORS = {

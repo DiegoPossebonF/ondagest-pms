@@ -5,7 +5,7 @@ import {
 } from '@/components/ui/popover'
 import { STATUS_COLORS, STATUS_PAYMENT_COLORS } from '@/lib/utils'
 import { Info } from 'lucide-react'
-import { BookingCardButton } from './BookingCardButton'
+import { Button } from '../ui/button'
 
 type StatusLegendItem = {
   label: string
@@ -32,10 +32,10 @@ export function BookingStatusLegend() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <BookingCardButton className="w-auto self-start">
+        <Button variant="outline" size="sm" className="self-start">
           <Info className="w-4 h-4" />
           Legenda
-        </BookingCardButton>
+        </Button>
       </PopoverTrigger>
 
       <PopoverContent className="space-y-3 text-xs w-64">

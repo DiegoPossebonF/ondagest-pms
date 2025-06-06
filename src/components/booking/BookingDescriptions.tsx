@@ -1,12 +1,7 @@
 'use client'
 
 import calculateBookingValues from '@/app/actions/booking/calculateBookingValues'
-import {
-  STATUS_COLORS_TEXT,
-  STATUS_ICONS,
-  STATUS_LABELS,
-  formatCurrency,
-} from '@/lib/utils'
+import { STATUS_ICONS, formatCurrency } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import dayjs from 'dayjs'
 import MaterialSymbolsRealEstateAgent from '../icons/MaterialSymbolsRealEstateAgent'
@@ -32,15 +27,11 @@ export function BookingDescriptions({ booking }: BookingDescriptionsProps) {
           className="flex flex-row items-center gap-2 font-bold"
           title="Nome"
         >
-          <MageUserSquareFill
-            className={`w-4 h-4 ${STATUS_COLORS_TEXT[booking.status]}`}
-          />
+          <MageUserSquareFill className={`w-4 h-4 `} />
           {booking?.guest.name}
         </div>
         <div className="flex flex-row items-center gap-2" title="Telefone">
-          <MageMobilePhoneFill
-            className={`w-4 h-4 ${STATUS_COLORS_TEXT[booking.status]}`}
-          />
+          <MageMobilePhoneFill className={`w-4 h-4 `} />
           {booking?.guest.phone}
           <WhatsAppIcon color="green" className="w-4 h-4" />
         </div>
@@ -48,39 +39,22 @@ export function BookingDescriptions({ booking }: BookingDescriptionsProps) {
           className="flex flex-row items-center gap-2"
           title="Data de entrada"
         >
-          <MageCalendarUploadFill
-            className={`w-4 h-4 ${STATUS_COLORS_TEXT[booking.status]}`}
-          />
+          <MageCalendarUploadFill className={`w-4 h-4 `} />
           {dayjs(booking?.startDate).format('DD/MM/YYYY')}
         </div>
         <div className="flex flex-row items-center gap-2" title="Data de saída">
           <MageCalendarDownloadFill
-            className={`w-4 h-4 ${STATUS_COLORS_TEXT[booking.status]} ml-[1.95px] mr-[-1.95px]`}
+            className={`w-4 h-4  ml-[1.95px] mr-[-1.95px]`}
           />
           {dayjs(booking?.endDate).format('DD/MM/YYYY')}
         </div>
         <div className="flex flex-row items-center gap-2" title="Valor total">
-          <MageDollarFill
-            className={`w-4 h-4 ${STATUS_COLORS_TEXT[booking.status]}`}
-          />
+          <MageDollarFill className={`w-4 h-4 `} />
           {formatCurrency(calculateBookingValues(booking).totalAll)}
         </div>
         <div className="flex flex-row items-center gap-2" title="Valor pago">
-          <MaterialSymbolsRealEstateAgent
-            className={`w-4 h-4 ${STATUS_COLORS_TEXT[booking.status]}`}
-          />
+          <MaterialSymbolsRealEstateAgent className={`w-4 h-4 `} />
           {formatCurrency(calculateBookingValues(booking).totalPayment)}
-        </div>
-      </CardDescription>
-      <CardDescription className="flex flex-col gap-2 mt-4 text-xs">
-        <div
-          className="flex flex-row items-center gap-2"
-          title="Status da reserva"
-        >
-          <StatusIcon
-            className={`${STATUS_COLORS_TEXT[booking.status]} w-4 h-4`}
-          />
-          {STATUS_LABELS[booking.status]}
         </div>
       </CardDescription>
     </>

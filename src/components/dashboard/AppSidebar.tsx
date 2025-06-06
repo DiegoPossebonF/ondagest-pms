@@ -9,6 +9,8 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  SidebarInset,
+  SidebarProvider,
   SidebarRail,
 } from '@/components/ui/sidebar'
 
@@ -26,7 +28,9 @@ import {
   IconUser,
   IconUserFilled,
 } from '@tabler/icons-react'
+import { AccessDenied } from './AccessDenied'
 import { NavSecondary } from './NavSecondary'
+import { SiteHeader } from './SiteHeader'
 
 // This is sample data.
 const data = {
@@ -74,23 +78,33 @@ const data = {
 type UserSession = Omit<User, 'createdAt' | 'updatedAt' | 'password'>
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  children: React.ReactNode
   user?: UserSession
 }
 
-export function AppSidebar({ user, ...props }: AppSidebarProps) {
+export function AppSidebar({ children, user, ...props }: AppSidebarProps) {
   return (
-    <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
-        <EnterpriseLogo enterprise={data.enterprise} />
-      </SidebarHeader>
-      <SidebarContent className="justify-between">
-        <NavMain items={data.navMain} />
-        <NavSecondary items={data.navSecondary} />
-      </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={user} />
-      </SidebarFooter>
-      <SidebarRail />
-    </Sidebar>
+    <SidebarProvider className="overflow-hidden">
+      <Sidebar collapsible="icon" {...props}>
+        <SidebarHeader>
+          <EnterpriseLogo enterprise={data.enterprise} />
+        </SidebarHeader>
+        <SidebarContent className="justify-between">
+          <NavMain items={data.navMain} />
+          <NavSecondary items={data.navSecondary} />
+        </SidebarContent>
+        <SidebarFooter>
+          <NavUser user={user} />
+        </SidebarFooter>
+        <SidebarRail />
+      </Sidebar>
+      <SidebarInset className="bg-sidebar overflow-hidden">
+        <SiteHeader />
+        <main className="flex-1 p-0 overflow-hidden bg-background">
+          {children}
+        </main>
+        <AccessDenied />
+      </SidebarInset>
+    </SidebarProvider>
   )
 }

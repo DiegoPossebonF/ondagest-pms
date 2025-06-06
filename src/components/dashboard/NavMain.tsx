@@ -9,9 +9,9 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from '@/components/ui/sidebar'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
 export function NavMain({
   items,
@@ -23,6 +23,8 @@ export function NavMain({
     iconFilled?: Icon
   }[]
 }) {
+  const { isMobile, setOpenMobile } = useSidebar()
+  const router = useRouter()
   const pathname = usePathname()
   const segments = pathname.split('/').filter(Boolean)
 
@@ -30,8 +32,13 @@ export function NavMain({
     return segments[0] === url.replace('/', '')
       ? 'bg-sidebar-accent text-sidebar-primary-foreground'
       : segments.length === 0 && url === '/'
-        ? 'bg-sidebar-accent text-sidebar-foreground'
+        ? 'bg-sidebar-accent text-sidebar-primary-foreground'
         : ''
+  }
+
+  const handleNavigate = (href: string) => {
+    router.push(href)
+    isMobile && setOpenMobile(false) // Fecha o sidebar ao navegar
   }
 
   return (
@@ -59,16 +66,15 @@ export function NavMain({
         <SidebarMenu>
           {items.map(item => (
             <SidebarMenuItem key={item.title}>
-              <Link href={item.url} className="w-full">
-                <SidebarMenuButton
-                  tooltip={item.title}
-                  className={`${active(item.url)}`}
-                >
-                  {active(item.url) && item.iconFilled && <item.iconFilled />}
-                  {!active(item.url) && item.icon && <item.icon />}
-                  <span>{item.title}</span>
-                </SidebarMenuButton>
-              </Link>
+              <SidebarMenuButton
+                tooltip={item.title}
+                className={`${active(item.url)}`}
+                onClick={() => handleNavigate(item.url)}
+              >
+                {active(item.url) && item.iconFilled && <item.iconFilled />}
+                {!active(item.url) && item.icon && <item.icon />}
+                <span>{item.title}</span>
+              </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
         </SidebarMenu>

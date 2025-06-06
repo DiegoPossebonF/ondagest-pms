@@ -2,16 +2,19 @@
 import calculateBookingValues from '@/app/actions/booking/calculateBookingValues'
 import { updateBookingStatus } from '@/app/actions/booking/updateBookingStatus'
 import { BookingStatus } from '@/app/generated/prisma'
+import { useIsMobile } from '@/hooks/use-mobile'
 import { useToast } from '@/hooks/use-toast'
 import {
   STATUS_COLORS,
   STATUS_COLORS_TEXT,
   STATUS_ICONS,
+  STATUS_LABELS,
   STATUS_PAYMENT_COLORS_TEXT,
   formatCurrency,
 } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import type { UnitWithTypeAndBookings } from '@/types/unit'
+import { IconDoor } from '@tabler/icons-react'
 import dayjs from 'dayjs'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -33,6 +36,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '../ui/alert-dialog'
+import { Badge } from '../ui/badge'
 import {
   Card,
   CardContent,
@@ -185,30 +189,54 @@ export default function UnitCard({ unit }: UnitCardProps) {
     }
   }
 
+  const isMobile = useIsMobile()
+
   return (
-    <Card className="flex flex-col justify-between overflow-hidden text-ellipsis">
-      <CardHeader
-        className={`flex flex-row px-6 py-4 border-grey-200 border-b-[5px] text-background ${booking ? STATUS_COLORS[booking.status] : 'bg-foreground dark:bg-gray-400'}`}
-      >
+    <Card
+      className={`relative flex flex-col justify-between overflow-hidden text-ellipsis`}
+    >
+      <div
+        className={`absolute left-0 top-0 h-full w-2 ${booking ? STATUS_COLORS[booking.status] : 'bg-muted-foreground'} z-10`}
+      />
+      <CardHeader className={`pr-4 pl-6 py-2 border-b justify-between`}>
         <CardTitle className="flex flex-row gap-2 justify-center items-center">
           <h1 className="text-base font-bold">{unit.name}</h1>
           <p className="text-sm"> {unit.type.name}</p>
         </CardTitle>
-        <CardDescription className="text-white font sr-only">
+        <CardDescription className="font sr-only">
           {unit.name} - {unit.type.name} - {unit.type.description}
         </CardDescription>
+        {/* Tooltip com ícone */}
+        {booking ? (
+          <Badge
+            variant={'outline'}
+            className={`flex items-center justify-center gap-1 px-2 py-[0.15rem] text-xs sm:text-sm`}
+          >
+            {StatusIcon && <StatusIcon className="w-4 h-4" />}
+            <span className="hidden sm:inline text-xs">
+              {STATUS_LABELS[booking.status]}
+            </span>
+          </Badge>
+        ) : (
+          <Badge
+            variant={'outline'}
+            className={`flex items-center justify-center gap-1 px-2 py-[0.15rem] text-xs sm:text-sm`}
+          >
+            <span className="hidden sm:inline text-xs">Livre</span>
+          </Badge>
+        )}
       </CardHeader>
-      <CardContent className="px-6 py-2 border-grey-200 ">
+      <CardContent className="px-6 py-2">
         {booking ? (
           <BookingDescriptions booking={booking} />
         ) : (
-          <CardDescription className="flex flex-col justify-around gap-2 text-sm font-semibold text-center">
-            Livre
+          <CardDescription className="flex flex-col justify-center items-center gap-2 text-sm font-semibold text-center">
+            <IconDoor className="w-12 h-12 text-muted-foreground" />
           </CardDescription>
         )}
       </CardContent>
       <CardFooter
-        className={`p-2 bg-sidebar-bg gap-1 flex flex-row justify-center items-center border-t-[5px]`}
+        className={`p-2 gap-2 flex flex-row justify-center items-center border-t`}
       >
         {booking ? (
           <>
@@ -221,7 +249,7 @@ export default function UnitCard({ unit }: UnitCardProps) {
               </BookingCardButton>
             </PaymentSheet>
             <Link href={`/bookings/${booking.id}`} title="Ir para a reserva">
-              <BookingCardButton className="text-blue-300 hover:text-blue-200">
+              <BookingCardButton className="text-primary/90 hover:text-primary">
                 <MdiBookEdit className="h-4 w-4" />
               </BookingCardButton>
             </Link>
@@ -271,15 +299,13 @@ export default function UnitCard({ unit }: UnitCardProps) {
                 className={`${STATUS_COLORS_TEXT[booking.status]}`}
                 title="Fazer Check-out"
               >
-                {StatusIcon && (
-                  <StatusIcon className="h-4 w-4 ml-[1.95px] mr-[-1.95px]" />
-                )}
+                {StatusIcon && <StatusIcon className="h-4 w-4" />}
               </BookingCardButton>
             )}
           </>
         ) : (
           <BookingSheet startDate={dayjs()} unit={unit}>
-            <BookingCardButton>
+            <BookingCardButton className="text-muted-foreground/90 hover:text-muted-foreground">
               <MageCalendarPlusFill className="w-4 h-4" />
             </BookingCardButton>
           </BookingSheet>
