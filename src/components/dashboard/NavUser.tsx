@@ -19,7 +19,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
-import Logo from '@/public/images/LogoOndaGest.png'
+import Logo from '@/public/images/male-avatar.png'
 
 type UserSession = Omit<User, 'createdAt' | 'updatedAt' | 'password'>
 

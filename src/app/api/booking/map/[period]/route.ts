@@ -45,6 +45,9 @@ export async function GET(
       include: {
         unit: true,
         guest: true,
+        payments: true,
+        services: true,
+        discounts: true,
       },
       orderBy: {
         startDate: 'asc',

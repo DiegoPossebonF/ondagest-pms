@@ -70,21 +70,34 @@ export const STATUS_COLORS = {
 
 export const STATUS_COLORS_TEXT = {
   PENDING:
-    'text-yellow-500 hover:text-yellow-600 transition-colors duration-300 ease-in-out',
+    'text-yellow-500 hover:text-yellow-600 transition-colors duration-200 ease-in-out',
   CONFIRMED:
-    'text-emerald-500 hover:text-emerald-600 transition-colors duration-300 ease-in-out',
+    'text-emerald-500 hover:text-emerald-600 transition-colors duration-200 ease-in-out',
   CHECKED_IN:
-    'text-orange-500 hover:text-orange-600 transition-colors duration-300 ease-in-out',
+    'text-orange-500 hover:text-orange-600 transition-colors duration-200 ease-in-out',
   IN_PROGRESS:
-    'text-sky-500 hover:text-sky-600 transition-colors duration-300 ease-in-out',
+    'text-sky-500 hover:text-sky-600 transition-colors duration-200 ease-in-out',
   CHECKED_OUT:
-    'text-rose-500 hover:text-rose-600 transition-colors duration-300 ease-in-out',
+    'text-rose-500 hover:text-rose-600 transition-colors duration-200 ease-in-out',
   FINALIZED:
-    'text-gray-500 hover:text-gray-600 transition-colors duration-300 ease-in-out',
+    'text-gray-500 hover:text-gray-600 transition-colors duration-200 ease-in-out',
   CANCELLED:
-    'text-red-600 hover:text-red-700 transition-colors duration-300 ease-in-out',
+    'text-red-600 hover:text-red-700 transition-colors duration-200 ease-in-out',
   NO_SHOW:
-    'text-zinc-600 hover:text-zinc-700 transition-colors duration-300 ease-in-out',
+    'text-zinc-600 hover:text-zinc-700 transition-colors duration-200 ease-in-out',
+}
+
+export const STATUS_COLORS_TEXT_ONLY_HOVER = {
+  PENDING: 'hover:text-yellow-600 transition-colors duration-200 ease-in-out',
+  CONFIRMED:
+    'hover:text-emerald-600 transition-colors duration-200 ease-in-out',
+  CHECKED_IN:
+    'hover:text-orange-600 transition-colors duration-200 ease-in-out',
+  IN_PROGRESS: 'hover:text-sky-600 transition-colors duration-200 ease-in-out',
+  CHECKED_OUT: 'hover:text-rose-600 transition-colors duration-200 ease-in-out',
+  FINALIZED: 'hover:text-gray-600 transition-colors duration-200 ease-in-out',
+  CANCELLED: 'hover:text-red-700 transition-colors duration-200 ease-in-out',
+  NO_SHOW: 'hover:text-zinc-700 transition-colors duration-200 ease-in-out',
 }
 
 /*

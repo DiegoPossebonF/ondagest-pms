@@ -24,6 +24,9 @@ export function DynamicBreadcrumb() {
       bookings: 'Reservas',
       guests: 'Hóspedes',
       settings: 'Configurações',
+      units: 'Acomodações',
+      payments: 'Pagamentos',
+      new: 'Nova',
     }
 
     const label = labelMap[segment] || segment

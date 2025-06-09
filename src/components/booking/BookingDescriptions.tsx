@@ -3,14 +3,16 @@
 import calculateBookingValues from '@/app/actions/booking/calculateBookingValues'
 import { STATUS_ICONS, formatCurrency } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
+import { IconBrandWhatsappFilled } from '@tabler/icons-react'
 import dayjs from 'dayjs'
+import Link from 'next/link'
 import MaterialSymbolsRealEstateAgent from '../icons/MaterialSymbolsRealEstateAgent'
-import { WhatsAppIcon } from '../icons/WhatsAppIcon'
 import MageCalendarDownloadFill from '../icons/mage/MageCalendarDownloadFill'
 import MageCalendarUploadFill from '../icons/mage/MageCalendarUploadFill'
 import MageDollarFill from '../icons/mage/MageDollarFill'
 import MageMobilePhoneFill from '../icons/mage/MageMobilePhoneFill'
 import MageUserSquareFill from '../icons/mage/MageUserSquareFill'
+import { Button } from '../ui/button'
 import { CardDescription } from '../ui/card'
 
 interface BookingDescriptionsProps {
@@ -30,10 +32,22 @@ export function BookingDescriptions({ booking }: BookingDescriptionsProps) {
           <MageUserSquareFill className={`w-4 h-4 `} />
           {booking?.guest.name}
         </div>
-        <div className="flex flex-row items-center gap-2" title="Telefone">
-          <MageMobilePhoneFill className={`w-4 h-4 `} />
-          {booking?.guest.phone}
-          <WhatsAppIcon color="green" className="w-4 h-4" />
+        <div
+          className="flex flex-row items-center justify-between gap-2"
+          title="Telefone"
+        >
+          <div className="flex flex-row items-center gap-2">
+            <MageMobilePhoneFill className={`w-4 h-4 `} />
+            {booking?.guest.phone}
+          </div>
+          <Link
+            href={`https://wa.me/${booking?.guest.phone ? booking?.guest.phone.replace(/\D/g, '') : ''} `}
+            target="_blank"
+          >
+            <Button variant="outline" size={'icon'} asChild>
+              <IconBrandWhatsappFilled className="w-[20px] h-[20px]" />
+            </Button>
+          </Link>
         </div>
         <div
           className="flex flex-row items-center gap-2"
