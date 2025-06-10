@@ -13,15 +13,14 @@ import {
 } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import type { UnitWithTypeAndBookings } from '@/types/unit'
-import { IconDoor } from '@tabler/icons-react'
 import dayjs from 'dayjs'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { BookingCardButton } from '../booking/BookingCardButton'
 import { BookingDescriptions } from '../booking/BookingDescriptions'
 import { BookingSheet } from '../booking/BookingSheet'
 import MaterialSymbolsRealEstateAgent from '../icons/MaterialSymbolsRealEstateAgent'
+import FluentDoor16Filled from '../icons/fluent-ui/FluentDoor16Filled'
 import MageCalendarPlusFill from '../icons/mage/MageCalendarPlusFill'
 import MdiBookEdit from '../icons/mdi/MdiBookEdit'
 import { PaymentSheet } from '../payment/PaymentSheet'
@@ -37,6 +36,7 @@ import {
   AlertDialogTrigger,
 } from '../ui/alert-dialog'
 import { Badge } from '../ui/badge'
+import { Button } from '../ui/button'
 import {
   Card,
   CardContent,
@@ -224,7 +224,7 @@ export default function UnitCard({ unit }: UnitCardProps) {
           <BookingDescriptions booking={booking} />
         ) : (
           <CardDescription className="flex flex-col justify-center items-center gap-2 text-sm font-semibold text-center">
-            <IconDoor className="w-12 h-12 text-muted-foreground" />
+            <FluentDoor16Filled className="w-12 h-12 text-muted-foreground" />
           </CardDescription>
         )}
       </CardContent>
@@ -234,27 +234,39 @@ export default function UnitCard({ unit }: UnitCardProps) {
         {booking ? (
           <>
             <PaymentSheet booking={booking}>
-              <BookingCardButton
-                className={`${STATUS_PAYMENT_COLORS_TEXT[booking.paymentStatus]}`}
+              <Button
+                size="icon"
+                className={`size-8 group-data-[collapsible=icon]:opacity-0 ${STATUS_PAYMENT_COLORS_TEXT[booking.paymentStatus]}`}
+                variant="outline"
                 title="Lançar pagamento"
               >
                 <MaterialSymbolsRealEstateAgent className="h-4 w-4" />
-              </BookingCardButton>
+                <span className="sr-only">Lançar pagamento</span>
+              </Button>
             </PaymentSheet>
             <Link href={`/bookings/${booking.id}`} title="Ir para a reserva">
-              <BookingCardButton className="text-primary/90 hover:text-primary">
+              <Button
+                size="icon"
+                className={`size-8 group-data-[collapsible=icon]:opacity-0`}
+                variant="outline"
+                title="Editar pagamento"
+              >
                 <MdiBookEdit className="h-4 w-4" />
-              </BookingCardButton>
+                <span className="sr-only">Editar pagamento</span>
+              </Button>
             </Link>
             {managerAction && booking.status === 'PENDING' && (
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <BookingCardButton
-                    className={`${STATUS_COLORS_TEXT[booking.status]}`}
-                    title="Confirmar reserva sem pagamento"
+                  <Button
+                    size="icon"
+                    className={`size-8 group-data-[collapsible=icon]:opacity-0 ${STATUS_COLORS_TEXT[booking.status]}`}
+                    variant="outline"
+                    title="Confirmar sem pagamento"
                   >
                     {StatusIcon && <StatusIcon className="h-4 w-4" />}
-                  </BookingCardButton>
+                    <span className="sr-only">Confirmar sem pagamento</span>
+                  </Button>
                 </AlertDialogTrigger>
 
                 <AlertDialogContent>
@@ -278,29 +290,40 @@ export default function UnitCard({ unit }: UnitCardProps) {
               </AlertDialog>
             )}
             {managerAction && booking.status === 'CHECKED_IN' && (
-              <BookingCardButton
+              <Button
+                size="icon"
+                variant="outline"
                 onClick={() => handleCheckIn(booking)}
-                className={`${STATUS_COLORS_TEXT[booking.status]}`}
+                className={`size-8 group-data-[collapsible=icon]:opacity-0 ${STATUS_COLORS_TEXT[booking.status]}`}
                 title="Fazer Check-in"
               >
                 {StatusIcon && <StatusIcon className="h-4 w-4" />}
-              </BookingCardButton>
+                <span className="sr-only">Fazer check-in</span>
+              </Button>
             )}
             {managerAction && booking.status === 'CHECKED_OUT' && (
-              <BookingCardButton
+              <Button
+                size="icon"
+                variant="outline"
                 onClick={() => handleFinalizeBooking(booking)}
-                className={`${STATUS_COLORS_TEXT[booking.status]}`}
+                className={`size-8 group-data-[collapsible=icon]:opacity-0 ${STATUS_COLORS_TEXT[booking.status]}`}
                 title="Fazer Check-out"
               >
                 {StatusIcon && <StatusIcon className="h-4 w-4" />}
-              </BookingCardButton>
+                <span className="sr-only">Fazer check-out</span>
+              </Button>
             )}
           </>
         ) : (
           <BookingSheet startDate={dayjs()} unit={unit}>
-            <BookingCardButton className="text-muted-foreground/90 hover:text-muted-foreground">
+            <Button
+              size="icon"
+              variant="outline"
+              className={`size-8 group-data-[collapsible=icon]:opacity-0`}
+            >
               <MageCalendarPlusFill className="w-4 h-4" />
-            </BookingCardButton>
+              <span className="sr-only">Fazer reserva</span>
+            </Button>
           </BookingSheet>
         )}
       </CardFooter>

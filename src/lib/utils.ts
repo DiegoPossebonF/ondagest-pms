@@ -2,6 +2,8 @@ import IcBaselinePix from '@/components/icons/IcBaselinePix'
 import MaterialSymbolsLightOtherAdmission from '@/components/icons/MaterialSymbolsLightOtherAdmission'
 import { NimbusTransferReal } from '@/components/icons/NimbusTransferReal'
 import SolarSquareTransferHorizontalBold from '@/components/icons/SolarSquareTransferHorizontalBold'
+import FluentDoorArrowLeft16Filled from '@/components/icons/fluent-ui/FluentDoorArrowLeft16Filled'
+import FluentDoorArrowRight16Filled from '@/components/icons/fluent-ui/FluentDoorArrowRight16Filled'
 import MdiCreditCardCheck from '@/components/icons/mdi/MdiCreditCardCheck'
 import MdiCreditCardClock from '@/components/icons/mdi/MdiCreditCardClock'
 import {
@@ -11,8 +13,6 @@ import {
   IconCircleXFilled,
   IconClockHour4Filled,
   IconConfetti,
-  IconDoorEnter,
-  IconDoorExit,
 } from '@tabler/icons-react'
 import { type ClassValue, clsx } from 'clsx'
 import dayjs from 'dayjs'
@@ -41,9 +41,9 @@ export const STATUS_LABELS = {
 export const STATUS_ICONS = {
   PENDING: IconClockHour4Filled,
   CONFIRMED: IconConfetti,
-  CHECKED_IN: IconDoorEnter,
+  CHECKED_IN: FluentDoorArrowLeft16Filled,
   IN_PROGRESS: IconBedFilled,
-  CHECKED_OUT: IconDoorExit,
+  CHECKED_OUT: FluentDoorArrowRight16Filled,
   FINALIZED: IconCircleCheckFilled,
   CANCELLED: IconCircleXFilled,
   NO_SHOW: IconAlertTriangleFilled,

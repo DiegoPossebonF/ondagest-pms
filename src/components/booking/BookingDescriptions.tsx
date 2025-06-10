@@ -12,7 +12,6 @@ import MageCalendarUploadFill from '../icons/mage/MageCalendarUploadFill'
 import MageDollarFill from '../icons/mage/MageDollarFill'
 import MageMobilePhoneFill from '../icons/mage/MageMobilePhoneFill'
 import MageUserSquareFill from '../icons/mage/MageUserSquareFill'
-import { Button } from '../ui/button'
 import { CardDescription } from '../ui/card'
 
 interface BookingDescriptionsProps {
@@ -24,7 +23,7 @@ export function BookingDescriptions({ booking }: BookingDescriptionsProps) {
 
   return (
     <>
-      <CardDescription className="flex flex-col gap-1 text-xs">
+      <CardDescription className="relative flex flex-col gap-1 text-xs">
         <div
           className="flex flex-row items-center gap-2 font-bold"
           title="Nome"
@@ -44,9 +43,10 @@ export function BookingDescriptions({ booking }: BookingDescriptionsProps) {
             href={`https://wa.me/${booking?.guest.phone ? booking?.guest.phone.replace(/\D/g, '') : ''} `}
             target="_blank"
           >
-            <Button variant="outline" size={'icon'} asChild>
-              <IconBrandWhatsappFilled className="w-[20px] h-[20px]" />
-            </Button>
+            <IconBrandWhatsappFilled
+              className={`w-4 h-4 hover:text-green-500`}
+            />
+            <span className="sr-only">Conversar no Whatsapp</span>
           </Link>
         </div>
         <div

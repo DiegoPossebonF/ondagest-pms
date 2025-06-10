@@ -1,6 +1,5 @@
 import { BookingStatusLegend } from '@/components/booking/BookingStatusLegend'
 import UnitCard from '@/components/unit/UnitCard'
-import { STATUS_ICONS } from '@/lib/utils'
 import dayjs from 'dayjs'
 import isBetween from 'dayjs/plugin/isBetween'
 import { getUnitsWithUpdatedBookings } from './actions'
@@ -11,10 +10,12 @@ export default async function Dashboard() {
   const units = await getUnitsWithUpdatedBookings()
 
   if (!units) {
-    return <div>Erro ao buscar unidades</div>
+    return (
+      <div className="p-6 overflow-auto flex flex-col items-center justify-center gap-4">
+        Erro ao buscar unidades - Entre em contato com o suporte...
+      </div>
+    )
   }
-
-  const Icon = STATUS_ICONS.PENDING
 
   return (
     <div className="p-6 overflow-auto flex flex-col gap-4">

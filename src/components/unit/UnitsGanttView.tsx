@@ -67,7 +67,7 @@ export function UnitsGanttView() {
           variant={'outline'}
           size={'icon'}
           className={cn(
-            'flex-1 text-left font-normal border-b-0 rounded-b-none rounded-r-none bg-sidebar hover:bg-background',
+            'flex-1 text-left font-normal border-b-0 rounded-b-none rounded-r-none',
             !startDate && 'text-muted-foreground'
           )}
           onClick={() => {
@@ -79,7 +79,7 @@ export function UnitsGanttView() {
         <Button
           variant={'outline'}
           className={cn(
-            'flex-1 text-left font-normal border-0 border-t border-r rounded-r-none rounded-l-none bg-sidebar hover:bg-background',
+            'flex-1 text-left font-normal border-0 border-t border-r rounded-r-none rounded-l-none',
             !startDate && 'text-muted-foreground'
           )}
           size={'icon'}
@@ -94,7 +94,7 @@ export function UnitsGanttView() {
             <Button
               variant={'outline'}
               className={cn(
-                'flex-1 text-left font-normal border-0 border-t rounded-r-none rounded-l-none bg-sidebar hover:bg-background',
+                'flex-1 text-left font-normal border-0 border-t rounded-r-none rounded-l-none',
                 !startDate && 'text-muted-foreground'
               )}
             >
@@ -128,7 +128,7 @@ export function UnitsGanttView() {
         <Button
           variant={'outline'}
           className={cn(
-            'flex-1 text-left font-normal border-b-0 border-r-0 rounded-b-none rounded-l-none rounded-r-none bg-sidebar hover:bg-background',
+            'flex-1 text-left font-normal border-b-0 border-r-0 rounded-b-none rounded-l-none rounded-r-none',
             !startDate && 'text-muted-foreground'
           )}
           size={'icon'}
@@ -141,7 +141,7 @@ export function UnitsGanttView() {
         <Button
           variant={'outline'}
           className={cn(
-            'flex-1 text-left font-normal border-b-0 rounded-b-none rounded-l-none bg-sidebar hover:bg-background',
+            'flex-1 text-left font-normal border-b-0 rounded-b-none rounded-l-none',
             !startDate && 'text-muted-foreground'
           )}
           size={'icon'}

@@ -31,9 +31,9 @@ export function NavSecondary({
 
   const active = (url: string) => {
     return segments[0] === url.replace('/', '')
-      ? 'bg-sidebar-accent text-sidebar-primary-foreground'
+      ? 'bg-sidebar-accent'
       : segments.length === 0 && url === '/'
-        ? 'bg-sidebar-accent text-sidebar-foreground'
+        ? 'bg-sidebar-accent'
         : ''
   }
 
