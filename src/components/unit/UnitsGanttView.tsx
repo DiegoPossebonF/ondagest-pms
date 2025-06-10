@@ -175,10 +175,12 @@ export function UnitsGanttView() {
             {dates.map((date, index) => (
               <div
                 key={date.day}
-                className={`bg-sidebar/80 ${dates.length === index + 1 ? 'border-b' : 'border-r border-b'} min-w-12 h-10 p-2 flex flex-col items-center justify-center text-xs`}
+                className={`${dates.length === index + 1 ? 'border-b' : 'border-r border-b'} ${date.fullDate.isSame(dayjs(), 'day') ? 'bg-primary/50' : 'bg-sidebar/80'} min-w-12 h-10 p-2 flex flex-col items-center justify-center text-xs`}
               >
-                <span className="text-xs">{date.day}</span>
-                <span className="text-xs font-semibold">{date.week}</span>
+                <span className="text-xs font-semibold">{date.day}</span>
+                <span className="text-xs font-semibold text-primary">
+                  {date.week}
+                </span>
               </div>
             ))}
           </div>
@@ -228,14 +230,14 @@ export function UnitsGanttView() {
                   return (
                     <div
                       key={date.day}
-                      className={`${dates.length === index + 1 ? 'border-b' : 'border-r border-b'} ${date.week === 'dom' || date.week === 'sáb' ? 'bg-sidebar' : 'bg-card'} flex items-center min-w-12 w-full h-8`}
+                      className={`${date.fullDate.isSame(dayjs(), 'day') ? 'bg-primary/30' : ''} ${dates.length === index + 1 ? 'border-b' : 'border-r border-b'} ${date.week === 'dom' || date.week === 'sáb' ? 'bg-sidebar' : 'bg-card'} flex items-center min-w-12 w-full h-8`}
                     >
                       {!isDateInBooking && (
                         <Link href={`/bookings/new`} className="w-full">
                           <Button
                             variant={'ghost'}
                             size={'sm'}
-                            className="rounded-none w-full"
+                            className={`rounded-none w-full`}
                           >
                             <IconPlus className={`h-3 w-3 ${plusAlignment}`} />
                           </Button>
