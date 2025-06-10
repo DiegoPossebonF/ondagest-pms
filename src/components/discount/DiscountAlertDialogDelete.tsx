@@ -1,8 +1,8 @@
 'use client'
 import { deleteDiscount } from '@/app/actions/discount/deleteDiscount'
 import type { Discount } from '@/app/generated/prisma'
-import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,23 +29,18 @@ export function DiscountAlertDialogDelete({
   open,
   setOpen,
 }: DiscountAlertDialogDeleteProps) {
-  const { toast } = useToast()
   const router = useRouter()
 
   const handleDelete = async (discount: Discount) => {
     const result = await deleteDiscount(discount.id)
 
     if (!result.success) {
-      toast({
-        title: 'Erro ao excluir',
+      toast('Erro ao excluir', {
         description: result.msg,
-        variant: 'destructive',
       })
     } else {
-      toast({
-        title: 'Excluído',
+      toast('Excluído', {
         description: result.msg,
-        variant: 'success',
       })
       router.refresh()
     }

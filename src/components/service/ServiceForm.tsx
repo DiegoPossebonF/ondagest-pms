@@ -13,7 +13,6 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { toast } from '@/hooks/use-toast'
 import { cn, formatCurrency, parseCurrencyToNumber } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -27,6 +26,7 @@ import {
   useState,
 } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 import {
   Command,
@@ -106,19 +106,15 @@ export function ServiceForm({
         })
 
     if (action.success) {
-      toast({
-        title: 'Sucesso',
+      toast('Sucesso', {
         description: action.msg,
-        variant: 'success',
       })
       setDialogOpen?.(false)
       router.refresh()
       form.reset()
     } else {
-      toast({
-        title: 'Erro',
+      toast('Erro', {
         description: action.msg,
-        variant: 'destructive',
       })
     }
   }

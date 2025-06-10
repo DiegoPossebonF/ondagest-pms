@@ -13,11 +13,11 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { useToast } from '@/hooks/use-toast'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { type Dispatch, type SetStateAction, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 import { AlertCustom } from '../AlertCustom'
 import { Separator } from '../ui/separator'
@@ -45,7 +45,6 @@ interface GuestFormProps {
 
 export function GuestForm({ guest, setOpen }: GuestFormProps) {
   const router = useRouter()
-  const { toast } = useToast()
   const [loading, setLoading] = useState(false)
 
   const form = useForm<GuestFormValues>({
@@ -89,51 +88,39 @@ export function GuestForm({ guest, setOpen }: GuestFormProps) {
         const data = await updateGuest(values, guest.id)
 
         if (!data.error) {
-          toast({
-            title: 'Sucesso',
-            variant: 'success',
+          toast('Sucesso', {
             description: 'Hóspede atualizado com sucesso',
           })
           setOpen(false)
           router.refresh()
         } else {
-          toast({
-            title: 'Erro',
+          toast('Erro', {
             description: data.error,
-            variant: 'destructive',
           })
         }
       } else {
         const data = await createGuest(values)
 
         if (!data.error) {
-          toast({
-            variant: 'success',
-            title: 'Sucesso',
+          toast('Sucesso', {
             description: 'Hóspede criado com sucesso',
           })
           setOpen(false)
           router.refresh()
         } else {
-          toast({
-            title: 'Erro',
+          toast('Erro', {
             description: data.error,
-            variant: 'destructive',
           })
         }
       }
     } catch (err) {
       if (err instanceof Error) {
-        toast({
-          title: 'Erro',
+        toast('Erro', {
           description: err.message,
-          variant: 'destructive',
         })
       } else {
-        toast({
-          title: 'Erro',
+        toast('Erro', {
           description: 'Erro não tratado - fale com o desenvolvedor',
-          variant: 'destructive',
         })
       }
     } finally {
@@ -146,32 +133,24 @@ export function GuestForm({ guest, setOpen }: GuestFormProps) {
       const data = await deleteGuest(id)
 
       if (!data.error) {
-        toast({
-          title: 'Sucesso',
-          variant: 'success',
+        toast('Sucesso', {
           description: 'Hóspede excluido com sucesso',
         })
         setOpen(false)
         router.refresh()
       } else {
-        toast({
-          title: 'Erro',
+        toast('Erro', {
           description: data.error,
-          variant: 'destructive',
         })
       }
     } catch (err) {
       if (err instanceof Error) {
-        toast({
-          title: 'Erro',
+        toast('Erro', {
           description: err.message,
-          variant: 'destructive',
         })
       } else {
-        toast({
-          title: 'Erro',
+        toast('Erro', {
           description: 'Erro não tratado - fale com o desenvolvedor',
-          variant: 'destructive',
         })
       }
     }

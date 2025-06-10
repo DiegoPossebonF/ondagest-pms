@@ -1,8 +1,8 @@
 'use client'
 import { deleteService } from '@/app/actions/service/deleteService'
 import type { Service } from '@/app/generated/prisma'
-import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,23 +29,18 @@ export function ServiceAlertDialogDelete({
   open,
   setOpen,
 }: ServiceAlertDialogDeleteProps) {
-  const { toast } = useToast()
   const router = useRouter()
 
   const handleDelete = async (service: Service) => {
     const result = await deleteService(service.id)
 
     if (!result.success) {
-      toast({
-        title: 'Erro ao excluir',
+      toast('Erro ao excluir', {
         description: result.msg,
-        variant: 'destructive',
       })
     } else {
-      toast({
-        title: 'Excluído',
+      toast('Excluído', {
         description: 'Pagamento removido com sucesso',
-        variant: 'success',
       })
       router.refresh()
     }

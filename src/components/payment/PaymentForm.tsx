@@ -12,7 +12,6 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { useToast } from '@/hooks/use-toast'
 import { updateBookingPaymentStatus } from '@/lib/actions/updateBookingPaymentStatus'
 import { cn, formatCurrency, parseCurrencyToNumber } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
@@ -22,6 +21,7 @@ import { CalendarIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { type Dispatch, type SetStateAction, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 import { Calendar } from '../ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
@@ -64,7 +64,6 @@ export function PaymentForm({
 }: PaymentFormProps) {
   const [openPopover, setOpenPopover] = useState(false)
   const router = useRouter()
-  const { toast } = useToast()
   const [loading, setLoading] = useState(false)
 
   const form = useForm<PaymentFormValues>({
@@ -109,9 +108,7 @@ export function PaymentForm({
           })
 
       if (action.success) {
-        toast({
-          variant: 'success',
-          title: 'Sucesso',
+        toast('Sucesso', {
           description: payment
             ? 'Pagamento atualizado com sucesso'
             : 'Pagamento lançado com sucesso',
@@ -120,20 +117,16 @@ export function PaymentForm({
         router.refresh()
         openDialog?.(false)
       } else {
-        toast({
-          title: 'Erro',
+        toast('Erro', {
           description: action.msg,
-          variant: 'destructive',
         })
       }
     } catch (err) {
-      toast({
-        title: 'Erro',
+      toast('Erro', {
         description:
           err instanceof Error
             ? err.message
             : 'Erro interno - fale com o desenvolvedor',
-        variant: 'destructive',
       })
     } finally {
       setLoading(false)

@@ -1,8 +1,8 @@
 'use client'
 import { deletePayment } from '@/app/actions/payment/deletePayment'
 import type { Payment } from '@/app/generated/prisma'
-import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,23 +29,18 @@ export function PaymentAlertDialogDelete({
   open,
   setOpen,
 }: PaymentAlertDialogDeleteProps) {
-  const { toast } = useToast()
   const router = useRouter()
 
   const handleDelete = async (payment: Payment) => {
     const result = await deletePayment(payment.id)
 
     if (!result.success) {
-      toast({
-        title: 'Erro ao excluir',
+      toast('Erro ao excluir', {
         description: result.msg,
-        variant: 'destructive',
       })
     } else {
-      toast({
-        title: 'Excluído',
+      toast('Excluído', {
         description: 'Pagamento removido com sucesso',
-        variant: 'success',
       })
       router.refresh()
     }

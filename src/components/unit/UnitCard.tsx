@@ -3,7 +3,6 @@ import calculateBookingValues from '@/app/actions/booking/calculateBookingValues
 import { updateBookingStatus } from '@/app/actions/booking/updateBookingStatus'
 import { BookingStatus } from '@/app/generated/prisma'
 import { useIsMobile } from '@/hooks/use-mobile'
-import { useToast } from '@/hooks/use-toast'
 import {
   STATUS_COLORS,
   STATUS_COLORS_TEXT,
@@ -18,6 +17,7 @@ import { IconDoor } from '@tabler/icons-react'
 import dayjs from 'dayjs'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import { BookingCardButton } from '../booking/BookingCardButton'
 import { BookingDescriptions } from '../booking/BookingDescriptions'
 import { BookingSheet } from '../booking/BookingSheet'
@@ -129,7 +129,6 @@ function getRelevantBooking(
 }
 
 export default function UnitCard({ unit }: UnitCardProps) {
-  const { toast } = useToast()
   const router = useRouter()
   const relevantBooking = getRelevantBooking(unit.bookings)
 
@@ -147,23 +146,19 @@ export default function UnitCard({ unit }: UnitCardProps) {
   const handleFinalizeBooking = async (booking: BookingAllIncludes) => {
     canFinalizeBooking(booking)
       ? await updateBookingStatus(booking.id, 'FINALIZED').then(() => {
-          toast({
-            title: 'Reserva finalizada',
+          toast('Reserva finalizada', {
             description: 'A reserva foi finalizada com sucesso.',
           })
           router.refresh()
         })
-      : toast({
-          variant: 'destructive',
-          title: 'Pagamento pendente',
+      : toast('Pagamento pendente', {
           description: `Ainda faltam ${formatCurrency(calculateBookingValues(booking).totalAll - calculateBookingValues(booking).totalPayment)} para finalizar a reserva.`,
         })
   }
 
   const handleCheckIn = async (booking: BookingAllIncludes) => {
     await updateBookingStatus(booking.id, 'IN_PROGRESS').then(() => {
-      toast({
-        title: 'Check-in realizado',
+      toast('Check-in realizado', {
         description: 'O check-in foi realizado com sucesso.',
       })
       router.refresh()
@@ -173,8 +168,7 @@ export default function UnitCard({ unit }: UnitCardProps) {
   async function handleConfirmWithoutPayment(bookingId: number) {
     try {
       await updateBookingStatus(bookingId, 'CONFIRMED').then(() => {
-        toast({
-          title: 'Confirmado',
+        toast('Confirmado', {
           description: 'A reserva foi confirmada com sucesso.',
         })
         router.refresh()
@@ -182,8 +176,7 @@ export default function UnitCard({ unit }: UnitCardProps) {
 
       // Atualizar estado ou refetch
     } catch (error) {
-      toast({
-        title: 'Erro ao confirmar',
+      toast('Erro ao confirmar', {
         description: 'Ocorreu um erro ao confirmar a reserva.',
       })
     }

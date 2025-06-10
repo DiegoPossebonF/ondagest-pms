@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 
-import { Toaster } from '@/components/ui/toaster'
+import { Toaster } from '@/components/ui/sonner'
 
 import dayjs from 'dayjs'
 import 'dayjs/locale/pt-br'
@@ -19,11 +19,11 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-      <html lang="pt-BR">
-        <body>
-          {children}
-          <Toaster />
-        </body>
-      </html>
+    <html lang="pt-BR">
+      <body>
+        {children}
+        <Toaster position="top-center" closeButton={true} />
+      </body>
+    </html>
   )
 }

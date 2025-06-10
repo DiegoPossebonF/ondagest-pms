@@ -1,4 +1,4 @@
-import BookingsTable from '@/components/booking/BookingsTable'
+import { BookingsList } from '@/components/booking/BookingsList'
 import db from '@/lib/db'
 import type { BookingAllIncludes } from '@/types/booking'
 
@@ -16,7 +16,7 @@ export default async function BookingsPage() {
 
   return (
     <div className="p-6">
-      <BookingsTable bookings={bookings} />
+      <BookingsList bookings={bookings} />
     </div>
   )
 }

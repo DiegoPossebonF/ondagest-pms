@@ -12,7 +12,6 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { useMediaQuery } from '@/hooks/use-media-query'
-import { useToast } from '@/hooks/use-toast'
 import { getDifferenceInDays } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import type { Rate } from '@/types/rate'
@@ -22,6 +21,7 @@ import type dayjs from 'dayjs'
 import { useRouter } from 'next/navigation'
 import { type Dispatch, type SetStateAction, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 import { GuestCombobox } from '../guest/GuestCombobox'
 import { Input } from '../ui/input'
@@ -72,7 +72,6 @@ export function BookingForm({
   setBookings,
 }: BookingFormProps) {
   const router = useRouter()
-  const { toast } = useToast()
   const [loading, setLoading] = useState(false)
   const [rates, setRates] = useState<Rate[]>(booking?.unit?.type?.rates || [])
   const [daily, setDaily] = useState(0)
@@ -156,9 +155,7 @@ export function BookingForm({
         const data = await updateBooking(values, booking.id)
 
         if (!data.error) {
-          toast({
-            variant: 'success',
-            title: 'Sucesso',
+          toast('Sucesso', {
             description: 'Reserva atualizada com sucesso',
           })
           setBookings?.(prev => {
@@ -166,44 +163,34 @@ export function BookingForm({
           })
           router.refresh()
         } else {
-          toast({
-            title: 'Erro',
+          toast('Erro', {
             description: data.error,
-            variant: 'destructive',
           })
         }
       } else {
         const data = await createBooking(values)
 
         if (!data.error) {
-          toast({
-            variant: 'success',
-            title: 'Sucesso',
+          toast('Sucesso', {
             description: 'Reserva criada com sucesso',
           })
 
           setBookings?.(prev => [...prev, data])
           router.refresh()
         } else {
-          toast({
-            title: 'Erro',
+          toast('Erro', {
             description: data.error,
-            variant: 'destructive',
           })
         }
       }
     } catch (error) {
       if (error instanceof Error) {
-        toast({
-          title: 'Erro',
+        toast('Erro', {
           description: error.message,
-          variant: 'destructive',
         })
       } else {
-        toast({
-          title: 'Erro',
+        toast('Erro', {
           description: 'Erro desconhecido, tente novamente mais tarde',
-          variant: 'destructive',
         })
       }
     } finally {

@@ -100,48 +100,6 @@ export const STATUS_COLORS_TEXT_ONLY_HOVER = {
   NO_SHOW: 'hover:text-zinc-700 transition-colors duration-200 ease-in-out',
 }
 
-/*
-export const STATUS_COLORS = {
-  PENDING:
-    'bg-yellow-400 hover:bg-yellow-500 transition-colors duration-300 ease-in-out',
-  CONFIRMED:
-    'bg-green-400 hover:bg-green-500 transition-colors duration-300 ease-in-out',
-  CHECKED_IN:
-    'bg-orange-400 hover:bg-orange-500 transition-colors duration-300 ease-in-out',
-  IN_PROGRESS:
-    'bg-blue-400 hover:bg-blue-500 transition-colors duration-300 ease-in-out',
-  CHECKED_OUT:
-    'bg-red-400 hover:bg-red-500 transition-colors duration-300 ease-in-out',
-  FINALIZED:
-    'bg-gray-400 hover:bg-gray-500 transition-colors duration-300 ease-in-out',
-  CANCELLED:
-    'bg-red-800 hover:bg-red-900 transition-colors duration-300 ease-in-out',
-  NO_SHOW:
-    'bg-gray-800 hover:bg-gray-900 transition-colors duration-300 ease-in-out',
-}
-    
-
-export const STATUS_COLORS_TEXT = {
-  PENDING:
-    'text-yellow-400 hover:text-yellow-500 transition-colors duration-300 ease-in-out',
-  CONFIRMED:
-    'text-green-400 hover:text-green-500 transition-colors duration-300 ease-in-out',
-  CHECKED_IN:
-    'text-orange-400 hover:text-orange-500 transition-colors duration-300 ease-in-out',
-  IN_PROGRESS:
-    'text-blue-400 hover:text-blue-500 transition-colors duration-300 ease-in-out',
-  CHECKED_OUT:
-    'text-red-300 hover:text-red-400 transition-colors duration-300 ease-in-out',
-  FINALIZED:
-    'text-gray-400 hover:text-gray-500 transition-colors duration-300 ease-in-out',
-  CANCELLED:
-    'text-red-800 hover:text-red-900 transition-colors duration-300 ease-in-out',
-  NO_SHOW:
-    'text-gray-800 hover:text-gray-900 transition-colors duration-300 ease-in-out',
-}
-
-*/
-
 export const PAYMENT_TYPE_LABELS = {
   NONE: 'Selecione o tipo de pagamento...',
   PIX: 'PIX',
@@ -173,6 +131,11 @@ export const STATUS_PAYMENT_COLORS_TEXT = {
     'text-yellow-500 hover:text-yellow-600 transition-colors duration-300 ease-in-out',
   COMPLETED:
     'text-emerald-500 hover:text-emerald-600 transition-colors duration-300 ease-in-out',
+}
+
+export const STATUS_PAYMENT_LABELS = {
+  PENDING: 'Pendente',
+  COMPLETED: 'Pago',
 }
 
 export const formatCurrency = (amount: number) =>
