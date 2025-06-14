@@ -39,6 +39,11 @@ export type Unit = $Result.DefaultSelection<Prisma.$UnitPayload>
  */
 export type Booking = $Result.DefaultSelection<Prisma.$BookingPayload>
 /**
+ * Model Rate
+ * 
+ */
+export type Rate = $Result.DefaultSelection<Prisma.$RatePayload>
+/**
  * Model Service
  * 
  */
@@ -48,11 +53,6 @@ export type Service = $Result.DefaultSelection<Prisma.$ServicePayload>
  * 
  */
 export type Discount = $Result.DefaultSelection<Prisma.$DiscountPayload>
-/**
- * Model Rate
- * 
- */
-export type Rate = $Result.DefaultSelection<Prisma.$RatePayload>
 /**
  * Model Payment
  * 
@@ -298,6 +298,16 @@ export class PrismaClient<
   get booking(): Prisma.BookingDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.rate`: Exposes CRUD operations for the **Rate** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Rates
+    * const rates = await prisma.rate.findMany()
+    * ```
+    */
+  get rate(): Prisma.RateDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.service`: Exposes CRUD operations for the **Service** model.
     * Example usage:
     * ```ts
@@ -316,16 +326,6 @@ export class PrismaClient<
     * ```
     */
   get discount(): Prisma.DiscountDelegate<ExtArgs, ClientOptions>;
-
-  /**
-   * `prisma.rate`: Exposes CRUD operations for the **Rate** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more Rates
-    * const rates = await prisma.rate.findMany()
-    * ```
-    */
-  get rate(): Prisma.RateDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.payment`: Exposes CRUD operations for the **Payment** model.
@@ -394,8 +394,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.8.2
-   * Query Engine version: 2060c79ba17c6bb9f5823312b6f6b7f4a845738e
+   * Prisma Client JS version: 6.7.0
+   * Query Engine version: 3cff47a7f5d65c3ea74883f1d736e41d68ce91ed
    */
   export type PrismaVersion = {
     client: string
@@ -781,9 +781,9 @@ export namespace Prisma {
     UnitType: 'UnitType',
     Unit: 'Unit',
     Booking: 'Booking',
+    Rate: 'Rate',
     Service: 'Service',
     Discount: 'Discount',
-    Rate: 'Rate',
     Payment: 'Payment'
   };
 
@@ -803,7 +803,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "guest" | "unitType" | "unit" | "booking" | "service" | "discount" | "rate" | "payment"
+      modelProps: "user" | "guest" | "unitType" | "unit" | "booking" | "rate" | "service" | "discount" | "payment"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1177,6 +1177,80 @@ export namespace Prisma {
           }
         }
       }
+      Rate: {
+        payload: Prisma.$RatePayload<ExtArgs>
+        fields: Prisma.RateFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RateFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RatePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RateFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RatePayload>
+          }
+          findFirst: {
+            args: Prisma.RateFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RatePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RateFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RatePayload>
+          }
+          findMany: {
+            args: Prisma.RateFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RatePayload>[]
+          }
+          create: {
+            args: Prisma.RateCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RatePayload>
+          }
+          createMany: {
+            args: Prisma.RateCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.RateCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RatePayload>[]
+          }
+          delete: {
+            args: Prisma.RateDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RatePayload>
+          }
+          update: {
+            args: Prisma.RateUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RatePayload>
+          }
+          deleteMany: {
+            args: Prisma.RateDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RateUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.RateUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RatePayload>[]
+          }
+          upsert: {
+            args: Prisma.RateUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RatePayload>
+          }
+          aggregate: {
+            args: Prisma.RateAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRate>
+          }
+          groupBy: {
+            args: Prisma.RateGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RateGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RateCountArgs<ExtArgs>
+            result: $Utils.Optional<RateCountAggregateOutputType> | number
+          }
+        }
+      }
       Service: {
         payload: Prisma.$ServicePayload<ExtArgs>
         fields: Prisma.ServiceFieldRefs
@@ -1322,80 +1396,6 @@ export namespace Prisma {
           count: {
             args: Prisma.DiscountCountArgs<ExtArgs>
             result: $Utils.Optional<DiscountCountAggregateOutputType> | number
-          }
-        }
-      }
-      Rate: {
-        payload: Prisma.$RatePayload<ExtArgs>
-        fields: Prisma.RateFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.RateFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RatePayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.RateFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RatePayload>
-          }
-          findFirst: {
-            args: Prisma.RateFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RatePayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.RateFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RatePayload>
-          }
-          findMany: {
-            args: Prisma.RateFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RatePayload>[]
-          }
-          create: {
-            args: Prisma.RateCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RatePayload>
-          }
-          createMany: {
-            args: Prisma.RateCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.RateCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RatePayload>[]
-          }
-          delete: {
-            args: Prisma.RateDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RatePayload>
-          }
-          update: {
-            args: Prisma.RateUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RatePayload>
-          }
-          deleteMany: {
-            args: Prisma.RateDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.RateUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.RateUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RatePayload>[]
-          }
-          upsert: {
-            args: Prisma.RateUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RatePayload>
-          }
-          aggregate: {
-            args: Prisma.RateAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateRate>
-          }
-          groupBy: {
-            args: Prisma.RateGroupByArgs<ExtArgs>
-            result: $Utils.Optional<RateGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.RateCountArgs<ExtArgs>
-            result: $Utils.Optional<RateCountAggregateOutputType> | number
           }
         }
       }
@@ -1562,9 +1562,9 @@ export namespace Prisma {
     unitType?: UnitTypeOmit
     unit?: UnitOmit
     booking?: BookingOmit
+    rate?: RateOmit
     service?: ServiceOmit
     discount?: DiscountOmit
-    rate?: RateOmit
     payment?: PaymentOmit
   }
 
@@ -1803,6 +1803,37 @@ export namespace Prisma {
    */
   export type BookingCountOutputTypeCountDiscountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: DiscountWhereInput
+  }
+
+
+  /**
+   * Count Type RateCountOutputType
+   */
+
+  export type RateCountOutputType = {
+    bookings: number
+  }
+
+  export type RateCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    bookings?: boolean | RateCountOutputTypeCountBookingsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * RateCountOutputType without action
+   */
+  export type RateCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RateCountOutputType
+     */
+    select?: RateCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * RateCountOutputType without action
+   */
+  export type RateCountOutputTypeCountBookingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BookingWhereInput
   }
 
 
@@ -6180,6 +6211,7 @@ export namespace Prisma {
     id: number | null
     guestId: string | null
     unitId: string | null
+    rateId: string | null
     startDate: Date | null
     endDate: Date | null
     status: $Enums.BookingStatus | null
@@ -6194,6 +6226,7 @@ export namespace Prisma {
     id: number | null
     guestId: string | null
     unitId: string | null
+    rateId: string | null
     startDate: Date | null
     endDate: Date | null
     status: $Enums.BookingStatus | null
@@ -6208,6 +6241,7 @@ export namespace Prisma {
     id: number
     guestId: number
     unitId: number
+    rateId: number
     startDate: number
     endDate: number
     status: number
@@ -6236,6 +6270,7 @@ export namespace Prisma {
     id?: true
     guestId?: true
     unitId?: true
+    rateId?: true
     startDate?: true
     endDate?: true
     status?: true
@@ -6250,6 +6285,7 @@ export namespace Prisma {
     id?: true
     guestId?: true
     unitId?: true
+    rateId?: true
     startDate?: true
     endDate?: true
     status?: true
@@ -6264,6 +6300,7 @@ export namespace Prisma {
     id?: true
     guestId?: true
     unitId?: true
+    rateId?: true
     startDate?: true
     endDate?: true
     status?: true
@@ -6365,6 +6402,7 @@ export namespace Prisma {
     id: number
     guestId: string
     unitId: string
+    rateId: string
     startDate: Date
     endDate: Date
     status: $Enums.BookingStatus
@@ -6398,6 +6436,7 @@ export namespace Prisma {
     id?: boolean
     guestId?: boolean
     unitId?: boolean
+    rateId?: boolean
     startDate?: boolean
     endDate?: boolean
     status?: boolean
@@ -6408,6 +6447,7 @@ export namespace Prisma {
     updatedAt?: boolean
     guest?: boolean | GuestDefaultArgs<ExtArgs>
     unit?: boolean | UnitDefaultArgs<ExtArgs>
+    rate?: boolean | RateDefaultArgs<ExtArgs>
     payments?: boolean | Booking$paymentsArgs<ExtArgs>
     services?: boolean | Booking$servicesArgs<ExtArgs>
     discounts?: boolean | Booking$discountsArgs<ExtArgs>
@@ -6418,6 +6458,7 @@ export namespace Prisma {
     id?: boolean
     guestId?: boolean
     unitId?: boolean
+    rateId?: boolean
     startDate?: boolean
     endDate?: boolean
     status?: boolean
@@ -6428,12 +6469,14 @@ export namespace Prisma {
     updatedAt?: boolean
     guest?: boolean | GuestDefaultArgs<ExtArgs>
     unit?: boolean | UnitDefaultArgs<ExtArgs>
+    rate?: boolean | RateDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["booking"]>
 
   export type BookingSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     guestId?: boolean
     unitId?: boolean
+    rateId?: boolean
     startDate?: boolean
     endDate?: boolean
     status?: boolean
@@ -6444,12 +6487,14 @@ export namespace Prisma {
     updatedAt?: boolean
     guest?: boolean | GuestDefaultArgs<ExtArgs>
     unit?: boolean | UnitDefaultArgs<ExtArgs>
+    rate?: boolean | RateDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["booking"]>
 
   export type BookingSelectScalar = {
     id?: boolean
     guestId?: boolean
     unitId?: boolean
+    rateId?: boolean
     startDate?: boolean
     endDate?: boolean
     status?: boolean
@@ -6460,10 +6505,11 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type BookingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "guestId" | "unitId" | "startDate" | "endDate" | "status" | "numberOfPeople" | "totalAmount" | "paymentStatus" | "createdAt" | "updatedAt", ExtArgs["result"]["booking"]>
+  export type BookingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "guestId" | "unitId" | "rateId" | "startDate" | "endDate" | "status" | "numberOfPeople" | "totalAmount" | "paymentStatus" | "createdAt" | "updatedAt", ExtArgs["result"]["booking"]>
   export type BookingInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     guest?: boolean | GuestDefaultArgs<ExtArgs>
     unit?: boolean | UnitDefaultArgs<ExtArgs>
+    rate?: boolean | RateDefaultArgs<ExtArgs>
     payments?: boolean | Booking$paymentsArgs<ExtArgs>
     services?: boolean | Booking$servicesArgs<ExtArgs>
     discounts?: boolean | Booking$discountsArgs<ExtArgs>
@@ -6472,10 +6518,12 @@ export namespace Prisma {
   export type BookingIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     guest?: boolean | GuestDefaultArgs<ExtArgs>
     unit?: boolean | UnitDefaultArgs<ExtArgs>
+    rate?: boolean | RateDefaultArgs<ExtArgs>
   }
   export type BookingIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     guest?: boolean | GuestDefaultArgs<ExtArgs>
     unit?: boolean | UnitDefaultArgs<ExtArgs>
+    rate?: boolean | RateDefaultArgs<ExtArgs>
   }
 
   export type $BookingPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6483,6 +6531,7 @@ export namespace Prisma {
     objects: {
       guest: Prisma.$GuestPayload<ExtArgs>
       unit: Prisma.$UnitPayload<ExtArgs>
+      rate: Prisma.$RatePayload<ExtArgs>
       payments: Prisma.$PaymentPayload<ExtArgs>[]
       services: Prisma.$ServicePayload<ExtArgs>[]
       discounts: Prisma.$DiscountPayload<ExtArgs>[]
@@ -6491,6 +6540,7 @@ export namespace Prisma {
       id: number
       guestId: string
       unitId: string
+      rateId: string
       startDate: Date
       endDate: Date
       status: $Enums.BookingStatus
@@ -6895,6 +6945,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     guest<T extends GuestDefaultArgs<ExtArgs> = {}>(args?: Subset<T, GuestDefaultArgs<ExtArgs>>): Prisma__GuestClient<$Result.GetResult<Prisma.$GuestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     unit<T extends UnitDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UnitDefaultArgs<ExtArgs>>): Prisma__UnitClient<$Result.GetResult<Prisma.$UnitPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    rate<T extends RateDefaultArgs<ExtArgs> = {}>(args?: Subset<T, RateDefaultArgs<ExtArgs>>): Prisma__RateClient<$Result.GetResult<Prisma.$RatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     payments<T extends Booking$paymentsArgs<ExtArgs> = {}>(args?: Subset<T, Booking$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     services<T extends Booking$servicesArgs<ExtArgs> = {}>(args?: Subset<T, Booking$servicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     discounts<T extends Booking$discountsArgs<ExtArgs> = {}>(args?: Subset<T, Booking$discountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DiscountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -6930,6 +6981,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Booking", 'Int'>
     readonly guestId: FieldRef<"Booking", 'String'>
     readonly unitId: FieldRef<"Booking", 'String'>
+    readonly rateId: FieldRef<"Booking", 'String'>
     readonly startDate: FieldRef<"Booking", 'DateTime'>
     readonly endDate: FieldRef<"Booking", 'DateTime'>
     readonly status: FieldRef<"Booking", 'BookingStatus'>
@@ -7419,6 +7471,1156 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: BookingInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Rate
+   */
+
+  export type AggregateRate = {
+    _count: RateCountAggregateOutputType | null
+    _avg: RateAvgAggregateOutputType | null
+    _sum: RateSumAggregateOutputType | null
+    _min: RateMinAggregateOutputType | null
+    _max: RateMaxAggregateOutputType | null
+  }
+
+  export type RateAvgAggregateOutputType = {
+    value: number | null
+    numberOfPeople: number | null
+  }
+
+  export type RateSumAggregateOutputType = {
+    value: number | null
+    numberOfPeople: number | null
+  }
+
+  export type RateMinAggregateOutputType = {
+    id: string | null
+    typeId: string | null
+    name: string | null
+    value: number | null
+    numberOfPeople: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RateMaxAggregateOutputType = {
+    id: string | null
+    typeId: string | null
+    name: string | null
+    value: number | null
+    numberOfPeople: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RateCountAggregateOutputType = {
+    id: number
+    typeId: number
+    name: number
+    value: number
+    numberOfPeople: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type RateAvgAggregateInputType = {
+    value?: true
+    numberOfPeople?: true
+  }
+
+  export type RateSumAggregateInputType = {
+    value?: true
+    numberOfPeople?: true
+  }
+
+  export type RateMinAggregateInputType = {
+    id?: true
+    typeId?: true
+    name?: true
+    value?: true
+    numberOfPeople?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RateMaxAggregateInputType = {
+    id?: true
+    typeId?: true
+    name?: true
+    value?: true
+    numberOfPeople?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RateCountAggregateInputType = {
+    id?: true
+    typeId?: true
+    name?: true
+    value?: true
+    numberOfPeople?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type RateAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Rate to aggregate.
+     */
+    where?: RateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Rates to fetch.
+     */
+    orderBy?: RateOrderByWithRelationInput | RateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Rates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Rates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Rates
+    **/
+    _count?: true | RateCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: RateAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RateSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RateMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RateMaxAggregateInputType
+  }
+
+  export type GetRateAggregateType<T extends RateAggregateArgs> = {
+        [P in keyof T & keyof AggregateRate]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRate[P]>
+      : GetScalarType<T[P], AggregateRate[P]>
+  }
+
+
+
+
+  export type RateGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RateWhereInput
+    orderBy?: RateOrderByWithAggregationInput | RateOrderByWithAggregationInput[]
+    by: RateScalarFieldEnum[] | RateScalarFieldEnum
+    having?: RateScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RateCountAggregateInputType | true
+    _avg?: RateAvgAggregateInputType
+    _sum?: RateSumAggregateInputType
+    _min?: RateMinAggregateInputType
+    _max?: RateMaxAggregateInputType
+  }
+
+  export type RateGroupByOutputType = {
+    id: string
+    typeId: string
+    name: string
+    value: number
+    numberOfPeople: number
+    createdAt: Date
+    updatedAt: Date
+    _count: RateCountAggregateOutputType | null
+    _avg: RateAvgAggregateOutputType | null
+    _sum: RateSumAggregateOutputType | null
+    _min: RateMinAggregateOutputType | null
+    _max: RateMaxAggregateOutputType | null
+  }
+
+  type GetRateGroupByPayload<T extends RateGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RateGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RateGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RateGroupByOutputType[P]>
+            : GetScalarType<T[P], RateGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RateSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    typeId?: boolean
+    name?: boolean
+    value?: boolean
+    numberOfPeople?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    type?: boolean | UnitTypeDefaultArgs<ExtArgs>
+    bookings?: boolean | Rate$bookingsArgs<ExtArgs>
+    _count?: boolean | RateCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["rate"]>
+
+  export type RateSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    typeId?: boolean
+    name?: boolean
+    value?: boolean
+    numberOfPeople?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    type?: boolean | UnitTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["rate"]>
+
+  export type RateSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    typeId?: boolean
+    name?: boolean
+    value?: boolean
+    numberOfPeople?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    type?: boolean | UnitTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["rate"]>
+
+  export type RateSelectScalar = {
+    id?: boolean
+    typeId?: boolean
+    name?: boolean
+    value?: boolean
+    numberOfPeople?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type RateOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "typeId" | "name" | "value" | "numberOfPeople" | "createdAt" | "updatedAt", ExtArgs["result"]["rate"]>
+  export type RateInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    type?: boolean | UnitTypeDefaultArgs<ExtArgs>
+    bookings?: boolean | Rate$bookingsArgs<ExtArgs>
+    _count?: boolean | RateCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type RateIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    type?: boolean | UnitTypeDefaultArgs<ExtArgs>
+  }
+  export type RateIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    type?: boolean | UnitTypeDefaultArgs<ExtArgs>
+  }
+
+  export type $RatePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Rate"
+    objects: {
+      type: Prisma.$UnitTypePayload<ExtArgs>
+      bookings: Prisma.$BookingPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      typeId: string
+      name: string
+      value: number
+      numberOfPeople: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["rate"]>
+    composites: {}
+  }
+
+  type RateGetPayload<S extends boolean | null | undefined | RateDefaultArgs> = $Result.GetResult<Prisma.$RatePayload, S>
+
+  type RateCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RateFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RateCountAggregateInputType | true
+    }
+
+  export interface RateDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Rate'], meta: { name: 'Rate' } }
+    /**
+     * Find zero or one Rate that matches the filter.
+     * @param {RateFindUniqueArgs} args - Arguments to find a Rate
+     * @example
+     * // Get one Rate
+     * const rate = await prisma.rate.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RateFindUniqueArgs>(args: SelectSubset<T, RateFindUniqueArgs<ExtArgs>>): Prisma__RateClient<$Result.GetResult<Prisma.$RatePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Rate that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RateFindUniqueOrThrowArgs} args - Arguments to find a Rate
+     * @example
+     * // Get one Rate
+     * const rate = await prisma.rate.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RateFindUniqueOrThrowArgs>(args: SelectSubset<T, RateFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RateClient<$Result.GetResult<Prisma.$RatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Rate that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RateFindFirstArgs} args - Arguments to find a Rate
+     * @example
+     * // Get one Rate
+     * const rate = await prisma.rate.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RateFindFirstArgs>(args?: SelectSubset<T, RateFindFirstArgs<ExtArgs>>): Prisma__RateClient<$Result.GetResult<Prisma.$RatePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Rate that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RateFindFirstOrThrowArgs} args - Arguments to find a Rate
+     * @example
+     * // Get one Rate
+     * const rate = await prisma.rate.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RateFindFirstOrThrowArgs>(args?: SelectSubset<T, RateFindFirstOrThrowArgs<ExtArgs>>): Prisma__RateClient<$Result.GetResult<Prisma.$RatePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Rates that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RateFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Rates
+     * const rates = await prisma.rate.findMany()
+     * 
+     * // Get first 10 Rates
+     * const rates = await prisma.rate.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const rateWithIdOnly = await prisma.rate.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RateFindManyArgs>(args?: SelectSubset<T, RateFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Rate.
+     * @param {RateCreateArgs} args - Arguments to create a Rate.
+     * @example
+     * // Create one Rate
+     * const Rate = await prisma.rate.create({
+     *   data: {
+     *     // ... data to create a Rate
+     *   }
+     * })
+     * 
+     */
+    create<T extends RateCreateArgs>(args: SelectSubset<T, RateCreateArgs<ExtArgs>>): Prisma__RateClient<$Result.GetResult<Prisma.$RatePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Rates.
+     * @param {RateCreateManyArgs} args - Arguments to create many Rates.
+     * @example
+     * // Create many Rates
+     * const rate = await prisma.rate.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RateCreateManyArgs>(args?: SelectSubset<T, RateCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Rates and returns the data saved in the database.
+     * @param {RateCreateManyAndReturnArgs} args - Arguments to create many Rates.
+     * @example
+     * // Create many Rates
+     * const rate = await prisma.rate.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Rates and only return the `id`
+     * const rateWithIdOnly = await prisma.rate.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RateCreateManyAndReturnArgs>(args?: SelectSubset<T, RateCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RatePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Rate.
+     * @param {RateDeleteArgs} args - Arguments to delete one Rate.
+     * @example
+     * // Delete one Rate
+     * const Rate = await prisma.rate.delete({
+     *   where: {
+     *     // ... filter to delete one Rate
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RateDeleteArgs>(args: SelectSubset<T, RateDeleteArgs<ExtArgs>>): Prisma__RateClient<$Result.GetResult<Prisma.$RatePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Rate.
+     * @param {RateUpdateArgs} args - Arguments to update one Rate.
+     * @example
+     * // Update one Rate
+     * const rate = await prisma.rate.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RateUpdateArgs>(args: SelectSubset<T, RateUpdateArgs<ExtArgs>>): Prisma__RateClient<$Result.GetResult<Prisma.$RatePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Rates.
+     * @param {RateDeleteManyArgs} args - Arguments to filter Rates to delete.
+     * @example
+     * // Delete a few Rates
+     * const { count } = await prisma.rate.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RateDeleteManyArgs>(args?: SelectSubset<T, RateDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Rates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RateUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Rates
+     * const rate = await prisma.rate.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RateUpdateManyArgs>(args: SelectSubset<T, RateUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Rates and returns the data updated in the database.
+     * @param {RateUpdateManyAndReturnArgs} args - Arguments to update many Rates.
+     * @example
+     * // Update many Rates
+     * const rate = await prisma.rate.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Rates and only return the `id`
+     * const rateWithIdOnly = await prisma.rate.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RateUpdateManyAndReturnArgs>(args: SelectSubset<T, RateUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RatePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Rate.
+     * @param {RateUpsertArgs} args - Arguments to update or create a Rate.
+     * @example
+     * // Update or create a Rate
+     * const rate = await prisma.rate.upsert({
+     *   create: {
+     *     // ... data to create a Rate
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Rate we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RateUpsertArgs>(args: SelectSubset<T, RateUpsertArgs<ExtArgs>>): Prisma__RateClient<$Result.GetResult<Prisma.$RatePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Rates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RateCountArgs} args - Arguments to filter Rates to count.
+     * @example
+     * // Count the number of Rates
+     * const count = await prisma.rate.count({
+     *   where: {
+     *     // ... the filter for the Rates we want to count
+     *   }
+     * })
+    **/
+    count<T extends RateCountArgs>(
+      args?: Subset<T, RateCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RateCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Rate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RateAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RateAggregateArgs>(args: Subset<T, RateAggregateArgs>): Prisma.PrismaPromise<GetRateAggregateType<T>>
+
+    /**
+     * Group by Rate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RateGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RateGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RateGroupByArgs['orderBy'] }
+        : { orderBy?: RateGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RateGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRateGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Rate model
+   */
+  readonly fields: RateFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Rate.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RateClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    type<T extends UnitTypeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UnitTypeDefaultArgs<ExtArgs>>): Prisma__UnitTypeClient<$Result.GetResult<Prisma.$UnitTypePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    bookings<T extends Rate$bookingsArgs<ExtArgs> = {}>(args?: Subset<T, Rate$bookingsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BookingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Rate model
+   */
+  interface RateFieldRefs {
+    readonly id: FieldRef<"Rate", 'String'>
+    readonly typeId: FieldRef<"Rate", 'String'>
+    readonly name: FieldRef<"Rate", 'String'>
+    readonly value: FieldRef<"Rate", 'Float'>
+    readonly numberOfPeople: FieldRef<"Rate", 'Int'>
+    readonly createdAt: FieldRef<"Rate", 'DateTime'>
+    readonly updatedAt: FieldRef<"Rate", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Rate findUnique
+   */
+  export type RateFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Rate
+     */
+    select?: RateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Rate
+     */
+    omit?: RateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RateInclude<ExtArgs> | null
+    /**
+     * Filter, which Rate to fetch.
+     */
+    where: RateWhereUniqueInput
+  }
+
+  /**
+   * Rate findUniqueOrThrow
+   */
+  export type RateFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Rate
+     */
+    select?: RateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Rate
+     */
+    omit?: RateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RateInclude<ExtArgs> | null
+    /**
+     * Filter, which Rate to fetch.
+     */
+    where: RateWhereUniqueInput
+  }
+
+  /**
+   * Rate findFirst
+   */
+  export type RateFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Rate
+     */
+    select?: RateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Rate
+     */
+    omit?: RateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RateInclude<ExtArgs> | null
+    /**
+     * Filter, which Rate to fetch.
+     */
+    where?: RateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Rates to fetch.
+     */
+    orderBy?: RateOrderByWithRelationInput | RateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Rates.
+     */
+    cursor?: RateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Rates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Rates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Rates.
+     */
+    distinct?: RateScalarFieldEnum | RateScalarFieldEnum[]
+  }
+
+  /**
+   * Rate findFirstOrThrow
+   */
+  export type RateFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Rate
+     */
+    select?: RateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Rate
+     */
+    omit?: RateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RateInclude<ExtArgs> | null
+    /**
+     * Filter, which Rate to fetch.
+     */
+    where?: RateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Rates to fetch.
+     */
+    orderBy?: RateOrderByWithRelationInput | RateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Rates.
+     */
+    cursor?: RateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Rates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Rates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Rates.
+     */
+    distinct?: RateScalarFieldEnum | RateScalarFieldEnum[]
+  }
+
+  /**
+   * Rate findMany
+   */
+  export type RateFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Rate
+     */
+    select?: RateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Rate
+     */
+    omit?: RateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RateInclude<ExtArgs> | null
+    /**
+     * Filter, which Rates to fetch.
+     */
+    where?: RateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Rates to fetch.
+     */
+    orderBy?: RateOrderByWithRelationInput | RateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Rates.
+     */
+    cursor?: RateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Rates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Rates.
+     */
+    skip?: number
+    distinct?: RateScalarFieldEnum | RateScalarFieldEnum[]
+  }
+
+  /**
+   * Rate create
+   */
+  export type RateCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Rate
+     */
+    select?: RateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Rate
+     */
+    omit?: RateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RateInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Rate.
+     */
+    data: XOR<RateCreateInput, RateUncheckedCreateInput>
+  }
+
+  /**
+   * Rate createMany
+   */
+  export type RateCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Rates.
+     */
+    data: RateCreateManyInput | RateCreateManyInput[]
+  }
+
+  /**
+   * Rate createManyAndReturn
+   */
+  export type RateCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Rate
+     */
+    select?: RateSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Rate
+     */
+    omit?: RateOmit<ExtArgs> | null
+    /**
+     * The data used to create many Rates.
+     */
+    data: RateCreateManyInput | RateCreateManyInput[]
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RateIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Rate update
+   */
+  export type RateUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Rate
+     */
+    select?: RateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Rate
+     */
+    omit?: RateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RateInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Rate.
+     */
+    data: XOR<RateUpdateInput, RateUncheckedUpdateInput>
+    /**
+     * Choose, which Rate to update.
+     */
+    where: RateWhereUniqueInput
+  }
+
+  /**
+   * Rate updateMany
+   */
+  export type RateUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Rates.
+     */
+    data: XOR<RateUpdateManyMutationInput, RateUncheckedUpdateManyInput>
+    /**
+     * Filter which Rates to update
+     */
+    where?: RateWhereInput
+    /**
+     * Limit how many Rates to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Rate updateManyAndReturn
+   */
+  export type RateUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Rate
+     */
+    select?: RateSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Rate
+     */
+    omit?: RateOmit<ExtArgs> | null
+    /**
+     * The data used to update Rates.
+     */
+    data: XOR<RateUpdateManyMutationInput, RateUncheckedUpdateManyInput>
+    /**
+     * Filter which Rates to update
+     */
+    where?: RateWhereInput
+    /**
+     * Limit how many Rates to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RateIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Rate upsert
+   */
+  export type RateUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Rate
+     */
+    select?: RateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Rate
+     */
+    omit?: RateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RateInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Rate to update in case it exists.
+     */
+    where: RateWhereUniqueInput
+    /**
+     * In case the Rate found by the `where` argument doesn't exist, create a new Rate with this data.
+     */
+    create: XOR<RateCreateInput, RateUncheckedCreateInput>
+    /**
+     * In case the Rate was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RateUpdateInput, RateUncheckedUpdateInput>
+  }
+
+  /**
+   * Rate delete
+   */
+  export type RateDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Rate
+     */
+    select?: RateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Rate
+     */
+    omit?: RateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RateInclude<ExtArgs> | null
+    /**
+     * Filter which Rate to delete.
+     */
+    where: RateWhereUniqueInput
+  }
+
+  /**
+   * Rate deleteMany
+   */
+  export type RateDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Rates to delete
+     */
+    where?: RateWhereInput
+    /**
+     * Limit how many Rates to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Rate.bookings
+   */
+  export type Rate$bookingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Booking
+     */
+    select?: BookingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Booking
+     */
+    omit?: BookingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BookingInclude<ExtArgs> | null
+    where?: BookingWhereInput
+    orderBy?: BookingOrderByWithRelationInput | BookingOrderByWithRelationInput[]
+    cursor?: BookingWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BookingScalarFieldEnum | BookingScalarFieldEnum[]
+  }
+
+  /**
+   * Rate without action
+   */
+  export type RateDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Rate
+     */
+    select?: RateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Rate
+     */
+    omit?: RateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RateInclude<ExtArgs> | null
   }
 
 
@@ -9611,1126 +10813,6 @@ export namespace Prisma {
 
 
   /**
-   * Model Rate
-   */
-
-  export type AggregateRate = {
-    _count: RateCountAggregateOutputType | null
-    _avg: RateAvgAggregateOutputType | null
-    _sum: RateSumAggregateOutputType | null
-    _min: RateMinAggregateOutputType | null
-    _max: RateMaxAggregateOutputType | null
-  }
-
-  export type RateAvgAggregateOutputType = {
-    value: number | null
-    numberOfPeople: number | null
-  }
-
-  export type RateSumAggregateOutputType = {
-    value: number | null
-    numberOfPeople: number | null
-  }
-
-  export type RateMinAggregateOutputType = {
-    id: string | null
-    typeId: string | null
-    name: string | null
-    value: number | null
-    numberOfPeople: number | null
-    createdAt: Date | null
-    updatedAt: Date | null
-  }
-
-  export type RateMaxAggregateOutputType = {
-    id: string | null
-    typeId: string | null
-    name: string | null
-    value: number | null
-    numberOfPeople: number | null
-    createdAt: Date | null
-    updatedAt: Date | null
-  }
-
-  export type RateCountAggregateOutputType = {
-    id: number
-    typeId: number
-    name: number
-    value: number
-    numberOfPeople: number
-    createdAt: number
-    updatedAt: number
-    _all: number
-  }
-
-
-  export type RateAvgAggregateInputType = {
-    value?: true
-    numberOfPeople?: true
-  }
-
-  export type RateSumAggregateInputType = {
-    value?: true
-    numberOfPeople?: true
-  }
-
-  export type RateMinAggregateInputType = {
-    id?: true
-    typeId?: true
-    name?: true
-    value?: true
-    numberOfPeople?: true
-    createdAt?: true
-    updatedAt?: true
-  }
-
-  export type RateMaxAggregateInputType = {
-    id?: true
-    typeId?: true
-    name?: true
-    value?: true
-    numberOfPeople?: true
-    createdAt?: true
-    updatedAt?: true
-  }
-
-  export type RateCountAggregateInputType = {
-    id?: true
-    typeId?: true
-    name?: true
-    value?: true
-    numberOfPeople?: true
-    createdAt?: true
-    updatedAt?: true
-    _all?: true
-  }
-
-  export type RateAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Rate to aggregate.
-     */
-    where?: RateWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Rates to fetch.
-     */
-    orderBy?: RateOrderByWithRelationInput | RateOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: RateWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Rates from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Rates.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Rates
-    **/
-    _count?: true | RateCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to average
-    **/
-    _avg?: RateAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: RateSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: RateMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: RateMaxAggregateInputType
-  }
-
-  export type GetRateAggregateType<T extends RateAggregateArgs> = {
-        [P in keyof T & keyof AggregateRate]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateRate[P]>
-      : GetScalarType<T[P], AggregateRate[P]>
-  }
-
-
-
-
-  export type RateGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: RateWhereInput
-    orderBy?: RateOrderByWithAggregationInput | RateOrderByWithAggregationInput[]
-    by: RateScalarFieldEnum[] | RateScalarFieldEnum
-    having?: RateScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: RateCountAggregateInputType | true
-    _avg?: RateAvgAggregateInputType
-    _sum?: RateSumAggregateInputType
-    _min?: RateMinAggregateInputType
-    _max?: RateMaxAggregateInputType
-  }
-
-  export type RateGroupByOutputType = {
-    id: string
-    typeId: string
-    name: string
-    value: number
-    numberOfPeople: number
-    createdAt: Date
-    updatedAt: Date
-    _count: RateCountAggregateOutputType | null
-    _avg: RateAvgAggregateOutputType | null
-    _sum: RateSumAggregateOutputType | null
-    _min: RateMinAggregateOutputType | null
-    _max: RateMaxAggregateOutputType | null
-  }
-
-  type GetRateGroupByPayload<T extends RateGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<RateGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof RateGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], RateGroupByOutputType[P]>
-            : GetScalarType<T[P], RateGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type RateSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    typeId?: boolean
-    name?: boolean
-    value?: boolean
-    numberOfPeople?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    type?: boolean | UnitTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["rate"]>
-
-  export type RateSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    typeId?: boolean
-    name?: boolean
-    value?: boolean
-    numberOfPeople?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    type?: boolean | UnitTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["rate"]>
-
-  export type RateSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    typeId?: boolean
-    name?: boolean
-    value?: boolean
-    numberOfPeople?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    type?: boolean | UnitTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["rate"]>
-
-  export type RateSelectScalar = {
-    id?: boolean
-    typeId?: boolean
-    name?: boolean
-    value?: boolean
-    numberOfPeople?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-  }
-
-  export type RateOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "typeId" | "name" | "value" | "numberOfPeople" | "createdAt" | "updatedAt", ExtArgs["result"]["rate"]>
-  export type RateInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    type?: boolean | UnitTypeDefaultArgs<ExtArgs>
-  }
-  export type RateIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    type?: boolean | UnitTypeDefaultArgs<ExtArgs>
-  }
-  export type RateIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    type?: boolean | UnitTypeDefaultArgs<ExtArgs>
-  }
-
-  export type $RatePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Rate"
-    objects: {
-      type: Prisma.$UnitTypePayload<ExtArgs>
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      typeId: string
-      name: string
-      value: number
-      numberOfPeople: number
-      createdAt: Date
-      updatedAt: Date
-    }, ExtArgs["result"]["rate"]>
-    composites: {}
-  }
-
-  type RateGetPayload<S extends boolean | null | undefined | RateDefaultArgs> = $Result.GetResult<Prisma.$RatePayload, S>
-
-  type RateCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<RateFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: RateCountAggregateInputType | true
-    }
-
-  export interface RateDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Rate'], meta: { name: 'Rate' } }
-    /**
-     * Find zero or one Rate that matches the filter.
-     * @param {RateFindUniqueArgs} args - Arguments to find a Rate
-     * @example
-     * // Get one Rate
-     * const rate = await prisma.rate.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends RateFindUniqueArgs>(args: SelectSubset<T, RateFindUniqueArgs<ExtArgs>>): Prisma__RateClient<$Result.GetResult<Prisma.$RatePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one Rate that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {RateFindUniqueOrThrowArgs} args - Arguments to find a Rate
-     * @example
-     * // Get one Rate
-     * const rate = await prisma.rate.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends RateFindUniqueOrThrowArgs>(args: SelectSubset<T, RateFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RateClient<$Result.GetResult<Prisma.$RatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Rate that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {RateFindFirstArgs} args - Arguments to find a Rate
-     * @example
-     * // Get one Rate
-     * const rate = await prisma.rate.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends RateFindFirstArgs>(args?: SelectSubset<T, RateFindFirstArgs<ExtArgs>>): Prisma__RateClient<$Result.GetResult<Prisma.$RatePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Rate that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {RateFindFirstOrThrowArgs} args - Arguments to find a Rate
-     * @example
-     * // Get one Rate
-     * const rate = await prisma.rate.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends RateFindFirstOrThrowArgs>(args?: SelectSubset<T, RateFindFirstOrThrowArgs<ExtArgs>>): Prisma__RateClient<$Result.GetResult<Prisma.$RatePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more Rates that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {RateFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Rates
-     * const rates = await prisma.rate.findMany()
-     * 
-     * // Get first 10 Rates
-     * const rates = await prisma.rate.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const rateWithIdOnly = await prisma.rate.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends RateFindManyArgs>(args?: SelectSubset<T, RateFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a Rate.
-     * @param {RateCreateArgs} args - Arguments to create a Rate.
-     * @example
-     * // Create one Rate
-     * const Rate = await prisma.rate.create({
-     *   data: {
-     *     // ... data to create a Rate
-     *   }
-     * })
-     * 
-     */
-    create<T extends RateCreateArgs>(args: SelectSubset<T, RateCreateArgs<ExtArgs>>): Prisma__RateClient<$Result.GetResult<Prisma.$RatePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many Rates.
-     * @param {RateCreateManyArgs} args - Arguments to create many Rates.
-     * @example
-     * // Create many Rates
-     * const rate = await prisma.rate.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends RateCreateManyArgs>(args?: SelectSubset<T, RateCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many Rates and returns the data saved in the database.
-     * @param {RateCreateManyAndReturnArgs} args - Arguments to create many Rates.
-     * @example
-     * // Create many Rates
-     * const rate = await prisma.rate.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many Rates and only return the `id`
-     * const rateWithIdOnly = await prisma.rate.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends RateCreateManyAndReturnArgs>(args?: SelectSubset<T, RateCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RatePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a Rate.
-     * @param {RateDeleteArgs} args - Arguments to delete one Rate.
-     * @example
-     * // Delete one Rate
-     * const Rate = await prisma.rate.delete({
-     *   where: {
-     *     // ... filter to delete one Rate
-     *   }
-     * })
-     * 
-     */
-    delete<T extends RateDeleteArgs>(args: SelectSubset<T, RateDeleteArgs<ExtArgs>>): Prisma__RateClient<$Result.GetResult<Prisma.$RatePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one Rate.
-     * @param {RateUpdateArgs} args - Arguments to update one Rate.
-     * @example
-     * // Update one Rate
-     * const rate = await prisma.rate.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends RateUpdateArgs>(args: SelectSubset<T, RateUpdateArgs<ExtArgs>>): Prisma__RateClient<$Result.GetResult<Prisma.$RatePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more Rates.
-     * @param {RateDeleteManyArgs} args - Arguments to filter Rates to delete.
-     * @example
-     * // Delete a few Rates
-     * const { count } = await prisma.rate.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends RateDeleteManyArgs>(args?: SelectSubset<T, RateDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Rates.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {RateUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Rates
-     * const rate = await prisma.rate.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends RateUpdateManyArgs>(args: SelectSubset<T, RateUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Rates and returns the data updated in the database.
-     * @param {RateUpdateManyAndReturnArgs} args - Arguments to update many Rates.
-     * @example
-     * // Update many Rates
-     * const rate = await prisma.rate.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more Rates and only return the `id`
-     * const rateWithIdOnly = await prisma.rate.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends RateUpdateManyAndReturnArgs>(args: SelectSubset<T, RateUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RatePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one Rate.
-     * @param {RateUpsertArgs} args - Arguments to update or create a Rate.
-     * @example
-     * // Update or create a Rate
-     * const rate = await prisma.rate.upsert({
-     *   create: {
-     *     // ... data to create a Rate
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Rate we want to update
-     *   }
-     * })
-     */
-    upsert<T extends RateUpsertArgs>(args: SelectSubset<T, RateUpsertArgs<ExtArgs>>): Prisma__RateClient<$Result.GetResult<Prisma.$RatePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of Rates.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {RateCountArgs} args - Arguments to filter Rates to count.
-     * @example
-     * // Count the number of Rates
-     * const count = await prisma.rate.count({
-     *   where: {
-     *     // ... the filter for the Rates we want to count
-     *   }
-     * })
-    **/
-    count<T extends RateCountArgs>(
-      args?: Subset<T, RateCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], RateCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Rate.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {RateAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends RateAggregateArgs>(args: Subset<T, RateAggregateArgs>): Prisma.PrismaPromise<GetRateAggregateType<T>>
-
-    /**
-     * Group by Rate.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {RateGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends RateGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: RateGroupByArgs['orderBy'] }
-        : { orderBy?: RateGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, RateGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRateGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the Rate model
-   */
-  readonly fields: RateFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Rate.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__RateClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    type<T extends UnitTypeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UnitTypeDefaultArgs<ExtArgs>>): Prisma__UnitTypeClient<$Result.GetResult<Prisma.$UnitTypePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the Rate model
-   */
-  interface RateFieldRefs {
-    readonly id: FieldRef<"Rate", 'String'>
-    readonly typeId: FieldRef<"Rate", 'String'>
-    readonly name: FieldRef<"Rate", 'String'>
-    readonly value: FieldRef<"Rate", 'Float'>
-    readonly numberOfPeople: FieldRef<"Rate", 'Int'>
-    readonly createdAt: FieldRef<"Rate", 'DateTime'>
-    readonly updatedAt: FieldRef<"Rate", 'DateTime'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * Rate findUnique
-   */
-  export type RateFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Rate
-     */
-    select?: RateSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Rate
-     */
-    omit?: RateOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RateInclude<ExtArgs> | null
-    /**
-     * Filter, which Rate to fetch.
-     */
-    where: RateWhereUniqueInput
-  }
-
-  /**
-   * Rate findUniqueOrThrow
-   */
-  export type RateFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Rate
-     */
-    select?: RateSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Rate
-     */
-    omit?: RateOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RateInclude<ExtArgs> | null
-    /**
-     * Filter, which Rate to fetch.
-     */
-    where: RateWhereUniqueInput
-  }
-
-  /**
-   * Rate findFirst
-   */
-  export type RateFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Rate
-     */
-    select?: RateSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Rate
-     */
-    omit?: RateOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RateInclude<ExtArgs> | null
-    /**
-     * Filter, which Rate to fetch.
-     */
-    where?: RateWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Rates to fetch.
-     */
-    orderBy?: RateOrderByWithRelationInput | RateOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Rates.
-     */
-    cursor?: RateWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Rates from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Rates.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Rates.
-     */
-    distinct?: RateScalarFieldEnum | RateScalarFieldEnum[]
-  }
-
-  /**
-   * Rate findFirstOrThrow
-   */
-  export type RateFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Rate
-     */
-    select?: RateSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Rate
-     */
-    omit?: RateOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RateInclude<ExtArgs> | null
-    /**
-     * Filter, which Rate to fetch.
-     */
-    where?: RateWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Rates to fetch.
-     */
-    orderBy?: RateOrderByWithRelationInput | RateOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Rates.
-     */
-    cursor?: RateWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Rates from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Rates.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Rates.
-     */
-    distinct?: RateScalarFieldEnum | RateScalarFieldEnum[]
-  }
-
-  /**
-   * Rate findMany
-   */
-  export type RateFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Rate
-     */
-    select?: RateSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Rate
-     */
-    omit?: RateOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RateInclude<ExtArgs> | null
-    /**
-     * Filter, which Rates to fetch.
-     */
-    where?: RateWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Rates to fetch.
-     */
-    orderBy?: RateOrderByWithRelationInput | RateOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Rates.
-     */
-    cursor?: RateWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Rates from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Rates.
-     */
-    skip?: number
-    distinct?: RateScalarFieldEnum | RateScalarFieldEnum[]
-  }
-
-  /**
-   * Rate create
-   */
-  export type RateCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Rate
-     */
-    select?: RateSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Rate
-     */
-    omit?: RateOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RateInclude<ExtArgs> | null
-    /**
-     * The data needed to create a Rate.
-     */
-    data: XOR<RateCreateInput, RateUncheckedCreateInput>
-  }
-
-  /**
-   * Rate createMany
-   */
-  export type RateCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many Rates.
-     */
-    data: RateCreateManyInput | RateCreateManyInput[]
-  }
-
-  /**
-   * Rate createManyAndReturn
-   */
-  export type RateCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Rate
-     */
-    select?: RateSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Rate
-     */
-    omit?: RateOmit<ExtArgs> | null
-    /**
-     * The data used to create many Rates.
-     */
-    data: RateCreateManyInput | RateCreateManyInput[]
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RateIncludeCreateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * Rate update
-   */
-  export type RateUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Rate
-     */
-    select?: RateSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Rate
-     */
-    omit?: RateOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RateInclude<ExtArgs> | null
-    /**
-     * The data needed to update a Rate.
-     */
-    data: XOR<RateUpdateInput, RateUncheckedUpdateInput>
-    /**
-     * Choose, which Rate to update.
-     */
-    where: RateWhereUniqueInput
-  }
-
-  /**
-   * Rate updateMany
-   */
-  export type RateUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update Rates.
-     */
-    data: XOR<RateUpdateManyMutationInput, RateUncheckedUpdateManyInput>
-    /**
-     * Filter which Rates to update
-     */
-    where?: RateWhereInput
-    /**
-     * Limit how many Rates to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Rate updateManyAndReturn
-   */
-  export type RateUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Rate
-     */
-    select?: RateSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Rate
-     */
-    omit?: RateOmit<ExtArgs> | null
-    /**
-     * The data used to update Rates.
-     */
-    data: XOR<RateUpdateManyMutationInput, RateUncheckedUpdateManyInput>
-    /**
-     * Filter which Rates to update
-     */
-    where?: RateWhereInput
-    /**
-     * Limit how many Rates to update.
-     */
-    limit?: number
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RateIncludeUpdateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * Rate upsert
-   */
-  export type RateUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Rate
-     */
-    select?: RateSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Rate
-     */
-    omit?: RateOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RateInclude<ExtArgs> | null
-    /**
-     * The filter to search for the Rate to update in case it exists.
-     */
-    where: RateWhereUniqueInput
-    /**
-     * In case the Rate found by the `where` argument doesn't exist, create a new Rate with this data.
-     */
-    create: XOR<RateCreateInput, RateUncheckedCreateInput>
-    /**
-     * In case the Rate was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<RateUpdateInput, RateUncheckedUpdateInput>
-  }
-
-  /**
-   * Rate delete
-   */
-  export type RateDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Rate
-     */
-    select?: RateSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Rate
-     */
-    omit?: RateOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RateInclude<ExtArgs> | null
-    /**
-     * Filter which Rate to delete.
-     */
-    where: RateWhereUniqueInput
-  }
-
-  /**
-   * Rate deleteMany
-   */
-  export type RateDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Rates to delete
-     */
-    where?: RateWhereInput
-    /**
-     * Limit how many Rates to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * Rate without action
-   */
-  export type RateDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Rate
-     */
-    select?: RateSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Rate
-     */
-    omit?: RateOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: RateInclude<ExtArgs> | null
-  }
-
-
-  /**
    * Model Payment
    */
 
@@ -11914,6 +11996,7 @@ export namespace Prisma {
     id: 'id',
     guestId: 'guestId',
     unitId: 'unitId',
+    rateId: 'rateId',
     startDate: 'startDate',
     endDate: 'endDate',
     status: 'status',
@@ -11925,6 +12008,19 @@ export namespace Prisma {
   };
 
   export type BookingScalarFieldEnum = (typeof BookingScalarFieldEnum)[keyof typeof BookingScalarFieldEnum]
+
+
+  export const RateScalarFieldEnum: {
+    id: 'id',
+    typeId: 'typeId',
+    name: 'name',
+    value: 'value',
+    numberOfPeople: 'numberOfPeople',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type RateScalarFieldEnum = (typeof RateScalarFieldEnum)[keyof typeof RateScalarFieldEnum]
 
 
   export const ServiceScalarFieldEnum: {
@@ -11947,19 +12043,6 @@ export namespace Prisma {
   };
 
   export type DiscountScalarFieldEnum = (typeof DiscountScalarFieldEnum)[keyof typeof DiscountScalarFieldEnum]
-
-
-  export const RateScalarFieldEnum: {
-    id: 'id',
-    typeId: 'typeId',
-    name: 'name',
-    value: 'value',
-    numberOfPeople: 'numberOfPeople',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
-  };
-
-  export type RateScalarFieldEnum = (typeof RateScalarFieldEnum)[keyof typeof RateScalarFieldEnum]
 
 
   export const PaymentScalarFieldEnum: {
@@ -12312,6 +12395,7 @@ export namespace Prisma {
     id?: IntFilter<"Booking"> | number
     guestId?: StringFilter<"Booking"> | string
     unitId?: StringFilter<"Booking"> | string
+    rateId?: StringFilter<"Booking"> | string
     startDate?: DateTimeFilter<"Booking"> | Date | string
     endDate?: DateTimeFilter<"Booking"> | Date | string
     status?: EnumBookingStatusFilter<"Booking"> | $Enums.BookingStatus
@@ -12322,6 +12406,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Booking"> | Date | string
     guest?: XOR<GuestScalarRelationFilter, GuestWhereInput>
     unit?: XOR<UnitScalarRelationFilter, UnitWhereInput>
+    rate?: XOR<RateScalarRelationFilter, RateWhereInput>
     payments?: PaymentListRelationFilter
     services?: ServiceListRelationFilter
     discounts?: DiscountListRelationFilter
@@ -12331,6 +12416,7 @@ export namespace Prisma {
     id?: SortOrder
     guestId?: SortOrder
     unitId?: SortOrder
+    rateId?: SortOrder
     startDate?: SortOrder
     endDate?: SortOrder
     status?: SortOrder
@@ -12341,6 +12427,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     guest?: GuestOrderByWithRelationInput
     unit?: UnitOrderByWithRelationInput
+    rate?: RateOrderByWithRelationInput
     payments?: PaymentOrderByRelationAggregateInput
     services?: ServiceOrderByRelationAggregateInput
     discounts?: DiscountOrderByRelationAggregateInput
@@ -12353,6 +12440,7 @@ export namespace Prisma {
     NOT?: BookingWhereInput | BookingWhereInput[]
     guestId?: StringFilter<"Booking"> | string
     unitId?: StringFilter<"Booking"> | string
+    rateId?: StringFilter<"Booking"> | string
     startDate?: DateTimeFilter<"Booking"> | Date | string
     endDate?: DateTimeFilter<"Booking"> | Date | string
     status?: EnumBookingStatusFilter<"Booking"> | $Enums.BookingStatus
@@ -12363,6 +12451,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Booking"> | Date | string
     guest?: XOR<GuestScalarRelationFilter, GuestWhereInput>
     unit?: XOR<UnitScalarRelationFilter, UnitWhereInput>
+    rate?: XOR<RateScalarRelationFilter, RateWhereInput>
     payments?: PaymentListRelationFilter
     services?: ServiceListRelationFilter
     discounts?: DiscountListRelationFilter
@@ -12372,6 +12461,7 @@ export namespace Prisma {
     id?: SortOrder
     guestId?: SortOrder
     unitId?: SortOrder
+    rateId?: SortOrder
     startDate?: SortOrder
     endDate?: SortOrder
     status?: SortOrder
@@ -12394,6 +12484,7 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Booking"> | number
     guestId?: StringWithAggregatesFilter<"Booking"> | string
     unitId?: StringWithAggregatesFilter<"Booking"> | string
+    rateId?: StringWithAggregatesFilter<"Booking"> | string
     startDate?: DateTimeWithAggregatesFilter<"Booking"> | Date | string
     endDate?: DateTimeWithAggregatesFilter<"Booking"> | Date | string
     status?: EnumBookingStatusWithAggregatesFilter<"Booking"> | $Enums.BookingStatus
@@ -12402,6 +12493,76 @@ export namespace Prisma {
     paymentStatus?: EnumPaymentStatusWithAggregatesFilter<"Booking"> | $Enums.PaymentStatus
     createdAt?: DateTimeWithAggregatesFilter<"Booking"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Booking"> | Date | string
+  }
+
+  export type RateWhereInput = {
+    AND?: RateWhereInput | RateWhereInput[]
+    OR?: RateWhereInput[]
+    NOT?: RateWhereInput | RateWhereInput[]
+    id?: StringFilter<"Rate"> | string
+    typeId?: StringFilter<"Rate"> | string
+    name?: StringFilter<"Rate"> | string
+    value?: FloatFilter<"Rate"> | number
+    numberOfPeople?: IntFilter<"Rate"> | number
+    createdAt?: DateTimeFilter<"Rate"> | Date | string
+    updatedAt?: DateTimeFilter<"Rate"> | Date | string
+    type?: XOR<UnitTypeScalarRelationFilter, UnitTypeWhereInput>
+    bookings?: BookingListRelationFilter
+  }
+
+  export type RateOrderByWithRelationInput = {
+    id?: SortOrder
+    typeId?: SortOrder
+    name?: SortOrder
+    value?: SortOrder
+    numberOfPeople?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    type?: UnitTypeOrderByWithRelationInput
+    bookings?: BookingOrderByRelationAggregateInput
+  }
+
+  export type RateWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: RateWhereInput | RateWhereInput[]
+    OR?: RateWhereInput[]
+    NOT?: RateWhereInput | RateWhereInput[]
+    typeId?: StringFilter<"Rate"> | string
+    name?: StringFilter<"Rate"> | string
+    value?: FloatFilter<"Rate"> | number
+    numberOfPeople?: IntFilter<"Rate"> | number
+    createdAt?: DateTimeFilter<"Rate"> | Date | string
+    updatedAt?: DateTimeFilter<"Rate"> | Date | string
+    type?: XOR<UnitTypeScalarRelationFilter, UnitTypeWhereInput>
+    bookings?: BookingListRelationFilter
+  }, "id">
+
+  export type RateOrderByWithAggregationInput = {
+    id?: SortOrder
+    typeId?: SortOrder
+    name?: SortOrder
+    value?: SortOrder
+    numberOfPeople?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: RateCountOrderByAggregateInput
+    _avg?: RateAvgOrderByAggregateInput
+    _max?: RateMaxOrderByAggregateInput
+    _min?: RateMinOrderByAggregateInput
+    _sum?: RateSumOrderByAggregateInput
+  }
+
+  export type RateScalarWhereWithAggregatesInput = {
+    AND?: RateScalarWhereWithAggregatesInput | RateScalarWhereWithAggregatesInput[]
+    OR?: RateScalarWhereWithAggregatesInput[]
+    NOT?: RateScalarWhereWithAggregatesInput | RateScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Rate"> | string
+    typeId?: StringWithAggregatesFilter<"Rate"> | string
+    name?: StringWithAggregatesFilter<"Rate"> | string
+    value?: FloatWithAggregatesFilter<"Rate"> | number
+    numberOfPeople?: IntWithAggregatesFilter<"Rate"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"Rate"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Rate"> | Date | string
   }
 
   export type ServiceWhereInput = {
@@ -12516,73 +12677,6 @@ export namespace Prisma {
     reason?: StringWithAggregatesFilter<"Discount"> | string
     amount?: FloatWithAggregatesFilter<"Discount"> | number
     createdAt?: DateTimeWithAggregatesFilter<"Discount"> | Date | string
-  }
-
-  export type RateWhereInput = {
-    AND?: RateWhereInput | RateWhereInput[]
-    OR?: RateWhereInput[]
-    NOT?: RateWhereInput | RateWhereInput[]
-    id?: StringFilter<"Rate"> | string
-    typeId?: StringFilter<"Rate"> | string
-    name?: StringFilter<"Rate"> | string
-    value?: FloatFilter<"Rate"> | number
-    numberOfPeople?: IntFilter<"Rate"> | number
-    createdAt?: DateTimeFilter<"Rate"> | Date | string
-    updatedAt?: DateTimeFilter<"Rate"> | Date | string
-    type?: XOR<UnitTypeScalarRelationFilter, UnitTypeWhereInput>
-  }
-
-  export type RateOrderByWithRelationInput = {
-    id?: SortOrder
-    typeId?: SortOrder
-    name?: SortOrder
-    value?: SortOrder
-    numberOfPeople?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    type?: UnitTypeOrderByWithRelationInput
-  }
-
-  export type RateWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    AND?: RateWhereInput | RateWhereInput[]
-    OR?: RateWhereInput[]
-    NOT?: RateWhereInput | RateWhereInput[]
-    typeId?: StringFilter<"Rate"> | string
-    name?: StringFilter<"Rate"> | string
-    value?: FloatFilter<"Rate"> | number
-    numberOfPeople?: IntFilter<"Rate"> | number
-    createdAt?: DateTimeFilter<"Rate"> | Date | string
-    updatedAt?: DateTimeFilter<"Rate"> | Date | string
-    type?: XOR<UnitTypeScalarRelationFilter, UnitTypeWhereInput>
-  }, "id">
-
-  export type RateOrderByWithAggregationInput = {
-    id?: SortOrder
-    typeId?: SortOrder
-    name?: SortOrder
-    value?: SortOrder
-    numberOfPeople?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    _count?: RateCountOrderByAggregateInput
-    _avg?: RateAvgOrderByAggregateInput
-    _max?: RateMaxOrderByAggregateInput
-    _min?: RateMinOrderByAggregateInput
-    _sum?: RateSumOrderByAggregateInput
-  }
-
-  export type RateScalarWhereWithAggregatesInput = {
-    AND?: RateScalarWhereWithAggregatesInput | RateScalarWhereWithAggregatesInput[]
-    OR?: RateScalarWhereWithAggregatesInput[]
-    NOT?: RateScalarWhereWithAggregatesInput | RateScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Rate"> | string
-    typeId?: StringWithAggregatesFilter<"Rate"> | string
-    name?: StringWithAggregatesFilter<"Rate"> | string
-    value?: FloatWithAggregatesFilter<"Rate"> | number
-    numberOfPeople?: IntWithAggregatesFilter<"Rate"> | number
-    createdAt?: DateTimeWithAggregatesFilter<"Rate"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"Rate"> | Date | string
   }
 
   export type PaymentWhereInput = {
@@ -12937,6 +13031,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     guest: GuestCreateNestedOneWithoutBookingsInput
     unit: UnitCreateNestedOneWithoutBookingsInput
+    rate: RateCreateNestedOneWithoutBookingsInput
     payments?: PaymentCreateNestedManyWithoutBookingInput
     services?: ServiceCreateNestedManyWithoutBookingInput
     discounts?: DiscountCreateNestedManyWithoutBookingInput
@@ -12946,6 +13041,7 @@ export namespace Prisma {
     id?: number
     guestId: string
     unitId: string
+    rateId: string
     startDate: Date | string
     endDate: Date | string
     status?: $Enums.BookingStatus
@@ -12970,6 +13066,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guest?: GuestUpdateOneRequiredWithoutBookingsNestedInput
     unit?: UnitUpdateOneRequiredWithoutBookingsNestedInput
+    rate?: RateUpdateOneRequiredWithoutBookingsNestedInput
     payments?: PaymentUpdateManyWithoutBookingNestedInput
     services?: ServiceUpdateManyWithoutBookingNestedInput
     discounts?: DiscountUpdateManyWithoutBookingNestedInput
@@ -12979,6 +13076,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     guestId?: StringFieldUpdateOperationsInput | string
     unitId?: StringFieldUpdateOperationsInput | string
+    rateId?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -12996,6 +13094,7 @@ export namespace Prisma {
     id?: number
     guestId: string
     unitId: string
+    rateId: string
     startDate: Date | string
     endDate: Date | string
     status?: $Enums.BookingStatus
@@ -13021,12 +13120,86 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     guestId?: StringFieldUpdateOperationsInput | string
     unitId?: StringFieldUpdateOperationsInput | string
+    rateId?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
     numberOfPeople?: IntFieldUpdateOperationsInput | number
     totalAmount?: FloatFieldUpdateOperationsInput | number
     paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RateCreateInput = {
+    id?: string
+    name: string
+    value: number
+    numberOfPeople: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    type: UnitTypeCreateNestedOneWithoutRatesInput
+    bookings?: BookingCreateNestedManyWithoutRateInput
+  }
+
+  export type RateUncheckedCreateInput = {
+    id?: string
+    typeId: string
+    name: string
+    value: number
+    numberOfPeople: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bookings?: BookingUncheckedCreateNestedManyWithoutRateInput
+  }
+
+  export type RateUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    numberOfPeople?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: UnitTypeUpdateOneRequiredWithoutRatesNestedInput
+    bookings?: BookingUpdateManyWithoutRateNestedInput
+  }
+
+  export type RateUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    typeId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    numberOfPeople?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bookings?: BookingUncheckedUpdateManyWithoutRateNestedInput
+  }
+
+  export type RateCreateManyInput = {
+    id?: string
+    typeId: string
+    name: string
+    value: number
+    numberOfPeople: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RateUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    numberOfPeople?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RateUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    typeId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    numberOfPeople?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13139,75 +13312,6 @@ export namespace Prisma {
     reason?: StringFieldUpdateOperationsInput | string
     amount?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type RateCreateInput = {
-    id?: string
-    name: string
-    value: number
-    numberOfPeople: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    type: UnitTypeCreateNestedOneWithoutRatesInput
-  }
-
-  export type RateUncheckedCreateInput = {
-    id?: string
-    typeId: string
-    name: string
-    value: number
-    numberOfPeople: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type RateUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    value?: FloatFieldUpdateOperationsInput | number
-    numberOfPeople?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    type?: UnitTypeUpdateOneRequiredWithoutRatesNestedInput
-  }
-
-  export type RateUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    typeId?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    value?: FloatFieldUpdateOperationsInput | number
-    numberOfPeople?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type RateCreateManyInput = {
-    id?: string
-    typeId: string
-    name: string
-    value: number
-    numberOfPeople: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type RateUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    value?: FloatFieldUpdateOperationsInput | number
-    numberOfPeople?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type RateUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    typeId?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    value?: FloatFieldUpdateOperationsInput | number
-    numberOfPeople?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PaymentCreateInput = {
@@ -13604,6 +13708,11 @@ export namespace Prisma {
     isNot?: UnitWhereInput
   }
 
+  export type RateScalarRelationFilter = {
+    is?: RateWhereInput
+    isNot?: RateWhereInput
+  }
+
   export type PaymentListRelationFilter = {
     every?: PaymentWhereInput
     some?: PaymentWhereInput
@@ -13638,6 +13747,7 @@ export namespace Prisma {
     id?: SortOrder
     guestId?: SortOrder
     unitId?: SortOrder
+    rateId?: SortOrder
     startDate?: SortOrder
     endDate?: SortOrder
     status?: SortOrder
@@ -13658,6 +13768,7 @@ export namespace Prisma {
     id?: SortOrder
     guestId?: SortOrder
     unitId?: SortOrder
+    rateId?: SortOrder
     startDate?: SortOrder
     endDate?: SortOrder
     status?: SortOrder
@@ -13672,6 +13783,7 @@ export namespace Prisma {
     id?: SortOrder
     guestId?: SortOrder
     unitId?: SortOrder
+    rateId?: SortOrder
     startDate?: SortOrder
     endDate?: SortOrder
     status?: SortOrder
@@ -13722,6 +13834,46 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumPaymentStatusFilter<$PrismaModel>
     _max?: NestedEnumPaymentStatusFilter<$PrismaModel>
+  }
+
+  export type RateCountOrderByAggregateInput = {
+    id?: SortOrder
+    typeId?: SortOrder
+    name?: SortOrder
+    value?: SortOrder
+    numberOfPeople?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RateAvgOrderByAggregateInput = {
+    value?: SortOrder
+    numberOfPeople?: SortOrder
+  }
+
+  export type RateMaxOrderByAggregateInput = {
+    id?: SortOrder
+    typeId?: SortOrder
+    name?: SortOrder
+    value?: SortOrder
+    numberOfPeople?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RateMinOrderByAggregateInput = {
+    id?: SortOrder
+    typeId?: SortOrder
+    name?: SortOrder
+    value?: SortOrder
+    numberOfPeople?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RateSumOrderByAggregateInput = {
+    value?: SortOrder
+    numberOfPeople?: SortOrder
   }
 
   export type BookingScalarRelationFilter = {
@@ -13795,46 +13947,6 @@ export namespace Prisma {
   export type DiscountSumOrderByAggregateInput = {
     bookingId?: SortOrder
     amount?: SortOrder
-  }
-
-  export type RateCountOrderByAggregateInput = {
-    id?: SortOrder
-    typeId?: SortOrder
-    name?: SortOrder
-    value?: SortOrder
-    numberOfPeople?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type RateAvgOrderByAggregateInput = {
-    value?: SortOrder
-    numberOfPeople?: SortOrder
-  }
-
-  export type RateMaxOrderByAggregateInput = {
-    id?: SortOrder
-    typeId?: SortOrder
-    name?: SortOrder
-    value?: SortOrder
-    numberOfPeople?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type RateMinOrderByAggregateInput = {
-    id?: SortOrder
-    typeId?: SortOrder
-    name?: SortOrder
-    value?: SortOrder
-    numberOfPeople?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type RateSumOrderByAggregateInput = {
-    value?: SortOrder
-    numberOfPeople?: SortOrder
   }
 
   export type EnumPaymentTypeFilter<$PrismaModel = never> = {
@@ -14112,6 +14224,12 @@ export namespace Prisma {
     connect?: UnitWhereUniqueInput
   }
 
+  export type RateCreateNestedOneWithoutBookingsInput = {
+    create?: XOR<RateCreateWithoutBookingsInput, RateUncheckedCreateWithoutBookingsInput>
+    connectOrCreate?: RateCreateOrConnectWithoutBookingsInput
+    connect?: RateWhereUniqueInput
+  }
+
   export type PaymentCreateNestedManyWithoutBookingInput = {
     create?: XOR<PaymentCreateWithoutBookingInput, PaymentUncheckedCreateWithoutBookingInput> | PaymentCreateWithoutBookingInput[] | PaymentUncheckedCreateWithoutBookingInput[]
     connectOrCreate?: PaymentCreateOrConnectWithoutBookingInput | PaymentCreateOrConnectWithoutBookingInput[]
@@ -14184,6 +14302,14 @@ export namespace Prisma {
     upsert?: UnitUpsertWithoutBookingsInput
     connect?: UnitWhereUniqueInput
     update?: XOR<XOR<UnitUpdateToOneWithWhereWithoutBookingsInput, UnitUpdateWithoutBookingsInput>, UnitUncheckedUpdateWithoutBookingsInput>
+  }
+
+  export type RateUpdateOneRequiredWithoutBookingsNestedInput = {
+    create?: XOR<RateCreateWithoutBookingsInput, RateUncheckedCreateWithoutBookingsInput>
+    connectOrCreate?: RateCreateOrConnectWithoutBookingsInput
+    upsert?: RateUpsertWithoutBookingsInput
+    connect?: RateWhereUniqueInput
+    update?: XOR<XOR<RateUpdateToOneWithWhereWithoutBookingsInput, RateUpdateWithoutBookingsInput>, RateUncheckedUpdateWithoutBookingsInput>
   }
 
   export type PaymentUpdateManyWithoutBookingNestedInput = {
@@ -14270,6 +14396,62 @@ export namespace Prisma {
     deleteMany?: DiscountScalarWhereInput | DiscountScalarWhereInput[]
   }
 
+  export type UnitTypeCreateNestedOneWithoutRatesInput = {
+    create?: XOR<UnitTypeCreateWithoutRatesInput, UnitTypeUncheckedCreateWithoutRatesInput>
+    connectOrCreate?: UnitTypeCreateOrConnectWithoutRatesInput
+    connect?: UnitTypeWhereUniqueInput
+  }
+
+  export type BookingCreateNestedManyWithoutRateInput = {
+    create?: XOR<BookingCreateWithoutRateInput, BookingUncheckedCreateWithoutRateInput> | BookingCreateWithoutRateInput[] | BookingUncheckedCreateWithoutRateInput[]
+    connectOrCreate?: BookingCreateOrConnectWithoutRateInput | BookingCreateOrConnectWithoutRateInput[]
+    createMany?: BookingCreateManyRateInputEnvelope
+    connect?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
+  }
+
+  export type BookingUncheckedCreateNestedManyWithoutRateInput = {
+    create?: XOR<BookingCreateWithoutRateInput, BookingUncheckedCreateWithoutRateInput> | BookingCreateWithoutRateInput[] | BookingUncheckedCreateWithoutRateInput[]
+    connectOrCreate?: BookingCreateOrConnectWithoutRateInput | BookingCreateOrConnectWithoutRateInput[]
+    createMany?: BookingCreateManyRateInputEnvelope
+    connect?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
+  }
+
+  export type UnitTypeUpdateOneRequiredWithoutRatesNestedInput = {
+    create?: XOR<UnitTypeCreateWithoutRatesInput, UnitTypeUncheckedCreateWithoutRatesInput>
+    connectOrCreate?: UnitTypeCreateOrConnectWithoutRatesInput
+    upsert?: UnitTypeUpsertWithoutRatesInput
+    connect?: UnitTypeWhereUniqueInput
+    update?: XOR<XOR<UnitTypeUpdateToOneWithWhereWithoutRatesInput, UnitTypeUpdateWithoutRatesInput>, UnitTypeUncheckedUpdateWithoutRatesInput>
+  }
+
+  export type BookingUpdateManyWithoutRateNestedInput = {
+    create?: XOR<BookingCreateWithoutRateInput, BookingUncheckedCreateWithoutRateInput> | BookingCreateWithoutRateInput[] | BookingUncheckedCreateWithoutRateInput[]
+    connectOrCreate?: BookingCreateOrConnectWithoutRateInput | BookingCreateOrConnectWithoutRateInput[]
+    upsert?: BookingUpsertWithWhereUniqueWithoutRateInput | BookingUpsertWithWhereUniqueWithoutRateInput[]
+    createMany?: BookingCreateManyRateInputEnvelope
+    set?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
+    disconnect?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
+    delete?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
+    connect?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
+    update?: BookingUpdateWithWhereUniqueWithoutRateInput | BookingUpdateWithWhereUniqueWithoutRateInput[]
+    updateMany?: BookingUpdateManyWithWhereWithoutRateInput | BookingUpdateManyWithWhereWithoutRateInput[]
+    deleteMany?: BookingScalarWhereInput | BookingScalarWhereInput[]
+  }
+
+  export type BookingUncheckedUpdateManyWithoutRateNestedInput = {
+    create?: XOR<BookingCreateWithoutRateInput, BookingUncheckedCreateWithoutRateInput> | BookingCreateWithoutRateInput[] | BookingUncheckedCreateWithoutRateInput[]
+    connectOrCreate?: BookingCreateOrConnectWithoutRateInput | BookingCreateOrConnectWithoutRateInput[]
+    upsert?: BookingUpsertWithWhereUniqueWithoutRateInput | BookingUpsertWithWhereUniqueWithoutRateInput[]
+    createMany?: BookingCreateManyRateInputEnvelope
+    set?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
+    disconnect?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
+    delete?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
+    connect?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
+    update?: BookingUpdateWithWhereUniqueWithoutRateInput | BookingUpdateWithWhereUniqueWithoutRateInput[]
+    updateMany?: BookingUpdateManyWithWhereWithoutRateInput | BookingUpdateManyWithWhereWithoutRateInput[]
+    deleteMany?: BookingScalarWhereInput | BookingScalarWhereInput[]
+  }
+
   export type BookingCreateNestedOneWithoutServicesInput = {
     create?: XOR<BookingCreateWithoutServicesInput, BookingUncheckedCreateWithoutServicesInput>
     connectOrCreate?: BookingCreateOrConnectWithoutServicesInput
@@ -14296,20 +14478,6 @@ export namespace Prisma {
     upsert?: BookingUpsertWithoutDiscountsInput
     connect?: BookingWhereUniqueInput
     update?: XOR<XOR<BookingUpdateToOneWithWhereWithoutDiscountsInput, BookingUpdateWithoutDiscountsInput>, BookingUncheckedUpdateWithoutDiscountsInput>
-  }
-
-  export type UnitTypeCreateNestedOneWithoutRatesInput = {
-    create?: XOR<UnitTypeCreateWithoutRatesInput, UnitTypeUncheckedCreateWithoutRatesInput>
-    connectOrCreate?: UnitTypeCreateOrConnectWithoutRatesInput
-    connect?: UnitTypeWhereUniqueInput
-  }
-
-  export type UnitTypeUpdateOneRequiredWithoutRatesNestedInput = {
-    create?: XOR<UnitTypeCreateWithoutRatesInput, UnitTypeUncheckedCreateWithoutRatesInput>
-    connectOrCreate?: UnitTypeCreateOrConnectWithoutRatesInput
-    upsert?: UnitTypeUpsertWithoutRatesInput
-    connect?: UnitTypeWhereUniqueInput
-    update?: XOR<XOR<UnitTypeUpdateToOneWithWhereWithoutRatesInput, UnitTypeUpdateWithoutRatesInput>, UnitTypeUncheckedUpdateWithoutRatesInput>
   }
 
   export type BookingCreateNestedOneWithoutPaymentsInput = {
@@ -14560,6 +14728,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     unit: UnitCreateNestedOneWithoutBookingsInput
+    rate: RateCreateNestedOneWithoutBookingsInput
     payments?: PaymentCreateNestedManyWithoutBookingInput
     services?: ServiceCreateNestedManyWithoutBookingInput
     discounts?: DiscountCreateNestedManyWithoutBookingInput
@@ -14568,6 +14737,7 @@ export namespace Prisma {
   export type BookingUncheckedCreateWithoutGuestInput = {
     id?: number
     unitId: string
+    rateId: string
     startDate: Date | string
     endDate: Date | string
     status?: $Enums.BookingStatus
@@ -14613,6 +14783,7 @@ export namespace Prisma {
     id?: IntFilter<"Booking"> | number
     guestId?: StringFilter<"Booking"> | string
     unitId?: StringFilter<"Booking"> | string
+    rateId?: StringFilter<"Booking"> | string
     startDate?: DateTimeFilter<"Booking"> | Date | string
     endDate?: DateTimeFilter<"Booking"> | Date | string
     status?: EnumBookingStatusFilter<"Booking"> | $Enums.BookingStatus
@@ -14655,6 +14826,7 @@ export namespace Prisma {
     numberOfPeople: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    bookings?: BookingCreateNestedManyWithoutRateInput
   }
 
   export type RateUncheckedCreateWithoutTypeInput = {
@@ -14664,6 +14836,7 @@ export namespace Prisma {
     numberOfPeople: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    bookings?: BookingUncheckedCreateNestedManyWithoutRateInput
   }
 
   export type RateCreateOrConnectWithoutTypeInput = {
@@ -14766,6 +14939,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     guest: GuestCreateNestedOneWithoutBookingsInput
+    rate: RateCreateNestedOneWithoutBookingsInput
     payments?: PaymentCreateNestedManyWithoutBookingInput
     services?: ServiceCreateNestedManyWithoutBookingInput
     discounts?: DiscountCreateNestedManyWithoutBookingInput
@@ -14774,6 +14948,7 @@ export namespace Prisma {
   export type BookingUncheckedCreateWithoutUnitInput = {
     id?: number
     guestId: string
+    rateId: string
     startDate: Date | string
     endDate: Date | string
     status?: $Enums.BookingStatus
@@ -14885,6 +15060,31 @@ export namespace Prisma {
   export type UnitCreateOrConnectWithoutBookingsInput = {
     where: UnitWhereUniqueInput
     create: XOR<UnitCreateWithoutBookingsInput, UnitUncheckedCreateWithoutBookingsInput>
+  }
+
+  export type RateCreateWithoutBookingsInput = {
+    id?: string
+    name: string
+    value: number
+    numberOfPeople: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    type: UnitTypeCreateNestedOneWithoutRatesInput
+  }
+
+  export type RateUncheckedCreateWithoutBookingsInput = {
+    id?: string
+    typeId: string
+    name: string
+    value: number
+    numberOfPeople: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RateCreateOrConnectWithoutBookingsInput = {
+    where: RateWhereUniqueInput
+    create: XOR<RateCreateWithoutBookingsInput, RateUncheckedCreateWithoutBookingsInput>
   }
 
   export type PaymentCreateWithoutBookingInput = {
@@ -15016,6 +15216,37 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type RateUpsertWithoutBookingsInput = {
+    update: XOR<RateUpdateWithoutBookingsInput, RateUncheckedUpdateWithoutBookingsInput>
+    create: XOR<RateCreateWithoutBookingsInput, RateUncheckedCreateWithoutBookingsInput>
+    where?: RateWhereInput
+  }
+
+  export type RateUpdateToOneWithWhereWithoutBookingsInput = {
+    where?: RateWhereInput
+    data: XOR<RateUpdateWithoutBookingsInput, RateUncheckedUpdateWithoutBookingsInput>
+  }
+
+  export type RateUpdateWithoutBookingsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    numberOfPeople?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: UnitTypeUpdateOneRequiredWithoutRatesNestedInput
+  }
+
+  export type RateUncheckedUpdateWithoutBookingsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    typeId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    numberOfPeople?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type PaymentUpsertWithWhereUniqueWithoutBookingInput = {
     where: PaymentWhereUniqueInput
     update: XOR<PaymentUpdateWithoutBookingInput, PaymentUncheckedUpdateWithoutBookingInput>
@@ -15099,7 +15330,32 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Discount"> | Date | string
   }
 
-  export type BookingCreateWithoutServicesInput = {
+  export type UnitTypeCreateWithoutRatesInput = {
+    id?: string
+    name: string
+    description: string
+    numberOfPeople: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    units?: UnitCreateNestedManyWithoutTypeInput
+  }
+
+  export type UnitTypeUncheckedCreateWithoutRatesInput = {
+    id?: string
+    name: string
+    description: string
+    numberOfPeople: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    units?: UnitUncheckedCreateNestedManyWithoutTypeInput
+  }
+
+  export type UnitTypeCreateOrConnectWithoutRatesInput = {
+    where: UnitTypeWhereUniqueInput
+    create: XOR<UnitTypeCreateWithoutRatesInput, UnitTypeUncheckedCreateWithoutRatesInput>
+  }
+
+  export type BookingCreateWithoutRateInput = {
     startDate: Date | string
     endDate: Date | string
     status?: $Enums.BookingStatus
@@ -15111,6 +15367,96 @@ export namespace Prisma {
     guest: GuestCreateNestedOneWithoutBookingsInput
     unit: UnitCreateNestedOneWithoutBookingsInput
     payments?: PaymentCreateNestedManyWithoutBookingInput
+    services?: ServiceCreateNestedManyWithoutBookingInput
+    discounts?: DiscountCreateNestedManyWithoutBookingInput
+  }
+
+  export type BookingUncheckedCreateWithoutRateInput = {
+    id?: number
+    guestId: string
+    unitId: string
+    startDate: Date | string
+    endDate: Date | string
+    status?: $Enums.BookingStatus
+    numberOfPeople: number
+    totalAmount: number
+    paymentStatus?: $Enums.PaymentStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    payments?: PaymentUncheckedCreateNestedManyWithoutBookingInput
+    services?: ServiceUncheckedCreateNestedManyWithoutBookingInput
+    discounts?: DiscountUncheckedCreateNestedManyWithoutBookingInput
+  }
+
+  export type BookingCreateOrConnectWithoutRateInput = {
+    where: BookingWhereUniqueInput
+    create: XOR<BookingCreateWithoutRateInput, BookingUncheckedCreateWithoutRateInput>
+  }
+
+  export type BookingCreateManyRateInputEnvelope = {
+    data: BookingCreateManyRateInput | BookingCreateManyRateInput[]
+  }
+
+  export type UnitTypeUpsertWithoutRatesInput = {
+    update: XOR<UnitTypeUpdateWithoutRatesInput, UnitTypeUncheckedUpdateWithoutRatesInput>
+    create: XOR<UnitTypeCreateWithoutRatesInput, UnitTypeUncheckedCreateWithoutRatesInput>
+    where?: UnitTypeWhereInput
+  }
+
+  export type UnitTypeUpdateToOneWithWhereWithoutRatesInput = {
+    where?: UnitTypeWhereInput
+    data: XOR<UnitTypeUpdateWithoutRatesInput, UnitTypeUncheckedUpdateWithoutRatesInput>
+  }
+
+  export type UnitTypeUpdateWithoutRatesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    numberOfPeople?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    units?: UnitUpdateManyWithoutTypeNestedInput
+  }
+
+  export type UnitTypeUncheckedUpdateWithoutRatesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    numberOfPeople?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    units?: UnitUncheckedUpdateManyWithoutTypeNestedInput
+  }
+
+  export type BookingUpsertWithWhereUniqueWithoutRateInput = {
+    where: BookingWhereUniqueInput
+    update: XOR<BookingUpdateWithoutRateInput, BookingUncheckedUpdateWithoutRateInput>
+    create: XOR<BookingCreateWithoutRateInput, BookingUncheckedCreateWithoutRateInput>
+  }
+
+  export type BookingUpdateWithWhereUniqueWithoutRateInput = {
+    where: BookingWhereUniqueInput
+    data: XOR<BookingUpdateWithoutRateInput, BookingUncheckedUpdateWithoutRateInput>
+  }
+
+  export type BookingUpdateManyWithWhereWithoutRateInput = {
+    where: BookingScalarWhereInput
+    data: XOR<BookingUpdateManyMutationInput, BookingUncheckedUpdateManyWithoutRateInput>
+  }
+
+  export type BookingCreateWithoutServicesInput = {
+    startDate: Date | string
+    endDate: Date | string
+    status?: $Enums.BookingStatus
+    numberOfPeople: number
+    totalAmount: number
+    paymentStatus?: $Enums.PaymentStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    guest: GuestCreateNestedOneWithoutBookingsInput
+    unit: UnitCreateNestedOneWithoutBookingsInput
+    rate: RateCreateNestedOneWithoutBookingsInput
+    payments?: PaymentCreateNestedManyWithoutBookingInput
     discounts?: DiscountCreateNestedManyWithoutBookingInput
   }
 
@@ -15118,6 +15464,7 @@ export namespace Prisma {
     id?: number
     guestId: string
     unitId: string
+    rateId: string
     startDate: Date | string
     endDate: Date | string
     status?: $Enums.BookingStatus
@@ -15157,6 +15504,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guest?: GuestUpdateOneRequiredWithoutBookingsNestedInput
     unit?: UnitUpdateOneRequiredWithoutBookingsNestedInput
+    rate?: RateUpdateOneRequiredWithoutBookingsNestedInput
     payments?: PaymentUpdateManyWithoutBookingNestedInput
     discounts?: DiscountUpdateManyWithoutBookingNestedInput
   }
@@ -15165,6 +15513,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     guestId?: StringFieldUpdateOperationsInput | string
     unitId?: StringFieldUpdateOperationsInput | string
+    rateId?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -15188,6 +15537,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     guest: GuestCreateNestedOneWithoutBookingsInput
     unit: UnitCreateNestedOneWithoutBookingsInput
+    rate: RateCreateNestedOneWithoutBookingsInput
     payments?: PaymentCreateNestedManyWithoutBookingInput
     services?: ServiceCreateNestedManyWithoutBookingInput
   }
@@ -15196,6 +15546,7 @@ export namespace Prisma {
     id?: number
     guestId: string
     unitId: string
+    rateId: string
     startDate: Date | string
     endDate: Date | string
     status?: $Enums.BookingStatus
@@ -15235,6 +15586,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guest?: GuestUpdateOneRequiredWithoutBookingsNestedInput
     unit?: UnitUpdateOneRequiredWithoutBookingsNestedInput
+    rate?: RateUpdateOneRequiredWithoutBookingsNestedInput
     payments?: PaymentUpdateManyWithoutBookingNestedInput
     services?: ServiceUpdateManyWithoutBookingNestedInput
   }
@@ -15243,6 +15595,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     guestId?: StringFieldUpdateOperationsInput | string
     unitId?: StringFieldUpdateOperationsInput | string
+    rateId?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -15253,62 +15606,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payments?: PaymentUncheckedUpdateManyWithoutBookingNestedInput
     services?: ServiceUncheckedUpdateManyWithoutBookingNestedInput
-  }
-
-  export type UnitTypeCreateWithoutRatesInput = {
-    id?: string
-    name: string
-    description: string
-    numberOfPeople: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    units?: UnitCreateNestedManyWithoutTypeInput
-  }
-
-  export type UnitTypeUncheckedCreateWithoutRatesInput = {
-    id?: string
-    name: string
-    description: string
-    numberOfPeople: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    units?: UnitUncheckedCreateNestedManyWithoutTypeInput
-  }
-
-  export type UnitTypeCreateOrConnectWithoutRatesInput = {
-    where: UnitTypeWhereUniqueInput
-    create: XOR<UnitTypeCreateWithoutRatesInput, UnitTypeUncheckedCreateWithoutRatesInput>
-  }
-
-  export type UnitTypeUpsertWithoutRatesInput = {
-    update: XOR<UnitTypeUpdateWithoutRatesInput, UnitTypeUncheckedUpdateWithoutRatesInput>
-    create: XOR<UnitTypeCreateWithoutRatesInput, UnitTypeUncheckedCreateWithoutRatesInput>
-    where?: UnitTypeWhereInput
-  }
-
-  export type UnitTypeUpdateToOneWithWhereWithoutRatesInput = {
-    where?: UnitTypeWhereInput
-    data: XOR<UnitTypeUpdateWithoutRatesInput, UnitTypeUncheckedUpdateWithoutRatesInput>
-  }
-
-  export type UnitTypeUpdateWithoutRatesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    numberOfPeople?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    units?: UnitUpdateManyWithoutTypeNestedInput
-  }
-
-  export type UnitTypeUncheckedUpdateWithoutRatesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    numberOfPeople?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    units?: UnitUncheckedUpdateManyWithoutTypeNestedInput
   }
 
   export type BookingCreateWithoutPaymentsInput = {
@@ -15322,6 +15619,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     guest: GuestCreateNestedOneWithoutBookingsInput
     unit: UnitCreateNestedOneWithoutBookingsInput
+    rate: RateCreateNestedOneWithoutBookingsInput
     services?: ServiceCreateNestedManyWithoutBookingInput
     discounts?: DiscountCreateNestedManyWithoutBookingInput
   }
@@ -15330,6 +15628,7 @@ export namespace Prisma {
     id?: number
     guestId: string
     unitId: string
+    rateId: string
     startDate: Date | string
     endDate: Date | string
     status?: $Enums.BookingStatus
@@ -15369,6 +15668,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guest?: GuestUpdateOneRequiredWithoutBookingsNestedInput
     unit?: UnitUpdateOneRequiredWithoutBookingsNestedInput
+    rate?: RateUpdateOneRequiredWithoutBookingsNestedInput
     services?: ServiceUpdateManyWithoutBookingNestedInput
     discounts?: DiscountUpdateManyWithoutBookingNestedInput
   }
@@ -15377,6 +15677,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     guestId?: StringFieldUpdateOperationsInput | string
     unitId?: StringFieldUpdateOperationsInput | string
+    rateId?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -15392,6 +15693,7 @@ export namespace Prisma {
   export type BookingCreateManyGuestInput = {
     id?: number
     unitId: string
+    rateId: string
     startDate: Date | string
     endDate: Date | string
     status?: $Enums.BookingStatus
@@ -15412,6 +15714,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     unit?: UnitUpdateOneRequiredWithoutBookingsNestedInput
+    rate?: RateUpdateOneRequiredWithoutBookingsNestedInput
     payments?: PaymentUpdateManyWithoutBookingNestedInput
     services?: ServiceUpdateManyWithoutBookingNestedInput
     discounts?: DiscountUpdateManyWithoutBookingNestedInput
@@ -15420,6 +15723,7 @@ export namespace Prisma {
   export type BookingUncheckedUpdateWithoutGuestInput = {
     id?: IntFieldUpdateOperationsInput | number
     unitId?: StringFieldUpdateOperationsInput | string
+    rateId?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -15436,6 +15740,7 @@ export namespace Prisma {
   export type BookingUncheckedUpdateManyWithoutGuestInput = {
     id?: IntFieldUpdateOperationsInput | number
     unitId?: StringFieldUpdateOperationsInput | string
+    rateId?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -15492,6 +15797,7 @@ export namespace Prisma {
     numberOfPeople?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bookings?: BookingUpdateManyWithoutRateNestedInput
   }
 
   export type RateUncheckedUpdateWithoutTypeInput = {
@@ -15501,6 +15807,7 @@ export namespace Prisma {
     numberOfPeople?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bookings?: BookingUncheckedUpdateManyWithoutRateNestedInput
   }
 
   export type RateUncheckedUpdateManyWithoutTypeInput = {
@@ -15515,6 +15822,7 @@ export namespace Prisma {
   export type BookingCreateManyUnitInput = {
     id?: number
     guestId: string
+    rateId: string
     startDate: Date | string
     endDate: Date | string
     status?: $Enums.BookingStatus
@@ -15535,6 +15843,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guest?: GuestUpdateOneRequiredWithoutBookingsNestedInput
+    rate?: RateUpdateOneRequiredWithoutBookingsNestedInput
     payments?: PaymentUpdateManyWithoutBookingNestedInput
     services?: ServiceUpdateManyWithoutBookingNestedInput
     discounts?: DiscountUpdateManyWithoutBookingNestedInput
@@ -15543,6 +15852,7 @@ export namespace Prisma {
   export type BookingUncheckedUpdateWithoutUnitInput = {
     id?: IntFieldUpdateOperationsInput | number
     guestId?: StringFieldUpdateOperationsInput | string
+    rateId?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -15559,6 +15869,7 @@ export namespace Prisma {
   export type BookingUncheckedUpdateManyWithoutUnitInput = {
     id?: IntFieldUpdateOperationsInput | number
     guestId?: StringFieldUpdateOperationsInput | string
+    rateId?: StringFieldUpdateOperationsInput | string
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -15659,6 +15970,67 @@ export namespace Prisma {
     reason?: StringFieldUpdateOperationsInput | string
     amount?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BookingCreateManyRateInput = {
+    id?: number
+    guestId: string
+    unitId: string
+    startDate: Date | string
+    endDate: Date | string
+    status?: $Enums.BookingStatus
+    numberOfPeople: number
+    totalAmount: number
+    paymentStatus?: $Enums.PaymentStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BookingUpdateWithoutRateInput = {
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
+    numberOfPeople?: IntFieldUpdateOperationsInput | number
+    totalAmount?: FloatFieldUpdateOperationsInput | number
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    guest?: GuestUpdateOneRequiredWithoutBookingsNestedInput
+    unit?: UnitUpdateOneRequiredWithoutBookingsNestedInput
+    payments?: PaymentUpdateManyWithoutBookingNestedInput
+    services?: ServiceUpdateManyWithoutBookingNestedInput
+    discounts?: DiscountUpdateManyWithoutBookingNestedInput
+  }
+
+  export type BookingUncheckedUpdateWithoutRateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    guestId?: StringFieldUpdateOperationsInput | string
+    unitId?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
+    numberOfPeople?: IntFieldUpdateOperationsInput | number
+    totalAmount?: FloatFieldUpdateOperationsInput | number
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    payments?: PaymentUncheckedUpdateManyWithoutBookingNestedInput
+    services?: ServiceUncheckedUpdateManyWithoutBookingNestedInput
+    discounts?: DiscountUncheckedUpdateManyWithoutBookingNestedInput
+  }
+
+  export type BookingUncheckedUpdateManyWithoutRateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    guestId?: StringFieldUpdateOperationsInput | string
+    unitId?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
+    numberOfPeople?: IntFieldUpdateOperationsInput | number
+    totalAmount?: FloatFieldUpdateOperationsInput | number
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

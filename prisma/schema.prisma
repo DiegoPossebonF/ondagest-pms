@@ -62,6 +62,8 @@ model Booking {
   guestId        String
   unit           Unit           @relation(fields: [unitId], references: [id])
   unitId         String
+  rate           Rate          @relation(fields: [rateId], references: [id])
+  rateId         String        // 🔥 Temporário opcional para migração segura
   startDate      DateTime
   endDate        DateTime
   status         BookingStatus  @default(PENDING)
@@ -73,6 +75,18 @@ model Booking {
   discounts      Discount[]
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
+}
+
+model Rate {
+  id             String     @id @default(uuid())
+  type           UnitType   @relation(fields: [typeId], references: [id])
+  typeId         String
+  name           String
+  value          Float
+  numberOfPeople Int
+  bookings       Booking[]  // 🔥 Adiciona relação inversa (opcional, mas recomendado)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
 }
 
 model Service {
@@ -91,17 +105,6 @@ model Discount {
   reason     String   
   amount     Float  
   createdAt  DateTime @default(now())
-}
-
-model Rate {
-  id             String     @id @default(uuid())
-  type           UnitType   @relation(fields: [typeId], references: [id])
-  typeId         String
-  name           String
-  value          Float
-  numberOfPeople Int
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
 }
 
 model Payment {

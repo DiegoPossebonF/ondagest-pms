@@ -9,6 +9,7 @@ import { createBooking } from '@/app/actions/booking/createBooking'
 import { BookingStatus, type Rate } from '@/app/generated/prisma'
 import { Button } from '@/components/ui/button'
 import { type BookingSchema, bookingSchema } from '@/schemas/booking-schema'
+import type { BookingAllIncludes } from '@/types/booking'
 import type { Dictionary } from 'lodash'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState, useTransition } from 'react'
@@ -36,7 +37,11 @@ import { BookingDateRangeCalendar } from './BookingDateRangeCalendar'
 import { BookingFormError } from './BookingFormError'
 import { BookingStatusCombobox } from './BookingStatusCombobox'
 
-export default function BookingForm() {
+interface BookingFormProps {
+  booking?: BookingAllIncludes
+}
+
+export default function BookingForm({ booking }: BookingFormProps) {
   const router = useRouter()
   const [serverError, setServerError] = useState<string | null>(null)
   const [rates, setRates] = useState<Dictionary<Rate[]> | null>(null)
@@ -44,17 +49,17 @@ export default function BookingForm() {
   const form = useForm<BookingSchema>({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
-      status: BookingStatus.PENDING,
-      guestId: '',
+      status: booking?.status || BookingStatus.PENDING,
+      guestId: booking?.guestId || '',
       period: {
-        from: dayjs().toDate(),
-        to: dayjs().add(5, 'day').toDate(),
+        from: booking?.startDate || dayjs().toDate(),
+        to: booking?.endDate || dayjs().add(1, 'day').toDate(),
       },
-      unitId: '',
-      numberOfPeople: 1,
+      unitId: booking?.unitId || '',
+      numberOfPeople: booking?.numberOfPeople || 1,
       selectedRateName: '',
       daily: 0,
-      totalAmount: 0,
+      totalAmount: booking?.totalAmount || 0,
     },
   })
 
