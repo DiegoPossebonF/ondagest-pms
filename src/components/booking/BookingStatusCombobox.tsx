@@ -16,14 +16,14 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { STATUS_LABELS, cn } from '@/lib/utils'
+import type { BookingSchema } from '@/schemas/booking-schema'
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import type { UseFormSetValue } from 'react-hook-form'
-import type { NewBookingFormValues } from '../booking/NewBookingForm'
 
 interface BookingStatusComboboxProps {
   value: string
-  setValue: UseFormSetValue<NewBookingFormValues>
+  setValue: UseFormSetValue<BookingSchema>
 }
 
 export function BookingStatusCombobox({

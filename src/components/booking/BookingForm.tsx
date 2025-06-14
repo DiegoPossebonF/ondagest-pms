@@ -1,356 +1,387 @@
 'use client'
-import { createBooking } from '@/actions/booking/createBooking'
-import { updateBooking } from '@/actions/booking/updateBooking'
+
+import { zodResolver } from '@hookform/resolvers/zod'
+import dayjs from 'dayjs'
+import { useForm } from 'react-hook-form'
+
+import { groupedByRateNamePerUnit } from '@/app/(private)/(dashboard)/bookings/new/actions'
+import { createBooking } from '@/app/actions/booking/createBooking'
+import { BookingStatus, type Rate } from '@/app/generated/prisma'
 import { Button } from '@/components/ui/button'
+import { type BookingSchema, bookingSchema } from '@/schemas/booking-schema'
+import type { Dictionary } from 'lodash'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState, useTransition } from 'react'
+import { toast } from 'sonner'
+import { GuestCombobox } from '../guest/GuestCombobox'
+import { RatesCombobox } from '../rate/RatesCombobox'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../ui/card'
 import {
   Form,
-  FormControl,
   FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { useMediaQuery } from '@/hooks/use-media-query'
-import { getDifferenceInDays } from '@/lib/utils'
-import type { BookingAllIncludes } from '@/types/booking'
-import type { Rate } from '@/types/rate'
-import type { UnitWithTypeAndBookings } from '@/types/unit'
-import { zodResolver } from '@hookform/resolvers/zod'
-import type dayjs from 'dayjs'
-import { useRouter } from 'next/navigation'
-import { type Dispatch, type SetStateAction, useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
-import { z } from 'zod'
-import { GuestCombobox } from '../guest/GuestCombobox'
+} from '../ui/form'
 import { Input } from '../ui/input'
-import { Separator } from '../ui/separator'
-import { UnitCombobox } from '../unit/UnitCombobox'
-import { BookingCalendar } from './BookingCalendar'
+import { UnitsCombobox } from '../unit/UnitsCombobox'
+import { BookingDateRangeCalendar } from './BookingDateRangeCalendar'
+import { BookingFormError } from './BookingFormError'
+import { BookingStatusCombobox } from './BookingStatusCombobox'
 
-const bookingSchema = z.object({
-  guestId: z.string().min(1, 'O ID do hóspede é obrigatório'),
-  period: z
-    .object({
-      from: z.date({ required_error: 'A data inicial é obrigatória' }),
-      to: z.date().optional(),
-    })
-    .refine(data => !data.to || data.from <= data.to, {
-      message: 'A data final deve ser maior ou igual à data inicial',
-      path: ['to'],
-    }),
-  unitId: z.string().min(1, 'O ID da unidade é obrigatório'),
-  // status: z.enum(['PENDING', 'CONFIRMED', 'CANCELLED']),
-  numberOfPeople: z.coerce
-    .number()
-    .int()
-    .positive('O número de pessoas deve ser maior que 0'),
-  totalAmount: z.coerce
-    .number()
-    .nonnegative('O valor total não pode ser negativo'),
-})
-// .refine(object => object.endDate > object.startDate, {
-//   message: 'A data de check-out deve ser maior que a data de check-in',
-// })
-
-export type BookingFormValues = z.infer<typeof bookingSchema>
-
-interface BookingFormProps {
-  booking?: BookingAllIncludes
-  startDate?: dayjs.Dayjs
-  unit?: UnitWithTypeAndBookings
-  setOpenSheet?: Dispatch<SetStateAction<boolean>>
-  setBookings?: React.Dispatch<React.SetStateAction<BookingAllIncludes[]>>
-}
-
-export function BookingForm({
-  booking,
-  startDate,
-  unit,
-  setOpenSheet,
-  setBookings,
-}: BookingFormProps) {
+export default function BookingForm() {
   const router = useRouter()
-  const [loading, setLoading] = useState(false)
-  const [rates, setRates] = useState<Rate[]>(booking?.unit?.type?.rates || [])
-  const [daily, setDaily] = useState(0)
-  const [isButtonSizeFull, setIsButtonSizeFull] = useState(false)
-  const isLargeScreen = useMediaQuery('(min-width: 1024px)')
+  const [serverError, setServerError] = useState<string | null>(null)
+  const [rates, setRates] = useState<Dictionary<Rate[]> | null>(null)
 
-  const form = useForm<BookingFormValues>({
+  const form = useForm<BookingSchema>({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
-      guestId: booking?.guestId,
+      status: BookingStatus.PENDING,
+      guestId: '',
       period: {
-        from: booking?.startDate || startDate?.toDate(),
-        to: booking?.endDate || startDate?.add(1, 'day').toDate(),
+        from: dayjs().toDate(),
+        to: dayjs().add(5, 'day').toDate(),
       },
-      unitId: booking?.unitId || unit?.id,
-      // status:
-      //   bookingSelected.status === 'CHECKED_IN' ||
-      //   bookingSelected.status === 'CHECKED_OUT'
-      //     ? 'PENDING'
-      //     : bookingSelected.status || 'PENDING',
-      numberOfPeople: booking?.numberOfPeople || 0,
-      totalAmount: booking?.totalAmount || 0,
+      unitId: '',
+      numberOfPeople: 1,
+      selectedRateName: '',
+      daily: 0,
+      totalAmount: 0,
     },
   })
 
-  const { setValue, getValues, handleSubmit, control, watch } = form
-
-  const unitId = watch('unitId')
-  const period = watch('period')
-
-  const findClosestRate = (peopleCount: number) => {
-    if (!rates.length) return { value: 0, numberOfPeople: 0 }
-    return rates.reduce((closest, rate) => {
-      return Math.abs(rate.numberOfPeople - peopleCount) <
-        Math.abs(closest.numberOfPeople - peopleCount)
-        ? rate
-        : closest
-    }, rates[0]) // Inicia assumindo que a primeira opção é a mais próxima
-  }
-
-  const setDailyAndTotalAmount = (numberOfPeople: number, daily?: number) => {
-    if (daily) {
-      setValue('totalAmount', daily * getDifferenceInDays(getValues('period')))
-      setDaily(daily)
-    } else {
-      setValue(
-        'totalAmount',
-        findClosestRate(numberOfPeople).value *
-          getDifferenceInDays(getValues('period'))
-      )
-      setDaily(findClosestRate(numberOfPeople).value)
-    }
-  }
-
-  useEffect(() => {
-    // Se a tela for menor que lg, minimize
-    setIsButtonSizeFull(!isLargeScreen)
-  }, [isLargeScreen])
+  const watchUnit = form.watch('unitId')
+  const watchSelectedRateName = form.watch('selectedRateName')
+  const watchPeople = form.watch('numberOfPeople')
+  const watchStartDate = form.watch('period.from')
+  const watchEndDate = form.watch('period.to')
+  const watchDaily = form.watch('daily')
+  const watchTotalAmount = form.watch('totalAmount')
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (booking) {
-      setDaily(
-        booking.totalAmount /
-          getDifferenceInDays({
-            from: booking.startDate,
-            to: booking.endDate,
-          })
+    async function getRates() {
+      const dataRates = await groupedByRateNamePerUnit(form.watch('unitId'))
+      setRates(dataRates)
+    }
+    getRates()
+  }, [form.watch('unitId')])
+
+  useEffect(() => {
+    if (
+      !rates ||
+      !watchSelectedRateName ||
+      !watchUnit ||
+      !watchPeople ||
+      !watchStartDate ||
+      !watchEndDate
+    ) {
+      form.setValue('daily', 0)
+      form.setValue('totalAmount', 0)
+      return
+    }
+
+    const rateOptions = rates[watchSelectedRateName] || []
+
+    const sorted = rateOptions.sort(
+      (a, b) => a.numberOfPeople - b.numberOfPeople
+    )
+
+    // Busca tarifa >= pessoas
+    const matched = sorted.find(rate => rate.numberOfPeople >= watchPeople)
+
+    const finalRate = matched || sorted[sorted.length - 1] // usa maior disponível se não encontrou
+
+    form.setValue(
+      'totalAmount',
+      finalRate?.value
+        ? finalRate.value * dayjs(watchEndDate).diff(watchStartDate, 'day')
+        : 0,
+      {
+        shouldValidate: true,
+      }
+    )
+    form.setValue('daily', finalRate?.value ? finalRate.value : 0, {
+      shouldValidate: true,
+    })
+  }, [
+    watchUnit,
+    watchSelectedRateName,
+    watchPeople,
+    watchStartDate,
+    watchEndDate,
+    rates,
+    form.setValue,
+  ])
+
+  useEffect(() => {
+    if (!watchTotalAmount) {
+      form.setValue('daily', 0)
+      return
+    }
+
+    form.setValue(
+      'daily',
+      watchTotalAmount / dayjs(watchEndDate).diff(watchStartDate, 'day'),
+      {
+        shouldValidate: true,
+      }
+    )
+  }, [watchEndDate, watchStartDate, watchTotalAmount, form.setValue])
+
+  useEffect(() => {
+    if (watchDaily) {
+      form.setValue(
+        'totalAmount',
+        watchDaily * dayjs(watchEndDate).diff(watchStartDate, 'day'),
+        {
+          shouldValidate: true,
+        }
       )
-    } else {
-      setDailyAndTotalAmount(getValues('numberOfPeople'))
     }
-  }, [unitId])
+  }, [watchDaily, watchEndDate, watchStartDate, form.setValue])
 
-  async function onSubmitHandle(
-    values: BookingFormValues,
-    event: React.FormEvent
-  ) {
-    try {
-      if (booking) {
-        const data = await updateBooking(values, booking.id)
+  const [isPending, startTransition] = useTransition()
 
-        if (!data.error) {
-          toast('Sucesso', {
-            description: 'Reserva atualizada com sucesso',
-          })
-          setBookings?.(prev => {
-            return prev.map(b => (b.id === booking.id ? data.booking : b))
-          })
-          router.refresh()
-        } else {
-          toast('Erro', {
-            description: data.error,
-          })
+  async function onSubmit(values: BookingSchema) {
+    startTransition(() => {
+      createBooking(values).then(data => {
+        if (data.error) {
+          setServerError(data.error)
+          return
         }
-      } else {
-        const data = await createBooking(values)
-
-        if (!data.error) {
+        if (data.success) {
           toast('Sucesso', {
-            description: 'Reserva criada com sucesso',
+            description: data.success,
           })
-
-          setBookings?.(prev => [...prev, data])
-          router.refresh()
-        } else {
-          toast('Erro', {
-            description: data.error,
-          })
+          form.reset()
+          setServerError(null)
+          router.push('/bookings')
         }
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        toast('Erro', {
-          description: error.message,
-        })
-      } else {
-        toast('Erro', {
-          description: 'Erro desconhecido, tente novamente mais tarde',
-        })
-      }
-    } finally {
-      setLoading(false)
-      setOpenSheet?.(false)
-    }
+      })
+    })
   }
 
   return (
-    <div className="flex flex-col gap-6 max-w-6xl">
-      <Form {...form}>
-        <form
-          onSubmit={event =>
-            handleSubmit(values => onSubmitHandle(values, event))(event)
-          }
-          className="space-y-4"
-        >
-          <FormField
-            control={control}
-            name="guestId"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Hóspede</FormLabel>
-                <GuestCombobox
-                  setValue={setValue}
-                  guestId={watch('guestId')}
-                  guestName={booking?.guest.name}
-                />
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+    <Card className="w-full xl:w-1/2 lg:w-2/3 md:w-3/4 sm:w-3/4">
+      <CardHeader>
+        <CardTitle>Nova Reserva</CardTitle>
+        <CardDescription className="sr-only">
+          Preencha o formulário abaixo para criar uma nova reserva
+        </CardDescription>
+      </CardHeader>
 
-          <FormField
-            control={control}
-            name="period"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Período</FormLabel>
-                <BookingCalendar period={watch('period')} setValue={setValue} />
-                <FormDescription>
-                  Total de {getDifferenceInDays(watch('period'))} diárias.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={control}
-            name="unitId"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>UH</FormLabel>
-                <UnitCombobox
-                  setValue={setValue}
-                  setRates={setRates}
-                  unitId={watch('unitId')}
-                  period={watch('period')}
-                  unitName={booking?.unit.name || unit?.name}
-                  bookingId={booking?.id}
-                />
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* Campo de Número de Pessoas */}
-          <FormField
-            control={form.control}
-            name="numberOfPeople"
-            render={({ field }) => (
-              <FormItem className="space-y-0">
-                <FormLabel className="font-semibold">
-                  Quantidade de pessoas
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="number"
-                    placeholder="Informe a quantidade de pessoas"
-                    className="focus-visible:ring-0 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none border-2 border-blue-200"
-                    onChange={e => {
-                      setValue('numberOfPeople', Number(e.target.value))
-                      setDailyAndTotalAmount(Number(e.target.value))
-                    }}
+      <CardContent>
+        {serverError && (
+          <p className="text-destructive text-sm">{serverError}</p>
+        )}
+        <BookingFormError errors={form.formState.errors} />
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Status da reserva</FormLabel>
+                  <BookingStatusCombobox
+                    value={field.value}
+                    setValue={form.setValue}
                   />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  <FormDescription className="sr-only">
+                    Selecione o status da reserva
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          {/* Campo de Valor Diária */}
-          <FormItem className="space-y-0">
-            <FormLabel className="font-semibold">Diária</FormLabel>
-            <FormControl>
-              <Input
-                type="number"
-                value={daily}
-                placeholder="Valor da diária"
-                className="focus-visible:ring-0 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none border-2 border-blue-200"
-                onChange={e => {
-                  setDailyAndTotalAmount(
-                    watch('numberOfPeople'),
-                    Number(e.target.value)
-                  )
-                }}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
+            <FormField
+              control={form.control}
+              name="guestId"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Hóspede</FormLabel>
+                  <GuestCombobox
+                    onChange={field.onChange}
+                    value={field.value}
+                  />
+                  <FormDescription className="sr-only">
+                    Selecione o hóspede da reserva
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
 
-          {/* Campo de Valor Total */}
-          <FormField
-            control={form.control}
-            name="totalAmount"
-            render={({ field }) => (
-              <FormItem className="space-y-0">
-                <FormLabel className="font-semibold">Valor total</FormLabel>
-                <FormControl>
+            <FormField
+              control={form.control}
+              name="period"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Período</FormLabel>
+                  <BookingDateRangeCalendar
+                    value={field.value}
+                    setValue={form.setValue}
+                  />
+                  <FormDescription>
+                    Quantidade de dias:
+                    {field.value.from && field.value.to
+                      ? ` ${dayjs(field.value.to).diff(
+                          field.value.from,
+                          'day'
+                        )}`
+                      : 0}
+                  </FormDescription>
+                  <FormDescription className="sr-only">
+                    Selecione o período da reserva
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="unitId"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Acomodação</FormLabel>
+                  <UnitsCombobox
+                    value={field.value}
+                    onChange={field.onChange}
+                    period={form.watch('period')}
+                  />
+                  <FormDescription className="sr-only">
+                    Selecione a acomodação da reserva
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="selectedRateName"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Tarifa</FormLabel>
+
+                  <RatesCombobox
+                    rates={rates}
+                    selectedRateName={field.value}
+                    onChange={field.onChange}
+                    disabled={!form.watch('unitId')}
+                  />
+
+                  <FormDescription className="sr-only">
+                    Selecione uma tarifa para a reserva
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="numberOfPeople"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Nº de Pessoas</FormLabel>
                   <Input
                     {...field}
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    value={field.value}
+                    onChange={e => {
+                      const val = e.target.value
+                      if (val === '') {
+                        field.onChange('')
+                        return
+                      }
+
+                      const num = Number(val)
+                      if (!Number.isNaN(num) && num >= 1) {
+                        field.onChange(num)
+                      }
+                    }}
+                    className={'h-8 rounded-md px-3 text-xs bg-popover'}
+                  />
+                  <FormDescription className="sr-only">
+                    Informe quantidade de pessoas
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="daily"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Diária</FormLabel>
+                  <Input
+                    {...field}
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    value={field.value}
+                    onChange={e => {
+                      const val = e.target.value
+                      if (val === '') {
+                        field.onChange('')
+                        return
+                      }
+
+                      const num = Number(val)
+                      if (!Number.isNaN(num) && num >= 1) {
+                        field.onChange(num)
+                      }
+                    }}
+                    className={'h-8 rounded-md px-3 text-xs bg-popover'}
+                    disabled={!form.watch('selectedRateName')}
+                  />
+                  <FormDescription className="sr-only">
+                    Valor da diária da reserva
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="totalAmount"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Total da reserva</FormLabel>
+                  <Input
                     type="number"
-                    placeholder="Informe o valor total"
-                    className="focus-visible:ring-0 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none border-2 border-blue-200"
+                    {...field}
+                    value={field.value}
+                    onChange={event => {
+                      form.setValue('totalAmount', Number(event.target.value))
+                    }}
+                    className={'h-8 rounded-md px-3 text-xs bg-popover'}
                     disabled
                   />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  <FormDescription className="sr-only">
+                    Valor total da reserva
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
 
-          <Separator className="my-4" />
-
-          {/* Botão de Envio */}
-          <div className="flex justify-end gap-4">
-            <Button
-              type="button"
-              className={`${isButtonSizeFull ? 'w-full' : ''} mt-4`}
-              variant={'destructive'}
-            >
-              {loading ? 'Cancelando...' : 'Cancelar'}
+            <Button type="submit" className="w-full">
+              {isPending ? 'Criando reserva...' : 'Criar reserva'}
             </Button>
-            <Button
-              type="submit" // Alteramos de "submit" para "button"
-              className={`${isButtonSizeFull ? 'w-full' : ''} mt-4`}
-            >
-              {loading
-                ? booking
-                  ? 'Atualizando...'
-                  : 'Reservando...'
-                : booking
-                  ? 'Atualizar'
-                  : 'Reservar'}
-            </Button>
-          </div>
-        </form>
-      </Form>
-    </div>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   )
 }

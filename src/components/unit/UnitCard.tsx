@@ -13,12 +13,10 @@ import {
 } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import type { UnitWithTypeAndBookings } from '@/types/unit'
-import dayjs from 'dayjs'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { BookingDescriptions } from '../booking/BookingDescriptions'
-import { BookingSheet } from '../booking/BookingSheet'
 import MaterialSymbolsRealEstateAgent from '../icons/MaterialSymbolsRealEstateAgent'
 import FluentDoor16Filled from '../icons/fluent-ui/FluentDoor16Filled'
 import MageCalendarPlusFill from '../icons/mage/MageCalendarPlusFill'
@@ -313,7 +311,7 @@ export default function UnitCard({ unit }: UnitCardProps) {
             )}
           </>
         ) : (
-          <BookingSheet startDate={dayjs()} unit={unit}>
+          <Link href={`/bookings/new`} title="Fazer reserva">
             <Button
               size="icon"
               variant="outline"
@@ -322,7 +320,7 @@ export default function UnitCard({ unit }: UnitCardProps) {
               <MageCalendarPlusFill className="w-4 h-4" />
               <span className="sr-only">Fazer reserva</span>
             </Button>
-          </BookingSheet>
+          </Link>
         )}
       </CardFooter>
     </Card>
