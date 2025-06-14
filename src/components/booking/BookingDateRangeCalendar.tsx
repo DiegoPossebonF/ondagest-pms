@@ -7,19 +7,19 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import type { BookingSchema } from '@/schemas/booking-schema'
 import { ptBR } from 'date-fns/locale'
 import dayjs from 'dayjs'
 import { ChevronsUpDown } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import type { UseFormSetValue } from 'react-hook-form'
-import type { NewBookingFormValues } from './NewBookingForm'
 
 interface BookingDateRangeCalendarProps {
   value: {
-    startDate: dayjs.Dayjs
-    endDate: dayjs.Dayjs
+    from: Date
+    to: Date
   }
-  setValue: UseFormSetValue<NewBookingFormValues>
+  setValue: UseFormSetValue<BookingSchema>
 }
 
 export function BookingDateRangeCalendar({
@@ -46,8 +46,8 @@ export function BookingDateRangeCalendar({
           className="justify-between font-normal bg-popover"
           size={'sm'}
         >
-          {value?.startDate && value?.endDate
-            ? `${value.startDate.format('DD/MM/YYYY')} - ${value.endDate.format('DD/MM/YYYY')}`
+          {value?.from && value?.to
+            ? `${dayjs(value.from).format('DD/MM/YYYY')} - ${dayjs(value.to).format('DD/MM/YYYY')}`
             : 'Selecione o período da reserva'}
           <ChevronsUpDown className="opacity-50" />
         </Button>
@@ -58,13 +58,13 @@ export function BookingDateRangeCalendar({
           locale={ptBR}
           captionLayout="dropdown"
           selected={{
-            from: value?.startDate.toDate(),
-            to: value?.endDate.toDate(),
+            from: value?.from,
+            to: value?.to,
           }}
           onSelect={range => {
-            setValue('dateRangeSchema', {
-              startDate: dayjs(range?.from),
-              endDate: dayjs(range?.to),
+            setValue('period', {
+              from: range?.from as Date,
+              to: range?.to as Date,
             })
           }}
         />

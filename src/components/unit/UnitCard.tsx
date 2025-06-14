@@ -206,16 +206,14 @@ export default function UnitCard({ unit }: UnitCardProps) {
             className={`flex items-center justify-center gap-1 px-2 py-[0.15rem] text-xs sm:text-sm`}
           >
             {StatusIcon && <StatusIcon className="w-4 h-4" />}
-            <span className="hidden sm:inline text-xs">
-              {STATUS_LABELS[booking.status]}
-            </span>
+            <span className="text-xs">{STATUS_LABELS[booking.status]}</span>
           </Badge>
         ) : (
           <Badge
             variant={'outline'}
             className={`flex items-center justify-center gap-1 px-2 py-[0.15rem] text-xs sm:text-sm`}
           >
-            <span className="hidden sm:inline text-xs">Livre</span>
+            <span className="text-xs">Livre</span>
           </Badge>
         )}
       </CardHeader>

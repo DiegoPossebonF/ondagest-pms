@@ -58,7 +58,7 @@ type SortDirection = 'asc' | 'desc'
 export function BookingsList({ bookings }: BookingListProps) {
   const isMobile = useMediaQuery('(max-width: 768px)')
   const [sortKey, setSortKey] = useState<SortKey>('startDate')
-  const [sortDirection, setSortDirection] = useState<SortDirection>('asc')
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
   const [activeFilters, setActiveFilters] = useState(false)
 
   const [filters, setFilters] = useState({

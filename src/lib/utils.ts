@@ -28,11 +28,11 @@ export function getDifferenceInDays(period: DateRange) {
 }
 
 export const STATUS_LABELS = {
-  PENDING: 'Pendente de pagamento',
+  PENDING: 'Pendente',
   CONFIRMED: 'Confirmado',
-  CHECKED_IN: 'Fazer Check-in',
+  CHECKED_IN: 'Check-in',
   IN_PROGRESS: 'Hospedado',
-  CHECKED_OUT: 'Fazer Check-out',
+  CHECKED_OUT: 'Check-out',
   FINALIZED: 'Finalizado',
   CANCELLED: 'Cancelado',
   NO_SHOW: 'No show',

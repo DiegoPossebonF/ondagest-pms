@@ -1,17 +1,18 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import dayjs, { type Dayjs } from 'dayjs'
-import { useRouter } from 'next/navigation'
+import dayjs from 'dayjs'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
-import { z } from 'zod'
 
 import { groupedByRateNamePerUnit } from '@/app/(private)/(dashboard)/bookings/new/actions'
+import { createBooking } from '@/app/actions/booking/createBooking'
 import { BookingStatus, type Rate } from '@/app/generated/prisma'
 import { Button } from '@/components/ui/button'
+import { type BookingSchema, bookingSchema } from '@/schemas/booking-schema'
 import type { Dictionary } from 'lodash'
-import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState, useTransition } from 'react'
+import { toast } from 'sonner'
 import { GuestCombobox } from '../guest/GuestCombobox'
 import { RatesCombobox } from '../rate/RatesCombobox'
 import {
@@ -35,61 +36,19 @@ import { BookingDateRangeCalendar } from './BookingDateRangeCalendar'
 import { BookingFormError } from './BookingFormError'
 import { BookingStatusCombobox } from './BookingStatusCombobox'
 
-const dayjsSchema: z.ZodType<Dayjs> = z.custom<Dayjs>(
-  val => dayjs.isDayjs(val) && val.isValid(),
-  {
-    message: 'Data inválida',
-  }
-)
-
-const dateRangeSchema = z
-  .object({
-    startDate: dayjsSchema,
-    endDate: dayjsSchema,
-  })
-  .refine(val => val.startDate.isBefore(val.endDate), {
-    message: 'A data de check-out deve ser maior que a data de check-in',
-    path: ['startDate'],
-  })
-
-/**
-
-  guestId        String
-  unitId         String
-  startDate      DateTime
-  endDate        DateTime
-  status         BookingStatus
-  numberOfPeople Int
-  totalAmount    Float
- 
-*/
-
-const bookingSchema = z.object({
-  status: z.enum(Object.values(BookingStatus) as [string, ...string[]]),
-  guestId: z.string().min(1, 'Hóspede obrigatório'),
-  dateRangeSchema: dateRangeSchema,
-  unitId: z.string().min(1, 'Unidade obrigatória'),
-  numberOfPeople: z.coerce.number().min(1, 'Mínimo de 1 pessoa'),
-  selectedRateName: z.string().min(1, 'Tarifa obrigatória'),
-  daily: z.coerce.number().min(1, 'Valor da diária obrigatório'),
-  totalAmount: z.number().min(0, 'Valor inválido'),
-})
-
-export type NewBookingFormValues = z.infer<typeof bookingSchema>
-
 export default function NewBookingForm() {
   const router = useRouter()
+  const [serverError, setServerError] = useState<string | null>(null)
   const [rates, setRates] = useState<Dictionary<Rate[]> | null>(null)
-  //const [selectedRateName, setSelectedRateName] = useState<string | null>(null)
 
-  const form = useForm<NewBookingFormValues>({
+  const form = useForm<BookingSchema>({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
       status: BookingStatus.PENDING,
       guestId: '',
-      dateRangeSchema: {
-        startDate: dayjs(),
-        endDate: dayjs().add(5, 'day'),
+      period: {
+        from: dayjs().toDate(),
+        to: dayjs().add(5, 'day').toDate(),
       },
       unitId: '',
       numberOfPeople: 1,
@@ -102,8 +61,8 @@ export default function NewBookingForm() {
   const watchUnit = form.watch('unitId')
   const watchSelectedRateName = form.watch('selectedRateName')
   const watchPeople = form.watch('numberOfPeople')
-  const watchStartDate = form.watch('dateRangeSchema.startDate')
-  const watchEndDate = form.watch('dateRangeSchema.endDate')
+  const watchStartDate = form.watch('period.from')
+  const watchEndDate = form.watch('period.to')
   const watchDaily = form.watch('daily')
   const watchTotalAmount = form.watch('totalAmount')
 
@@ -190,17 +149,25 @@ export default function NewBookingForm() {
     }
   }, [watchDaily, watchEndDate, watchStartDate, form.setValue])
 
-  const onSubmit = async (values: z.infer<typeof bookingSchema>) => {
-    try {
-      // Substitua com mutation real via server action ou api route
-      //console.log('Creating booking', values)
-      toast.success('Sucesso', {
-        description: `${JSON.stringify(values, null, 2)} \n nameRate: ${watchSelectedRateName}`,
+  const [isPending, startTransition] = useTransition()
+
+  async function onSubmit(values: BookingSchema) {
+    startTransition(() => {
+      createBooking(values).then(data => {
+        if (data.error) {
+          setServerError(data.error)
+          return
+        }
+        if (data.success) {
+          toast('Sucesso', {
+            description: data.success,
+          })
+          form.reset()
+          setServerError(null)
+          router.push('/bookings')
+        }
       })
-      //router.push('/bookings')
-    } catch (error) {
-      toast.error('Erro ao criar reserva')
-    }
+    })
   }
 
   return (
@@ -213,6 +180,9 @@ export default function NewBookingForm() {
       </CardHeader>
 
       <CardContent>
+        {serverError && (
+          <p className="text-destructive text-sm">{serverError}</p>
+        )}
         <BookingFormError errors={form.formState.errors} />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -253,7 +223,7 @@ export default function NewBookingForm() {
 
             <FormField
               control={form.control}
-              name="dateRangeSchema"
+              name="period"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>Período</FormLabel>
@@ -263,9 +233,9 @@ export default function NewBookingForm() {
                   />
                   <FormDescription>
                     Quantidade de dias:
-                    {field.value?.startDate && field.value?.endDate
-                      ? ` ${dayjs(field.value.endDate).diff(
-                          field.value.startDate,
+                    {field.value.from && field.value.to
+                      ? ` ${dayjs(field.value.to).diff(
+                          field.value.from,
                           'day'
                         )}`
                       : 0}
@@ -286,7 +256,7 @@ export default function NewBookingForm() {
                   <UnitsCombobox
                     value={field.value}
                     onChange={field.onChange}
-                    period={form.watch('dateRangeSchema')}
+                    period={form.watch('period')}
                   />
                   <FormDescription className="sr-only">
                     Selecione a acomodação da reserva
@@ -407,7 +377,7 @@ export default function NewBookingForm() {
             />
 
             <Button type="submit" className="w-full">
-              Reservar
+              {isPending ? 'Criando reserva...' : 'Criar reserva'}
             </Button>
           </form>
         </Form>

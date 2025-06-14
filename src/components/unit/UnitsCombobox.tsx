@@ -17,14 +17,16 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
-import type { Dayjs } from 'dayjs'
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { LoadingSpinner } from '../LoadingSpinner'
 
 interface UnitsComboboxProps {
   value: string
-  period: { startDate: Dayjs; endDate: Dayjs }
+  period: {
+    from: Date
+    to: Date
+  }
   onChange: (value: string) => void
 }
 
@@ -42,13 +44,16 @@ export function UnitsCombobox({ value, period, onChange }: UnitsComboboxProps) {
     async function handleGetUnits() {
       setLoading(true)
       const dataUnits = await freeUnitsPerPeriod({
-        from: period.startDate.toDate(),
-        to: period.endDate.toDate(),
+        from: period.from,
+        to: period.to,
       })
       setUnits(dataUnits)
     }
-    handleGetUnits().then(() => setLoading(false))
-  }, [period])
+
+    if (open) {
+      handleGetUnits().then(() => setLoading(false))
+    }
+  }, [period, open])
 
   useEffect(() => {
     if (open) {
@@ -95,8 +100,12 @@ export function UnitsCombobox({ value, period, onChange }: UnitsComboboxProps) {
             <CommandEmpty>
               {loading ? (
                 <LoadingSpinner />
+              ) : units?.length === 0 || !units ? (
+                <span>
+                  Nenhuma acomodação disponível para o período selecionado.
+                </span>
               ) : (
-                'Nenhuma acomodação disponível para o período selecionado.'
+                <span>Nenhuma acomodação localizada. </span>
               )}
             </CommandEmpty>
             <CommandGroup>

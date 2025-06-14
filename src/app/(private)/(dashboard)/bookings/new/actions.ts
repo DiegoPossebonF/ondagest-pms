@@ -31,6 +31,7 @@ export async function getGuestsByName(name: string) {
 }
 
 export async function freeUnitsPerPeriod(period: DateRange) {
+  console.log(period)
   try {
     const units = await db.unit.findMany({
       where: {

@@ -4,7 +4,7 @@ import type { BookingAllIncludes } from '@/types/booking'
 
 export default async function BookingsPage() {
   const bookings: BookingAllIncludes[] = await db.booking.findMany({
-    orderBy: { startDate: 'asc' },
+    orderBy: { unit: { name: 'asc' } },
     include: {
       guest: true,
       unit: { include: { type: { include: { rates: true } } } },
