@@ -24,7 +24,6 @@ export function BookingCalendar({ setValue, period }: BookingCalendarProps) {
       <PopoverTrigger asChild>
         <Button
           id="date"
-          variant={'bookingform'}
           className={cn(
             'w-full justify-start text-left font-normal',
             !period.from && 'text-muted-foreground'

@@ -1,10 +1,26 @@
+'use server'
 import db from '@/lib/db'
 import type { UnitWithTypeAndBookings } from '@/types/unit'
 
 export async function getUnits(): Promise<UnitWithTypeAndBookings[] | null> {
   try {
     const units: UnitWithTypeAndBookings[] = await db.unit.findMany({
-      include: { type: true, bookings: true },
+      include: {
+        type: true,
+        bookings: {
+          include: {
+            guest: true,
+            unit: {
+              include: {
+                type: { include: { rates: { include: { type: true } } } },
+              },
+            },
+            payments: true,
+            services: true,
+            discounts: true,
+          },
+        },
+      },
       orderBy: { name: 'asc' },
     })
 

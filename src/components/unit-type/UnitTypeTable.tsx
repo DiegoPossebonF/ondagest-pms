@@ -18,8 +18,8 @@ import {
 
 import { deleteUnitType } from '@/actions/unit-type/deleteUnitType'
 import type { Prisma, UnitType } from '@/app/generated/prisma'
-import { toast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import { AlertCustom } from '../AlertCustom'
 import { UnitTypeSheet } from './UnitTypeSheet'
 
@@ -39,30 +39,22 @@ const UnitTypeTable = ({ unitTypes }: UnitTableProps) => {
       const res = await deleteUnitType(id)
 
       if (!res.error) {
-        toast({
-          title: 'Sucesso',
+        toast('Sucesso', {
           description: 'Tipo de acomodação deletada com sucesso!',
-          variant: 'success',
         })
       } else {
-        toast({
-          title: 'Erro',
+        toast('Erro', {
           description: res.error,
-          variant: 'destructive',
         })
       }
     } catch (err) {
       if (err instanceof Error) {
-        toast({
-          title: 'Erro',
+        toast('Erro', {
           description: err.message,
-          variant: 'destructive',
         })
       } else {
-        toast({
-          title: 'Erro',
+        toast('Erro', {
           description: 'Erro não tratado - fale com o desenvolvedor',
-          variant: 'destructive',
         })
       }
     } finally {

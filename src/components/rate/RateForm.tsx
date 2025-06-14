@@ -12,12 +12,12 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { useToast } from '@/hooks/use-toast'
 import type { Rate } from '@/types/rate'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { type Dispatch, type SetStateAction, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 import {
   Select,
@@ -51,7 +51,6 @@ interface RateFormProps {
 
 export function RateForm({ rate, unitTypes, setOpen }: RateFormProps) {
   const router = useRouter()
-  const { toast } = useToast()
   const [loading, setLoading] = useState(false)
 
   const form = useForm<RateFormValues>({
@@ -74,51 +73,39 @@ export function RateForm({ rate, unitTypes, setOpen }: RateFormProps) {
         const data = await updateRate(values, rate.id)
 
         if (!data.error) {
-          toast({
-            title: 'Sucesso',
-            variant: 'success',
+          toast('Sucesso', {
             description: 'Tarifa atualizada com sucesso',
           })
           setOpen(false)
           router.refresh()
         } else {
-          toast({
-            title: 'Erro',
+          toast('Erro', {
             description: data.error,
-            variant: 'destructive',
           })
         }
       } else {
         const data = await createRate(values)
 
         if (!data.error) {
-          toast({
-            variant: 'success',
-            title: 'Sucesso',
+          toast('Sucesso', {
             description: 'Tarifa criada com sucesso',
           })
           setOpen(false)
           router.refresh()
         } else {
-          toast({
-            title: 'Erro',
+          toast('Erro', {
             description: data.error,
-            variant: 'destructive',
           })
         }
       }
     } catch (err) {
       if (err instanceof Error) {
-        toast({
-          title: 'Erro',
+        toast('Erro', {
           description: err.message,
-          variant: 'destructive',
         })
       } else {
-        toast({
-          title: 'Erro',
+        toast('Erro', {
           description: 'Erro não tratado - fale com o desenvolvedor',
-          variant: 'destructive',
         })
       }
     } finally {

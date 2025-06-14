@@ -77,7 +77,6 @@ export function UnitCombobox({
       <PopoverTrigger asChild>
         <FormControl>
           <Button
-            variant="bookingform"
             // biome-ignore lint/a11y/useSemanticElements: <explanation>
             role="combobox"
             className={cn(

@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils'
+import { IconLoader } from '@tabler/icons-react'
 
 interface LoadingSpinnerProps {
   size?: 'sm' | 'md' | 'lg'
@@ -10,18 +11,21 @@ export function LoadingSpinner({
   className,
 }: LoadingSpinnerProps) {
   const sizes = {
-    sm: 'h-4 w-4 border-2',
-    md: 'h-6 w-6 border-2',
-    lg: 'h-8 w-8 border-4',
+    sm: 'h-4 w-4',
+    md: 'h-6 w-6',
+    lg: 'h-8 w-8',
   }
 
   return (
     <div
       className={cn(
-        'animate-spin rounded-full border-t-primary border-l-transparent border-r-transparent border-b-transparent',
-        sizes[size],
+        'w-full h-full flex items-center justify-center',
         className
       )}
-    />
+    >
+      <IconLoader
+        className={cn('animate-spin duration-[1000ms]', sizes[size], className)}
+      />
+    </div>
   )
 }

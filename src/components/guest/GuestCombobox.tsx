@@ -1,7 +1,10 @@
 'use client'
+import { Check, ChevronsUpDown } from 'lucide-react'
 
-import { getGuests } from '@/actions/guest/getGuests'
-import { getGuestsByName } from '@/actions/guest/getGuestsByName'
+import {
+  getGuestsByName,
+  getGuestsOrderUpdated,
+} from '@/app/(private)/(dashboard)/bookings/new/actions'
 import type { Guest } from '@/app/generated/prisma'
 import { Button } from '@/components/ui/button'
 import {
@@ -12,128 +15,87 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command'
+import { FormControl } from '@/components/ui/form'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
-import { Check, ChevronsUpDown } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
-import type { UseFormSetValue } from 'react-hook-form'
-import { LoadingSpinner } from '../LoadingSpinner'
-import type { BookingFormValues } from '../booking/BookingForm'
-import { FormControl } from '../ui/form'
+import { useEffect, useState } from 'react'
 
 interface GuestComboboxProps {
-  //booking?: BookingAllIncludes
-  setValue: UseFormSetValue<BookingFormValues>
-  guestId: string
-  guestName?: string
+  value: string
+  onChange: (value: string) => void
 }
 
-export function GuestCombobox({
-  setValue,
-  guestId,
-  guestName,
-}: GuestComboboxProps) {
-  const triggerRef = useRef<HTMLButtonElement | null>(null)
-  const [width, setWidth] = useState('auto')
-  const [loadind, setLoading] = useState(false)
-  const [openPopover, setOpenPopover] = useState(false)
-  const [guests, setGuests] = useState<Guest[]>([])
-  const [selectedGuestName, setSelectedGuestName] = useState(guestName || '')
+export function GuestCombobox({ value, onChange }: GuestComboboxProps) {
+  const [open, setOpen] = useState(false)
+  const [guests, setGuests] = useState<Guest[] | null>([])
+  const [guest, setGuest] = useState<Guest | null>(null)
 
   useEffect(() => {
-    if (triggerRef.current) {
-      setWidth(`${triggerRef.current.offsetWidth}px`)
+    async function getGuests() {
+      const dataGuests = await getGuestsOrderUpdated()
+      setGuests(dataGuests)
     }
+    getGuests()
   }, [])
 
-  async function handleGetGuests(name: string) {
-    try {
-      setLoading(true)
-      if (name) {
-        const guests: Guest[] = await getGuestsByName(name)
-        return guests
-      }
-
-      const guests: Guest[] = await getGuests()
-      console.log(guests)
-      return guests
-    } catch {
-      return [] as Guest[]
-    } finally {
-      setTimeout(() => setLoading(false), 1000)
-    }
-  }
-
-  function handleSelect(guest: { id: string; name: string }) {
-    setValue('guestId', guest.id)
-    setSelectedGuestName(guest.name)
-    setOpenPopover(false)
-  }
-
   return (
-    <Popover open={openPopover} onOpenChange={setOpenPopover}>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <FormControl>
           <Button
-            variant="default"
-            ref={triggerRef}
+            variant="outline"
             // biome-ignore lint/a11y/useSemanticElements: <explanation>
             role="combobox"
             className={cn(
-              'w-full justify-between',
-              guestId && 'text-muted-foreground'
+              'justify-between bg-popover',
+              !value && 'text-muted-foreground'
             )}
-            onClick={async () => {
-              const data = await handleGetGuests('')
-              setGuests(data)
-            }}
+            size={'sm'}
           >
-            {selectedGuestName ? selectedGuestName : 'Selecione um hóspede...'}
+            {guest ? guest.name : 'Selecione o hóspede...'}
             <ChevronsUpDown className="opacity-50" />
           </Button>
         </FormControl>
       </PopoverTrigger>
-      <PopoverContent style={{ width }} className="p-0">
+      <PopoverContent className="p-0" align="start">
         <Command>
           <CommandInput
             placeholder="Procurar hóspede..."
             className="h-9"
             onValueChange={async value => {
-              if (value) {
-                const data = await handleGetGuests(value)
-                setGuests(data)
-              }
+              if (!value || value.length <= 2) return
+              const dataGuests = await getGuestsByName(value)
+              setGuests(dataGuests)
             }}
           />
           <CommandList>
-            {loadind ? (
-              <div className="flex items-center justify-center p-4">
-                <LoadingSpinner size="sm" />
-              </div>
-            ) : (
-              <CommandGroup>
-                <CommandEmpty>Nenhum hóspede encontrado</CommandEmpty>
-                {guests?.map(guest => (
-                  <CommandItem
-                    value={guest.name}
-                    key={guest.id}
-                    onSelect={() => handleSelect(guest)}
-                  >
-                    {guest.name}
-                    <Check
-                      className={cn(
-                        'ml-auto',
-                        guest.id === guestId ? 'opacity-100' : 'opacity-0'
-                      )}
-                    />
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            )}
+            <CommandEmpty>Nenhum hóspede encontrado</CommandEmpty>
+            <CommandGroup>
+              {guests?.map(guest => (
+                <CommandItem
+                  className="form-sm"
+                  value={guest.name}
+                  key={guest.id}
+                  onSelect={() => {
+                    onChange(guest.id)
+                    setGuest(guest)
+                    setOpen(false)
+                  }}
+                >
+                  {guest.name}
+                  <Check
+                    className={cn(
+                      'ml-auto',
+                      guest.id === value ? 'opacity-100' : 'opacity-0'
+                    )}
+                  />
+                </CommandItem>
+              ))}
+            </CommandGroup>
           </CommandList>
         </Command>
       </PopoverContent>

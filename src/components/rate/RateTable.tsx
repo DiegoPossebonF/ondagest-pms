@@ -18,9 +18,9 @@ import {
 
 import { deleteRate } from '@/actions/rate/deleteRate'
 import type { UnitType } from '@/app/generated/prisma'
-import { toast } from '@/hooks/use-toast'
 import type { Rate } from '@/types/rate'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import { AlertCustom } from '../AlertCustom'
 import { RateSheet } from './RateSheet'
 
@@ -37,30 +37,22 @@ const RateTable = ({ rates, unitTypes }: UnitTableProps) => {
       const res = await deleteRate(id)
 
       if (!res.error) {
-        toast({
-          title: 'Sucesso',
+        toast('Sucesso', {
           description: 'Tarifa deletada com sucesso!',
-          variant: 'success',
         })
       } else {
-        toast({
-          title: 'Erro',
+        toast('Erro', {
           description: res.error,
-          variant: 'destructive',
         })
       }
     } catch (err) {
       if (err instanceof Error) {
-        toast({
-          title: 'Erro',
+        toast('Erro', {
           description: err.message,
-          variant: 'destructive',
         })
       } else {
-        toast({
-          title: 'Erro',
+        toast('Erro', {
           description: 'Erro não tratado - fale com o desenvolvedor',
-          variant: 'destructive',
         })
       }
     } finally {

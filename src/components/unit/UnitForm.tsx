@@ -12,12 +12,12 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { useToast } from '@/hooks/use-toast'
 import type { UnitWithTypeAndBookings } from '@/types/unit'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { type Dispatch, type SetStateAction, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 import {
   Select,
@@ -43,7 +43,6 @@ interface UnitFormProps {
 
 export function UnitForm({ unit, unitsType, setOpen }: UnitFormProps) {
   const router = useRouter()
-  const { toast } = useToast()
   const [loading, setLoading] = useState(false)
 
   const form = useForm<UnitFormValues>({
@@ -64,51 +63,39 @@ export function UnitForm({ unit, unitsType, setOpen }: UnitFormProps) {
         const data = await updateUnit(values, unit.id)
 
         if (!data.error) {
-          toast({
-            title: 'Sucesso',
+          toast('Sucesso', {
             description: 'Unidade atualizada com sucesso',
-            variant: 'success',
           })
           router.refresh()
           setOpen(false)
         } else {
-          toast({
-            title: 'Erro',
+          toast('Erro', {
             description: data.error,
-            variant: 'destructive',
           })
         }
       } else {
         const data = await createUnit(values)
 
         if (!data.error) {
-          toast({
-            title: 'Sucesso',
+          toast('Sucesso', {
             description: 'Unidade criada com sucesso',
-            variant: 'success',
           })
           router.refresh()
           setOpen(false)
         } else {
-          toast({
-            title: 'Erro',
+          toast('Erro', {
             description: data.error,
-            variant: 'destructive',
           })
         }
       }
     } catch (error) {
       if (error instanceof Error) {
-        toast({
-          title: 'Erro',
+        toast('Erro', {
           description: error.message,
-          variant: 'destructive',
         })
       } else {
-        toast({
-          title: 'Erro',
+        toast('Erro', {
           description: 'Erro desconhecido, tente novamente mais tarde',
-          variant: 'destructive',
         })
       }
     } finally {

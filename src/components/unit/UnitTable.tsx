@@ -18,8 +18,8 @@ import {
 
 import { deleteUnit } from '@/actions/unit/deleteUnit'
 import type { Prisma, UnitType } from '@/app/generated/prisma'
-import { toast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import { AlertCustom } from '../AlertCustom'
 import { UnitSheet } from './UnitSheet'
 
@@ -40,30 +40,22 @@ const UnitTable = ({ units, unitsType }: UnitTableProps) => {
       const data = await deleteUnit(id)
 
       if (!data.error) {
-        toast({
-          title: 'Sucesso',
+        toast('Sucesso', {
           description: 'Acomodação deletada com sucesso',
-          variant: 'success',
         })
       } else {
-        toast({
-          title: 'Erro',
+        toast('Erro', {
           description: data.error,
-          variant: 'destructive',
         })
       }
     } catch (err) {
       if (err instanceof Error) {
-        toast({
-          title: 'Erro',
+        toast('Erro', {
           description: err.message,
-          variant: 'destructive',
         })
       } else {
-        toast({
-          title: 'Erro',
+        toast('Erro', {
           description: 'Erro não tratado - fale com o desenvolvedor',
-          variant: 'destructive',
         })
       }
     } finally {
