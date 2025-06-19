@@ -15,6 +15,7 @@ export default async function BookingId({
       payments: { orderBy: { paidAt: 'desc' } },
       discounts: { orderBy: { createdAt: 'desc' } },
       services: { orderBy: { createdAt: 'desc' } },
+      rate: { include: { type: true } },
     },
   })
 

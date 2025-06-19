@@ -1,8 +1,8 @@
+import { getUnitsWithUpdatedBookings } from '@/app/actions/unit/actions'
 import { BookingStatusLegend } from '@/components/booking/BookingStatusLegend'
 import UnitCard from '@/components/unit/UnitCard'
 import dayjs from 'dayjs'
 import isBetween from 'dayjs/plugin/isBetween'
-import { getUnitsWithUpdatedBookings } from './actions'
 
 dayjs.extend(isBetween)
 

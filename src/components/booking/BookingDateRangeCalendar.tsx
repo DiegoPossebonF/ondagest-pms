@@ -15,16 +15,18 @@ import { useEffect, useState } from 'react'
 import type { UseFormSetValue } from 'react-hook-form'
 
 interface BookingDateRangeCalendarProps {
-  value: {
+  period: {
     from: Date
     to: Date
   }
   setValue: UseFormSetValue<BookingSchema>
+  disabled?: boolean
 }
 
 export function BookingDateRangeCalendar({
-  value,
+  period,
   setValue,
+  disabled,
 }: BookingDateRangeCalendarProps) {
   const [open, setOpen] = useState(false)
   useEffect(() => {
@@ -45,9 +47,10 @@ export function BookingDateRangeCalendar({
           variant="outline"
           className="justify-between font-normal bg-popover"
           size={'sm'}
+          disabled={disabled}
         >
-          {value?.from && value?.to
-            ? `${dayjs(value.from).format('DD/MM/YYYY')} - ${dayjs(value.to).format('DD/MM/YYYY')}`
+          {period?.from && period?.to
+            ? `${dayjs(period.from).format('DD/MM/YYYY')} - ${dayjs(period.to).format('DD/MM/YYYY')}`
             : 'Selecione o período da reserva'}
           <ChevronsUpDown className="opacity-50" />
         </Button>
@@ -57,15 +60,11 @@ export function BookingDateRangeCalendar({
           mode="range"
           locale={ptBR}
           captionLayout="dropdown"
-          selected={{
-            from: value?.from,
-            to: value?.to,
-          }}
+          selected={period}
           onSelect={range => {
-            setValue('period', {
-              from: range?.from as Date,
-              to: range?.to as Date,
-            })
+            if (range?.from && range.to) {
+              setValue('period', { from: range.from, to: range.to })
+            }
           }}
         />
       </PopoverContent>

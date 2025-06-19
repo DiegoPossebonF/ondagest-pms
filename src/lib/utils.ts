@@ -34,7 +34,7 @@ export const STATUS_LABELS = {
   IN_PROGRESS: 'Hospedado',
   CHECKED_OUT: 'Check-out',
   FINALIZED: 'Finalizado',
-  CANCELLED: 'Cancelado',
+  CANCELLED: 'Cancelada',
   NO_SHOW: 'No show',
 }
 
@@ -144,3 +144,12 @@ export const formatCurrency = (amount: number) =>
 export function parseCurrencyToNumber(value: string): number {
   return Number(value.replace(/[^\d,-]+/g, '').replace(',', '.'))
 }
+
+export const activeStatuses = [
+  'PENDING',
+  'CONFIRMED',
+  'CHECKED_IN',
+  'IN_PROGRESS',
+  'CHECKED_OUT',
+  'FINALIZED',
+]

@@ -22,17 +22,23 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
-import { useEffect, useState } from 'react'
+import { type Dispatch, type SetStateAction, useEffect, useState } from 'react'
 
 interface GuestComboboxProps {
-  value: string
+  selectedGuestName: string | null
+  setSelectedGuestName: Dispatch<SetStateAction<string | null>>
   onChange: (value: string) => void
+  disabled?: boolean
 }
 
-export function GuestCombobox({ value, onChange }: GuestComboboxProps) {
+export function GuestCombobox({
+  selectedGuestName,
+  setSelectedGuestName,
+  onChange,
+  disabled,
+}: GuestComboboxProps) {
   const [open, setOpen] = useState(false)
   const [guests, setGuests] = useState<Guest[] | null>([])
-  const [guest, setGuest] = useState<Guest | null>(null)
 
   useEffect(() => {
     async function getGuests() {
@@ -52,11 +58,12 @@ export function GuestCombobox({ value, onChange }: GuestComboboxProps) {
             role="combobox"
             className={cn(
               'justify-between bg-popover',
-              !value && 'text-muted-foreground'
+              !selectedGuestName && 'text-muted-foreground'
             )}
             size={'sm'}
+            disabled={disabled}
           >
-            {guest ? guest.name : 'Selecione o hóspede...'}
+            {selectedGuestName ? selectedGuestName : 'Selecione o hóspede...'}
             <ChevronsUpDown className="opacity-50" />
           </Button>
         </FormControl>
@@ -82,7 +89,7 @@ export function GuestCombobox({ value, onChange }: GuestComboboxProps) {
                   key={guest.id}
                   onSelect={() => {
                     onChange(guest.id)
-                    setGuest(guest)
+                    setSelectedGuestName(guest.name)
                     setOpen(false)
                   }}
                 >
@@ -90,7 +97,9 @@ export function GuestCombobox({ value, onChange }: GuestComboboxProps) {
                   <Check
                     className={cn(
                       'ml-auto',
-                      guest.id === value ? 'opacity-100' : 'opacity-0'
+                      guest.name === selectedGuestName
+                        ? 'opacity-100'
+                        : 'opacity-0'
                     )}
                   />
                 </CommandItem>

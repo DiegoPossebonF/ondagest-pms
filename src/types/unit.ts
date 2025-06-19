@@ -12,6 +12,7 @@ export type UnitWithTypeAndBookings = Prisma.UnitGetPayload<{
         payments: true
         services: true
         discounts: true
+        rate: { include: { type: true } }
       }
     }
   }

@@ -18,42 +18,49 @@ import {
 } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 import { Check, ChevronsUpDown } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { type Dispatch, type SetStateAction, useEffect, useState } from 'react'
 import { LoadingSpinner } from '../LoadingSpinner'
-
-interface UnitsComboboxProps {
-  value: string
-  period: {
-    from: Date
-    to: Date
-  }
-  onChange: (value: string) => void
-}
 
 interface UnitWithType extends Unit {
   type: UnitType
 }
 
-export function UnitsCombobox({ value, period, onChange }: UnitsComboboxProps) {
+interface UnitsComboboxProps {
+  bookingId?: number
+  selectedUnit: UnitWithType | null
+  setSelectedUnit: Dispatch<SetStateAction<UnitWithType | null>>
+  period: {
+    from: Date
+    to: Date
+  }
+  onChange: (value: string) => void
+  disabled?: boolean
+}
+
+export function UnitsCombobox({
+  bookingId,
+  selectedUnit,
+  setSelectedUnit,
+  period,
+  onChange,
+  disabled,
+}: UnitsComboboxProps) {
   const [loading, setLoading] = useState(false)
   const [units, setUnits] = useState<UnitWithType[] | null>([])
-  const [unit, setUnit] = useState<UnitWithType | null>(null)
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
+    if (!open) return
     async function handleGetUnits() {
       setLoading(true)
-      const dataUnits = await freeUnitsPerPeriod({
-        from: period.from,
-        to: period.to,
-      })
-      setUnits(dataUnits)
+      const availableUnits = await freeUnitsPerPeriod(
+        period,
+        bookingId // 👈 passa aqui o ID da unidade atual
+      )
+      setUnits(availableUnits)
     }
-
-    if (open) {
-      handleGetUnits().then(() => setLoading(false))
-    }
-  }, [period, open])
+    handleGetUnits().then(() => setLoading(false))
+  }, [period, bookingId, open])
 
   useEffect(() => {
     if (open) {
@@ -82,12 +89,13 @@ export function UnitsCombobox({ value, period, onChange }: UnitsComboboxProps) {
             role="combobox"
             className={cn(
               'justify-between bg-popover',
-              !value && 'text-muted-foreground'
+              !selectedUnit && 'text-muted-foreground'
             )}
             size={'sm'}
+            disabled={disabled}
           >
-            {unit
-              ? `${unit.name} - ${unit.type.name}`
+            {selectedUnit
+              ? `${selectedUnit.name} - ${selectedUnit.type.name}`
               : 'Selecione uma acomodação...'}
             <ChevronsUpDown className="opacity-50" />
           </Button>
@@ -116,16 +124,15 @@ export function UnitsCombobox({ value, period, onChange }: UnitsComboboxProps) {
                   key={unit.id}
                   onSelect={() => {
                     onChange(unit.id)
-                    setUnit(unit)
+                    setSelectedUnit(unit)
                     setOpen(false)
                   }}
                 >
-                  {` ${unit.name}`}
-                  <span className="ml-auto">{unit.type.name}</span>
+                  {`${unit.name} - ${unit.type.name}`}
                   <Check
                     className={cn(
                       'ml-auto',
-                      unit.id === value ? 'opacity-100' : 'opacity-0'
+                      unit.id === selectedUnit?.id ? 'opacity-100' : 'opacity-0'
                     )}
                   />
                 </CommandItem>

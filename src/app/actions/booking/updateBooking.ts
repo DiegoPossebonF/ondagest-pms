@@ -7,7 +7,7 @@ import db from '@/lib/db'
 import { type BookingSchema, bookingSchema } from '@/schemas/booking-schema'
 import { revalidatePath } from 'next/cache'
 
-export async function createBooking(data: BookingSchema) {
+export async function updateBooking(id: number, data: BookingSchema) {
   const parsed = bookingSchema.safeParse(data)
 
   if (!parsed.success) {
@@ -28,7 +28,8 @@ export async function createBooking(data: BookingSchema) {
   } = parsed.data
 
   try {
-    await db.booking.create({
+    await db.booking.update({
+      where: { id },
       data: {
         guestId,
         unitId,
@@ -38,18 +39,17 @@ export async function createBooking(data: BookingSchema) {
         numberOfPeople,
         totalAmount,
         status: BookingStatus[status as keyof typeof BookingStatus],
-        paymentStatus: 'PENDING',
       },
     })
 
-    revalidatePath('/bookings')
+    revalidatePath(`/bookings/${id}`)
     return {
-      success: 'Reserva criada com sucesso!',
+      success: 'Reserva atualizada com sucesso!',
     }
   } catch (error) {
-    console.error('#### Erro ao criar reserva', error)
+    console.error('#### Erro ao atualizar reserva', error)
     return {
-      error: 'Erro ao criar reserva',
+      error: 'Erro ao atualizar reserva',
     }
   }
 }

@@ -22,11 +22,13 @@ import { useEffect, useState } from 'react'
 import type { UseFormSetValue } from 'react-hook-form'
 
 interface BookingStatusComboboxProps {
+  disabled?: boolean
   value: string
   setValue: UseFormSetValue<BookingSchema>
 }
 
 export function BookingStatusCombobox({
+  disabled,
   value,
   setValue,
 }: BookingStatusComboboxProps) {
@@ -53,6 +55,7 @@ export function BookingStatusCombobox({
             role="combobox"
             className={cn('justify-between bg-popover', !value && '')}
             size={'sm'}
+            disabled={disabled}
           >
             {value
               ? STATUS_LABELS[value as BookingStatus]

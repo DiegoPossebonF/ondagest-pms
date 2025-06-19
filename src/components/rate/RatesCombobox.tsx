@@ -19,19 +19,19 @@ import { cn, formatCurrency } from '@/lib/utils'
 import { IconCurrencyReal, IconUserFilled } from '@tabler/icons-react'
 import type { Dictionary } from 'lodash'
 import { Check, ChevronsUpDown, Info } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { type Dispatch, type SetStateAction, useEffect, useState } from 'react'
 
 interface RatesComboboxProps {
   rates: Dictionary<Rate[]> | null
   selectedRateName: string | null
-  onChange: (value: string) => void
+  setSelectedRateName: Dispatch<SetStateAction<string | null>>
   disabled?: boolean
 }
 
 export function RatesCombobox({
   rates,
   selectedRateName,
-  onChange,
+  setSelectedRateName,
   disabled,
 }: RatesComboboxProps) {
   const [open, setOpen] = useState(false)
@@ -85,7 +85,7 @@ export function RatesCombobox({
                       value={rate}
                       key={rate}
                       onSelect={() => {
-                        onChange(rate)
+                        setSelectedRateName(rate)
                         setOpen(false)
                       }}
                     >
@@ -107,7 +107,7 @@ export function RatesCombobox({
       </Popover>
 
       {/** popover info rates */}
-      {selectedRateName && (
+      {selectedRateName && !disabled && (
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="outline" size="sm" className="self-start">

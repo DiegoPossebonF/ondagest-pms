@@ -3,6 +3,8 @@ import type { BookingAllIncludes } from '@/types/booking'
 import type { UnitWithType } from '@/types/unit'
 import dayjs from 'dayjs'
 import 'dayjs/locale/pt-br'
+import { getBookingsPerPeriod } from '@/app/actions/booking/actions'
+import { getUnits } from '@/app/actions/unit/actions'
 import { cn } from '@/lib/utils'
 import {
   IconCalendarWeekFilled,
@@ -35,20 +37,20 @@ export function UnitsGanttView() {
   )
 
   useEffect(() => {
-    const periodDateRange = {
+    const period = {
       from: startDate,
       to: dayjs(startDate)
         .add(DAYS_RANGE - 1, 'day')
         .toDate(),
     }
     const fetchData = async () => {
-      const response = await fetch(
-        `/api/booking/map/${JSON.stringify(periodDateRange)}`,
-        { method: 'GET' }
-      )
-      const data = await response.json()
-      setUnits(data.units)
-      setBookings(data.bookings)
+      const dataBookings = await getBookingsPerPeriod(period)
+      const dataUnits = await getUnits()
+
+      if (!dataBookings || !dataUnits) return
+
+      setUnits(dataUnits?.units)
+      setBookings(dataBookings?.bookings)
     }
 
     fetchData()

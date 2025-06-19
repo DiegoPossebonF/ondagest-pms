@@ -6,7 +6,13 @@ import { useForm } from 'react-hook-form'
 
 import { groupedByRateNamePerUnit } from '@/app/(private)/(dashboard)/bookings/new/actions'
 import { createBooking } from '@/app/actions/booking/createBooking'
-import { BookingStatus, type Rate } from '@/app/generated/prisma'
+import { updateBooking } from '@/app/actions/booking/updateBooking'
+import {
+  BookingStatus,
+  type Rate,
+  type Unit,
+  type UnitType,
+} from '@/app/generated/prisma'
 import { Button } from '@/components/ui/button'
 import { type BookingSchema, bookingSchema } from '@/schemas/booking-schema'
 import type { BookingAllIncludes } from '@/types/booking'
@@ -17,13 +23,6 @@ import { toast } from 'sonner'
 import { GuestCombobox } from '../guest/GuestCombobox'
 import { RatesCombobox } from '../rate/RatesCombobox'
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '../ui/card'
-import {
   Form,
   FormDescription,
   FormField,
@@ -33,6 +32,7 @@ import {
 } from '../ui/form'
 import { Input } from '../ui/input'
 import { UnitsCombobox } from '../unit/UnitsCombobox'
+import { BookingCancelAlertDialog } from './BookingCancelAlertDialog'
 import { BookingDateRangeCalendar } from './BookingDateRangeCalendar'
 import { BookingFormError } from './BookingFormError'
 import { BookingStatusCombobox } from './BookingStatusCombobox'
@@ -41,10 +41,25 @@ interface BookingFormProps {
   booking?: BookingAllIncludes
 }
 
+interface UnitWithType extends Unit {
+  type: UnitType
+}
+
 export default function BookingForm({ booking }: BookingFormProps) {
   const router = useRouter()
   const [serverError, setServerError] = useState<string | null>(null)
   const [rates, setRates] = useState<Dictionary<Rate[]> | null>(null)
+  const [selectedGuestName, setSelectedGuestName] = useState<string | null>(
+    booking?.guest?.name || null
+  )
+  const [selectedRateName, setSelectedRateName] = useState<string | null>(
+    booking?.rate?.name || null
+  )
+  const [selectedUnit, setSelectedUnit] = useState<UnitWithType | null>(
+    booking?.unit || null
+  )
+  const [isDisabled, setIsDisabled] = useState(!!booking || false)
+  const [isPending, startTransition] = useTransition()
 
   const form = useForm<BookingSchema>({
     resolver: zodResolver(bookingSchema),
@@ -57,44 +72,29 @@ export default function BookingForm({ booking }: BookingFormProps) {
       },
       unitId: booking?.unitId || '',
       numberOfPeople: booking?.numberOfPeople || 1,
-      selectedRateName: '',
-      daily: 0,
+      rateId: booking?.rateId || '',
+      daily: booking?.rate?.value || 0,
       totalAmount: booking?.totalAmount || 0,
     },
   })
 
   const watchUnit = form.watch('unitId')
-  const watchSelectedRateName = form.watch('selectedRateName')
   const watchPeople = form.watch('numberOfPeople')
-  const watchStartDate = form.watch('period.from')
-  const watchEndDate = form.watch('period.to')
-  const watchDaily = form.watch('daily')
-  const watchTotalAmount = form.watch('totalAmount')
+  const watchPeriod = form.watch('period')
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
+    if (!watchUnit) return
     async function getRates() {
-      const dataRates = await groupedByRateNamePerUnit(form.watch('unitId'))
+      const dataRates = await groupedByRateNamePerUnit(watchUnit)
       setRates(dataRates)
     }
     getRates()
-  }, [form.watch('unitId')])
+  }, [watchUnit])
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (
-      !rates ||
-      !watchSelectedRateName ||
-      !watchUnit ||
-      !watchPeople ||
-      !watchStartDate ||
-      !watchEndDate
-    ) {
-      form.setValue('daily', 0)
-      form.setValue('totalAmount', 0)
-      return
-    }
-
-    const rateOptions = rates[watchSelectedRateName] || []
+    if (!selectedRateName || !rates) return
+    const rateOptions = rates[selectedRateName] || []
 
     const sorted = rateOptions.sort(
       (a, b) => a.numberOfPeople - b.numberOfPeople
@@ -105,288 +105,292 @@ export default function BookingForm({ booking }: BookingFormProps) {
 
     const finalRate = matched || sorted[sorted.length - 1] // usa maior disponível se não encontrou
 
-    form.setValue(
-      'totalAmount',
-      finalRate?.value
-        ? finalRate.value * dayjs(watchEndDate).diff(watchStartDate, 'day')
-        : 0,
-      {
-        shouldValidate: true,
-      }
-    )
-    form.setValue('daily', finalRate?.value ? finalRate.value : 0, {
+    form.setValue('rateId', finalRate?.id || '', {
       shouldValidate: true,
     })
-  }, [
-    watchUnit,
-    watchSelectedRateName,
-    watchPeople,
-    watchStartDate,
-    watchEndDate,
-    rates,
-    form.setValue,
-  ])
 
-  useEffect(() => {
-    if (!watchTotalAmount) {
-      form.setValue('daily', 0)
-      return
-    }
-
+    form.setValue('daily', finalRate?.value || 0)
     form.setValue(
-      'daily',
-      watchTotalAmount / dayjs(watchEndDate).diff(watchStartDate, 'day'),
-      {
-        shouldValidate: true,
-      }
+      'totalAmount',
+      finalRate?.value *
+        dayjs(watchPeriod.to).diff(dayjs(watchPeriod.from), 'day')
     )
-  }, [watchEndDate, watchStartDate, watchTotalAmount, form.setValue])
-
-  useEffect(() => {
-    if (watchDaily) {
-      form.setValue(
-        'totalAmount',
-        watchDaily * dayjs(watchEndDate).diff(watchStartDate, 'day'),
-        {
-          shouldValidate: true,
-        }
-      )
-    }
-  }, [watchDaily, watchEndDate, watchStartDate, form.setValue])
-
-  const [isPending, startTransition] = useTransition()
+  }, [rates, selectedRateName, watchPeople, watchPeriod])
 
   async function onSubmit(values: BookingSchema) {
-    startTransition(() => {
-      createBooking(values).then(data => {
-        if (data.error) {
-          setServerError(data.error)
-          return
-        }
-        if (data.success) {
-          toast('Sucesso', {
-            description: data.success,
-          })
-          form.reset()
-          setServerError(null)
-          router.push('/bookings')
-        }
+    if (booking) {
+      startTransition(() => {
+        updateBooking(booking.id, values).then(data => {
+          if (data.error) {
+            setServerError(data.error)
+            return
+          }
+          if (data.success) {
+            toast('Sucesso', {
+              description: data.success,
+              duration: 5000,
+              icon: '✅',
+            })
+            setIsDisabled(true)
+            setServerError(null)
+            router.push(`/bookings/${booking.id}`)
+          }
+        })
       })
-    })
+    } else {
+      startTransition(() => {
+        createBooking(values).then(data => {
+          if (data.error) {
+            setServerError(data.error)
+            return
+          }
+          if (data.success) {
+            toast('Sucesso', {
+              description: data.success,
+            })
+            form.reset()
+            setServerError(null)
+            router.push('/bookings')
+          }
+        })
+      })
+    }
   }
 
   return (
-    <Card className="w-full xl:w-1/2 lg:w-2/3 md:w-3/4 sm:w-3/4">
-      <CardHeader>
-        <CardTitle>Nova Reserva</CardTitle>
-        <CardDescription className="sr-only">
-          Preencha o formulário abaixo para criar uma nova reserva
-        </CardDescription>
-      </CardHeader>
+    <>
+      {serverError && <p className="text-destructive text-sm">{serverError}</p>}
+      <BookingFormError
+        errors={form.formState.errors}
+        serverError={serverError}
+      />
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-full space-y-4"
+        >
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Status da reserva</FormLabel>
+                <BookingStatusCombobox
+                  value={field.value}
+                  setValue={form.setValue}
+                  disabled={isDisabled}
+                />
+                <FormDescription className="sr-only">
+                  Selecione o status da reserva
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-      <CardContent>
-        {serverError && (
-          <p className="text-destructive text-sm">{serverError}</p>
-        )}
-        <BookingFormError errors={form.formState.errors} />
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Status da reserva</FormLabel>
-                  <BookingStatusCombobox
-                    value={field.value}
-                    setValue={form.setValue}
-                  />
-                  <FormDescription className="sr-only">
-                    Selecione o status da reserva
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="guestId"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Hóspede</FormLabel>
+                <GuestCombobox
+                  selectedGuestName={selectedGuestName}
+                  setSelectedGuestName={setSelectedGuestName}
+                  onChange={field.onChange}
+                  disabled={isDisabled}
+                />
+                <FormDescription className="sr-only">
+                  Selecione o hóspede da reserva
+                </FormDescription>
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="guestId"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Hóspede</FormLabel>
-                  <GuestCombobox
-                    onChange={field.onChange}
-                    value={field.value}
-                  />
-                  <FormDescription className="sr-only">
-                    Selecione o hóspede da reserva
-                  </FormDescription>
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="period"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Período</FormLabel>
+                <BookingDateRangeCalendar
+                  period={field.value}
+                  setValue={form.setValue}
+                  disabled={isDisabled}
+                />
+                <FormDescription>
+                  Quantidade de dias:
+                  {field.value.from && field.value.to
+                    ? ` ${dayjs(field.value.to).diff(field.value.from, 'day')}`
+                    : 0}
+                </FormDescription>
+                <FormDescription className="sr-only">
+                  Selecione o período da reserva
+                </FormDescription>
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="period"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Período</FormLabel>
-                  <BookingDateRangeCalendar
-                    value={field.value}
-                    setValue={form.setValue}
-                  />
-                  <FormDescription>
-                    Quantidade de dias:
-                    {field.value.from && field.value.to
-                      ? ` ${dayjs(field.value.to).diff(
-                          field.value.from,
-                          'day'
-                        )}`
-                      : 0}
-                  </FormDescription>
-                  <FormDescription className="sr-only">
-                    Selecione o período da reserva
-                  </FormDescription>
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="unitId"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Acomodação</FormLabel>
+                <UnitsCombobox
+                  bookingId={booking?.id}
+                  selectedUnit={selectedUnit}
+                  setSelectedUnit={setSelectedUnit}
+                  onChange={field.onChange}
+                  period={form.watch('period')}
+                  disabled={isDisabled}
+                />
+                <FormDescription className="sr-only">
+                  Selecione a acomodação da reserva
+                </FormDescription>
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="unitId"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Acomodação</FormLabel>
-                  <UnitsCombobox
-                    value={field.value}
-                    onChange={field.onChange}
-                    period={form.watch('period')}
-                  />
-                  <FormDescription className="sr-only">
-                    Selecione a acomodação da reserva
-                  </FormDescription>
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="rateId"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Tarifa</FormLabel>
+                <RatesCombobox
+                  rates={rates}
+                  selectedRateName={selectedRateName}
+                  setSelectedRateName={setSelectedRateName}
+                  disabled={!form.watch('unitId') || isDisabled}
+                />
+                <FormDescription className="sr-only">
+                  Selecione uma tarifa para a reserva
+                </FormDescription>
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="selectedRateName"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Tarifa</FormLabel>
+          <FormField
+            control={form.control}
+            name="numberOfPeople"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Nº de Pessoas</FormLabel>
+                <Input
+                  {...field}
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  value={field.value}
+                  onChange={e => {
+                    const val = e.target.value
+                    if (val === '') {
+                      field.onChange('')
+                      return
+                    }
 
-                  <RatesCombobox
-                    rates={rates}
-                    selectedRateName={field.value}
-                    onChange={field.onChange}
-                    disabled={!form.watch('unitId')}
-                  />
+                    const num = Number(val)
+                    if (!Number.isNaN(num) && num >= 1) {
+                      field.onChange(num)
+                    }
+                  }}
+                  className={'h-8 rounded-md px-3 text-xs bg-popover'}
+                  disabled={isDisabled}
+                />
+                <FormDescription className="sr-only">
+                  Informe quantidade de pessoas
+                </FormDescription>
+              </FormItem>
+            )}
+          />
 
-                  <FormDescription className="sr-only">
-                    Selecione uma tarifa para a reserva
-                  </FormDescription>
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="daily"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Diária</FormLabel>
+                <Input
+                  {...field}
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  value={field.value}
+                  onChange={e => {
+                    const val = e.target.value
+                    if (val === '') {
+                      field.onChange('')
+                      return
+                    }
 
-            <FormField
-              control={form.control}
-              name="numberOfPeople"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Nº de Pessoas</FormLabel>
-                  <Input
-                    {...field}
-                    type="text"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    value={field.value}
-                    onChange={e => {
-                      const val = e.target.value
-                      if (val === '') {
-                        field.onChange('')
-                        return
-                      }
+                    const num = Number(val)
+                    if (!Number.isNaN(num) && num >= 1) {
+                      field.onChange(num)
+                    }
+                  }}
+                  className={'h-8 rounded-md px-3 text-xs bg-popover'}
+                  disabled={!form.watch('rateId') || isDisabled}
+                />
+                <FormDescription className="sr-only">
+                  Valor da diária da reserva
+                </FormDescription>
+              </FormItem>
+            )}
+          />
 
-                      const num = Number(val)
-                      if (!Number.isNaN(num) && num >= 1) {
-                        field.onChange(num)
-                      }
-                    }}
-                    className={'h-8 rounded-md px-3 text-xs bg-popover'}
-                  />
-                  <FormDescription className="sr-only">
-                    Informe quantidade de pessoas
-                  </FormDescription>
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="totalAmount"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Total da reserva</FormLabel>
+                <Input
+                  type="number"
+                  {...field}
+                  value={field.value}
+                  onChange={event => {
+                    form.setValue('totalAmount', Number(event.target.value))
+                  }}
+                  className={'h-8 rounded-md px-3 text-xs bg-popover'}
+                  disabled
+                />
+                <FormDescription className="sr-only">
+                  Valor total da reserva
+                </FormDescription>
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="daily"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Diária</FormLabel>
-                  <Input
-                    {...field}
-                    type="text"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    value={field.value}
-                    onChange={e => {
-                      const val = e.target.value
-                      if (val === '') {
-                        field.onChange('')
-                        return
-                      }
-
-                      const num = Number(val)
-                      if (!Number.isNaN(num) && num >= 1) {
-                        field.onChange(num)
-                      }
-                    }}
-                    className={'h-8 rounded-md px-3 text-xs bg-popover'}
-                    disabled={!form.watch('selectedRateName')}
-                  />
-                  <FormDescription className="sr-only">
-                    Valor da diária da reserva
-                  </FormDescription>
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="totalAmount"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Total da reserva</FormLabel>
-                  <Input
-                    type="number"
-                    {...field}
-                    value={field.value}
-                    onChange={event => {
-                      form.setValue('totalAmount', Number(event.target.value))
-                    }}
-                    className={'h-8 rounded-md px-3 text-xs bg-popover'}
-                    disabled
-                  />
-                  <FormDescription className="sr-only">
-                    Valor total da reserva
-                  </FormDescription>
-                </FormItem>
-              )}
-            />
-
-            <Button type="submit" className="w-full">
-              {isPending ? 'Criando reserva...' : 'Criar reserva'}
+          {booking ? (
+            isDisabled ? (
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  className="w-full"
+                  onClick={e => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    setIsDisabled(false)
+                  }}
+                  size={'sm'}
+                >
+                  Editar
+                </Button>
+                <BookingCancelAlertDialog bookingId={booking.id} />
+              </div>
+            ) : (
+              <Button type="submit" className="w-full" size={'sm'}>
+                {isPending ? 'Atualizando...' : 'Atualizar'}
+              </Button>
+            )
+          ) : (
+            <Button type="submit" className="w-full" size={'sm'}>
+              {isPending ? 'Criando...' : 'Nova reserva'}
             </Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+          )}
+        </form>
+      </Form>
+    </>
   )
 }

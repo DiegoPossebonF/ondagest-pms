@@ -9,5 +9,6 @@ export type BookingAllIncludes = Prisma.BookingGetPayload<{
     payments: true
     services: true
     discounts: true
+    rate: { include: { type: true } }
   }
 }>
