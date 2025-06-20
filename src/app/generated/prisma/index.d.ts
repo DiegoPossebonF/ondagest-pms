@@ -2888,6 +2888,9 @@ export namespace Prisma {
     name: string | null
     email: string | null
     phone: string | null
+    cpf: string | null
+    city: string | null
+    carPlate: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2897,6 +2900,9 @@ export namespace Prisma {
     name: string | null
     email: string | null
     phone: string | null
+    cpf: string | null
+    city: string | null
+    carPlate: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2906,6 +2912,9 @@ export namespace Prisma {
     name: number
     email: number
     phone: number
+    cpf: number
+    city: number
+    carPlate: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -2917,6 +2926,9 @@ export namespace Prisma {
     name?: true
     email?: true
     phone?: true
+    cpf?: true
+    city?: true
+    carPlate?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2926,6 +2938,9 @@ export namespace Prisma {
     name?: true
     email?: true
     phone?: true
+    cpf?: true
+    city?: true
+    carPlate?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2935,6 +2950,9 @@ export namespace Prisma {
     name?: true
     email?: true
     phone?: true
+    cpf?: true
+    city?: true
+    carPlate?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -3017,6 +3035,9 @@ export namespace Prisma {
     name: string
     email: string
     phone: string | null
+    cpf: string
+    city: string | null
+    carPlate: string | null
     createdAt: Date
     updatedAt: Date
     _count: GuestCountAggregateOutputType | null
@@ -3043,6 +3064,9 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     phone?: boolean
+    cpf?: boolean
+    city?: boolean
+    carPlate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     bookings?: boolean | Guest$bookingsArgs<ExtArgs>
@@ -3054,6 +3078,9 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     phone?: boolean
+    cpf?: boolean
+    city?: boolean
+    carPlate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["guest"]>
@@ -3063,6 +3090,9 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     phone?: boolean
+    cpf?: boolean
+    city?: boolean
+    carPlate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["guest"]>
@@ -3072,11 +3102,14 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     phone?: boolean
+    cpf?: boolean
+    city?: boolean
+    carPlate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type GuestOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "phone" | "createdAt" | "updatedAt", ExtArgs["result"]["guest"]>
+  export type GuestOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "phone" | "cpf" | "city" | "carPlate" | "createdAt" | "updatedAt", ExtArgs["result"]["guest"]>
   export type GuestInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     bookings?: boolean | Guest$bookingsArgs<ExtArgs>
     _count?: boolean | GuestCountOutputTypeDefaultArgs<ExtArgs>
@@ -3094,6 +3127,9 @@ export namespace Prisma {
       name: string
       email: string
       phone: string | null
+      cpf: string
+      city: string | null
+      carPlate: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["guest"]>
@@ -3524,6 +3560,9 @@ export namespace Prisma {
     readonly name: FieldRef<"Guest", 'String'>
     readonly email: FieldRef<"Guest", 'String'>
     readonly phone: FieldRef<"Guest", 'String'>
+    readonly cpf: FieldRef<"Guest", 'String'>
+    readonly city: FieldRef<"Guest", 'String'>
+    readonly carPlate: FieldRef<"Guest", 'String'>
     readonly createdAt: FieldRef<"Guest", 'DateTime'>
     readonly updatedAt: FieldRef<"Guest", 'DateTime'>
   }
@@ -11962,6 +12001,9 @@ export namespace Prisma {
     name: 'name',
     email: 'email',
     phone: 'phone',
+    cpf: 'cpf',
+    city: 'city',
+    carPlate: 'carPlate',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -12213,6 +12255,9 @@ export namespace Prisma {
     name?: StringFilter<"Guest"> | string
     email?: StringFilter<"Guest"> | string
     phone?: StringNullableFilter<"Guest"> | string | null
+    cpf?: StringFilter<"Guest"> | string
+    city?: StringNullableFilter<"Guest"> | string | null
+    carPlate?: StringNullableFilter<"Guest"> | string | null
     createdAt?: DateTimeFilter<"Guest"> | Date | string
     updatedAt?: DateTimeFilter<"Guest"> | Date | string
     bookings?: BookingListRelationFilter
@@ -12223,6 +12268,9 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     phone?: SortOrderInput | SortOrder
+    cpf?: SortOrder
+    city?: SortOrderInput | SortOrder
+    carPlate?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     bookings?: BookingOrderByRelationAggregateInput
@@ -12236,6 +12284,9 @@ export namespace Prisma {
     NOT?: GuestWhereInput | GuestWhereInput[]
     name?: StringFilter<"Guest"> | string
     phone?: StringNullableFilter<"Guest"> | string | null
+    cpf?: StringFilter<"Guest"> | string
+    city?: StringNullableFilter<"Guest"> | string | null
+    carPlate?: StringNullableFilter<"Guest"> | string | null
     createdAt?: DateTimeFilter<"Guest"> | Date | string
     updatedAt?: DateTimeFilter<"Guest"> | Date | string
     bookings?: BookingListRelationFilter
@@ -12246,6 +12297,9 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     phone?: SortOrderInput | SortOrder
+    cpf?: SortOrder
+    city?: SortOrderInput | SortOrder
+    carPlate?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: GuestCountOrderByAggregateInput
@@ -12261,6 +12315,9 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Guest"> | string
     email?: StringWithAggregatesFilter<"Guest"> | string
     phone?: StringNullableWithAggregatesFilter<"Guest"> | string | null
+    cpf?: StringWithAggregatesFilter<"Guest"> | string
+    city?: StringNullableWithAggregatesFilter<"Guest"> | string | null
+    carPlate?: StringNullableWithAggregatesFilter<"Guest"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Guest"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Guest"> | Date | string
   }
@@ -12828,6 +12885,9 @@ export namespace Prisma {
     name: string
     email: string
     phone?: string | null
+    cpf: string
+    city?: string | null
+    carPlate?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     bookings?: BookingCreateNestedManyWithoutGuestInput
@@ -12838,6 +12898,9 @@ export namespace Prisma {
     name: string
     email: string
     phone?: string | null
+    cpf: string
+    city?: string | null
+    carPlate?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     bookings?: BookingUncheckedCreateNestedManyWithoutGuestInput
@@ -12848,6 +12911,9 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    cpf?: StringFieldUpdateOperationsInput | string
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    carPlate?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     bookings?: BookingUpdateManyWithoutGuestNestedInput
@@ -12858,6 +12924,9 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    cpf?: StringFieldUpdateOperationsInput | string
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    carPlate?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     bookings?: BookingUncheckedUpdateManyWithoutGuestNestedInput
@@ -12868,6 +12937,9 @@ export namespace Prisma {
     name: string
     email: string
     phone?: string | null
+    cpf: string
+    city?: string | null
+    carPlate?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -12877,6 +12949,9 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    cpf?: StringFieldUpdateOperationsInput | string
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    carPlate?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12886,6 +12961,9 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    cpf?: StringFieldUpdateOperationsInput | string
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    carPlate?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13540,6 +13618,9 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     phone?: SortOrder
+    cpf?: SortOrder
+    city?: SortOrder
+    carPlate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -13549,6 +13630,9 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     phone?: SortOrder
+    cpf?: SortOrder
+    city?: SortOrder
+    carPlate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -13558,6 +13642,9 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     phone?: SortOrder
+    cpf?: SortOrder
+    city?: SortOrder
+    carPlate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -15023,6 +15110,9 @@ export namespace Prisma {
     name: string
     email: string
     phone?: string | null
+    cpf: string
+    city?: string | null
+    carPlate?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -15032,6 +15122,9 @@ export namespace Prisma {
     name: string
     email: string
     phone?: string | null
+    cpf: string
+    city?: string | null
+    carPlate?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -15176,6 +15269,9 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    cpf?: StringFieldUpdateOperationsInput | string
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    carPlate?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15185,6 +15281,9 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: NullableStringFieldUpdateOperationsInput | string | null
+    cpf?: StringFieldUpdateOperationsInput | string
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    carPlate?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

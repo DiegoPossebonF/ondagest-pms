@@ -133,6 +133,9 @@ exports.Prisma.GuestScalarFieldEnum = {
   name: 'name',
   email: 'email',
   phone: 'phone',
+  cpf: 'cpf',
+  city: 'city',
+  carPlate: 'carPlate',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
