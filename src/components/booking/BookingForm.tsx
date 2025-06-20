@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form'
 import { groupedByRateNamePerUnit } from '@/app/(private)/(dashboard)/bookings/new/actions'
 import { createBooking } from '@/app/actions/booking/createBooking'
 import { updateBooking } from '@/app/actions/booking/updateBooking'
+import { getUnitById } from '@/app/actions/unit/actions'
 import {
   BookingStatus,
   type Rate,
@@ -17,7 +18,7 @@ import { Button } from '@/components/ui/button'
 import { type BookingSchema, bookingSchema } from '@/schemas/booking-schema'
 import type { BookingAllIncludes } from '@/types/booking'
 import type { Dictionary } from 'lodash'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState, useTransition } from 'react'
 import { toast } from 'sonner'
 import { GuestCombobox } from '../guest/GuestCombobox'
@@ -46,6 +47,14 @@ interface UnitWithType extends Unit {
 }
 
 export default function BookingForm({ booking }: BookingFormProps) {
+  const searchParams = useSearchParams()
+  const unitIdParam = searchParams.get('unitId')
+  const startDateParam = searchParams.get('startDate')
+    ? dayjs(searchParams.get('startDate')).toDate()
+    : null
+
+  console.log('startDateParam', startDateParam)
+
   const router = useRouter()
   const [serverError, setServerError] = useState<string | null>(null)
   const [rates, setRates] = useState<Dictionary<Rate[]> | null>(null)
@@ -67,10 +76,14 @@ export default function BookingForm({ booking }: BookingFormProps) {
       status: booking?.status || BookingStatus.PENDING,
       guestId: booking?.guestId || '',
       period: {
-        from: booking?.startDate || dayjs().toDate(),
-        to: booking?.endDate || dayjs().add(1, 'day').toDate(),
+        from: booking?.startDate || startDateParam || dayjs().toDate(),
+        to: booking
+          ? booking.endDate
+          : startDateParam
+            ? dayjs(startDateParam).add(1, 'day').toDate()
+            : dayjs().add(1, 'day').toDate(),
       },
-      unitId: booking?.unitId || '',
+      unitId: booking?.unitId || unitIdParam || '',
       numberOfPeople: booking?.numberOfPeople || 1,
       rateId: booking?.rateId || '',
       daily: booking?.rate?.value || 0,
@@ -81,6 +94,16 @@ export default function BookingForm({ booking }: BookingFormProps) {
   const watchUnit = form.watch('unitId')
   const watchPeople = form.watch('numberOfPeople')
   const watchPeriod = form.watch('period')
+
+  useEffect(() => {
+    if (!unitIdParam) return
+    async function getUnit(id: string) {
+      const data = await getUnitById(id)
+      setSelectedUnit(data)
+    }
+
+    getUnit(unitIdParam)
+  }, [unitIdParam])
 
   useEffect(() => {
     if (!watchUnit) return

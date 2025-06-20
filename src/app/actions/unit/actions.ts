@@ -1,8 +1,7 @@
 'use server'
-import type { BookingStatus } from '@/app/generated/prisma'
 import { updateBookingStatusIfNeeded } from '@/lib/actions/updateBookingStatusIfNeeded'
 import db from '@/lib/db'
-import { activeStatuses } from '@/lib/utils'
+import { activeBookingStatuses } from '@/lib/db/scopes'
 
 export async function getUnits() {
   try {
@@ -44,13 +43,99 @@ export async function getUnits() {
   }
 }
 
+export async function getUnitById(id: string) {
+  try {
+    const unit = await db.unit.findUnique({
+      where: { id },
+      include: {
+        type: true,
+        bookings: {
+          include: {
+            guest: true,
+            unit: {
+              include: {
+                type: {
+                  include: {
+                    rates: {
+                      include: {
+                        type: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            payments: {
+              orderBy: { paidAt: 'desc' },
+            },
+            services: true,
+            discounts: true,
+            rate: { include: { type: true } },
+          },
+        },
+      },
+    })
+
+    return unit
+  } catch (error) {
+    console.log(error)
+    return null
+  }
+}
+
+export async function freeUnitsPerPeriod(
+  period: { from: Date; to: Date },
+  ignoreBookingId?: number
+) {
+  try {
+    const units = await db.unit.findMany({
+      where: {
+        NOT: {
+          bookings: {
+            some: {
+              ...activeBookingStatuses,
+              AND: [
+                {
+                  OR: [
+                    {
+                      startDate: { lte: period.from },
+                      endDate: { gte: period.from },
+                    },
+                    {
+                      startDate: { lte: period.to },
+                      endDate: { gte: period.to },
+                    },
+                    {
+                      startDate: { gte: period.from },
+                      endDate: { lte: period.to },
+                    },
+                  ],
+                },
+                // 🔸 Ignora o booking atual para não gerar auto-conflito
+                ignoreBookingId ? { id: { not: ignoreBookingId } } : {},
+              ],
+            },
+          },
+        },
+      },
+      orderBy: { name: 'asc' },
+      include: { type: true },
+    })
+
+    return units
+  } catch (error) {
+    console.log(error)
+    return null
+  }
+}
+
 export async function getUnitsWithUpdatedBookings() {
   try {
     const units = await db.unit.findMany({
       include: {
         type: true,
         bookings: {
-          where: { status: { in: activeStatuses as BookingStatus[] } },
+          where: { ...activeBookingStatuses },
           include: {
             guest: true,
             unit: {

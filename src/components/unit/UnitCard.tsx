@@ -187,7 +187,7 @@ export default function UnitCard({ unit }: UnitCardProps) {
       className={`relative flex flex-col justify-between overflow-hidden text-ellipsis`}
     >
       <div
-        className={`absolute left-0 top-0 h-full w-2 ${booking ? STATUS_COLORS[booking.status] : 'bg-muted-foreground'} z-10`}
+        className={`absolute left-0 top-0 h-full w-3 ${booking ? STATUS_COLORS[booking.status] : 'bg-muted-foreground'} z-10`}
       />
       <CardHeader className={`pr-4 pl-6 py-2 border-b justify-between`}>
         <CardTitle className="flex flex-row gap-2 justify-center items-center">
@@ -201,7 +201,7 @@ export default function UnitCard({ unit }: UnitCardProps) {
         {booking ? (
           <Badge
             variant={'outline'}
-            className={`flex items-center justify-center gap-1 px-2 py-[0.15rem] text-xs sm:text-sm`}
+            className={`${STATUS_COLORS_TEXT[booking.status]} flex items-center justify-center gap-1 px-2 py-[0.15rem] text-xs sm:text-sm`}
           >
             {StatusIcon && <StatusIcon className="w-4 h-4" />}
             <span className="text-xs">{STATUS_LABELS[booking.status]}</span>

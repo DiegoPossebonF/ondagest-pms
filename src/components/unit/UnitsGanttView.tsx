@@ -235,7 +235,10 @@ export function UnitsGanttView() {
                       className={`${date.fullDate.isSame(dayjs(), 'day') ? 'bg-primary/30' : ''} ${dates.length === index + 1 ? 'border-b' : 'border-r border-b'} ${date.week === 'dom' || date.week === 'sáb' ? 'bg-sidebar' : 'bg-card'} flex items-center min-w-12 w-full h-8`}
                     >
                       {!isDateInBooking && (
-                        <Link href={`/bookings/new`} className="w-full">
+                        <Link
+                          href={`/bookings/new?unitId=${unit.id}&unitName=${unit.name}-${unit.type.name}&startDate=${date.fullDate.format('YYYY-MM-DD')}`}
+                          className="w-full"
+                        >
                           <Button
                             variant={'ghost'}
                             size={'sm'}

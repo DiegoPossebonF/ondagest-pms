@@ -1,15 +1,13 @@
 'use server'
-
-import type { BookingStatus } from '@/app/generated/prisma'
 import db from '@/lib/db'
-import { activeStatuses } from '@/lib/utils'
+import { activeBookingStatuses } from '@/lib/db/scopes'
 import type { BookingAllIncludes } from '@/types/booking'
 
 export async function getBookingsPerPeriod(period: { from: Date; to: Date }) {
   try {
     const bookings: BookingAllIncludes[] = await db.booking.findMany({
       where: {
-        status: { in: activeStatuses as BookingStatus[] },
+        ...activeBookingStatuses,
         OR: [
           {
             AND: [

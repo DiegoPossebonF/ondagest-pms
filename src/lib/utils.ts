@@ -144,12 +144,3 @@ export const formatCurrency = (amount: number) =>
 export function parseCurrencyToNumber(value: string): number {
   return Number(value.replace(/[^\d,-]+/g, '').replace(',', '.'))
 }
-
-export const activeStatuses = [
-  'PENDING',
-  'CONFIRMED',
-  'CHECKED_IN',
-  'IN_PROGRESS',
-  'CHECKED_OUT',
-  'FINALIZED',
-]

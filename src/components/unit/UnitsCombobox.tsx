@@ -1,5 +1,6 @@
 'use client'
-import { freeUnitsPerPeriod } from '@/app/(private)/(dashboard)/bookings/new/actions'
+
+import { freeUnitsPerPeriod } from '@/app/actions/unit/actions'
 import type { Unit, UnitType } from '@/app/generated/prisma'
 import { Button } from '@/components/ui/button'
 import {

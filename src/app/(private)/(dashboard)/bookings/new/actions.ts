@@ -29,51 +29,6 @@ export async function getGuestsByName(name: string) {
   }
 }
 
-export async function freeUnitsPerPeriod(
-  period: { from: Date; to: Date },
-  ignoreBookingId?: number // 👈 Aqui, usamos o ID da booking atual, não da unit
-) {
-  try {
-    const units = await db.unit.findMany({
-      where: {
-        NOT: {
-          bookings: {
-            some: {
-              AND: [
-                {
-                  OR: [
-                    {
-                      startDate: { lte: period.from },
-                      endDate: { gte: period.from },
-                    },
-                    {
-                      startDate: { lte: period.to },
-                      endDate: { gte: period.to },
-                    },
-                    {
-                      startDate: { gte: period.from },
-                      endDate: { lte: period.to },
-                    },
-                  ],
-                },
-                // 🔸 Ignora o booking atual para não gerar auto-conflito
-                ignoreBookingId ? { id: { not: ignoreBookingId } } : {},
-              ],
-            },
-          },
-        },
-      },
-      orderBy: { name: 'asc' },
-      include: { type: true },
-    })
-
-    return units
-  } catch (error) {
-    console.log(error)
-    return null
-  }
-}
-
 export async function groupedByRateNamePerUnit(unit: string) {
   try {
     const unitType = await db.unit.findUnique({
