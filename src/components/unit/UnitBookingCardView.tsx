@@ -5,8 +5,8 @@ import 'dayjs/locale/pt-br'
 
 dayjs.locale('pt-br')
 import {
+  STATUS_COLORS,
   STATUS_COLORS_TEXT,
-  STATUS_COLORS_TEXT_ONLY_HOVER,
   STATUS_ICONS,
   STATUS_LABELS,
 } from '@/lib/utils'
@@ -50,13 +50,13 @@ export function UnitBookingCardView({
       <Popover key={booking.id}>
         <PopoverTrigger asChild>
           <Button
-            className={`w-full bg-secondary-foreground px-0 hover:bg-secondary-foreground/90 dark:bg-sidebar-foreground dark:hover:bg-sidebar-foreground/90 text-primary-foreground relative border-2 border-sidebar-foreground transition-transform duration-500 ${startDiagonal && endDiagonal ? 'clip-fixed' : startDiagonal ? 'clip-left' : endDiagonal ? 'clip-right' : ''} h-6 rounded-md text-center flex items-center justify-between shadow-sm ${startIcon ? '' : 'rounded-l-[0px]'} ${endIcon ? '' : 'rounded-r-[0px]'}`}
+            className={`${STATUS_COLORS[booking.status]} w-full px-0 text-primary-foreground relative border-sidebar-foreground transition-transform duration-500 ${startDiagonal && endDiagonal ? 'clip-fixed' : startDiagonal ? 'clip-left' : endDiagonal ? 'clip-right' : ''} h-6 rounded-md text-center flex items-center justify-between shadow-sm ${startIcon ? '' : 'rounded-l-[0px]'} ${endIcon ? '' : 'rounded-r-[0px]'}`}
           >
             <div
-              className={`absolute left-0 top-0 h-full clip-right ${startDiagonal ? 'bg-teal-400 w-7' : ''} z-10`}
+              className={`absolute left-0 top-0 h-full clip-right ${startDiagonal ? 'bg-primary w-7' : ''} z-10`}
             />
             <div
-              className={`flex flex-row items-center justify-start gap-2 px-2 w-full ${STATUS_COLORS_TEXT_ONLY_HOVER[booking.status]} text-primary-foreground overflow-hidden whitespace-nowrap text-ellipsis z-0 text-xs`}
+              className={`flex flex-row items-center justify-start gap-2 px-2 w-full text-primary-foreground overflow-hidden whitespace-nowrap text-ellipsis z-0 text-xs`}
             >
               <IconStatus
                 className={`w-4 h-4 ${startDiagonal ? 'ml-6' : ''}`}
@@ -64,7 +64,7 @@ export function UnitBookingCardView({
               <p>{booking.guest.name}</p>
             </div>
             <div
-              className={`absolute right-0 top-0 h-full clip-left ${endDiagonal ? 'bg-red-400 w-7' : ''} z-10`}
+              className={`absolute right-0 top-0 h-full clip-left ${endDiagonal ? 'bg-primary w-7' : ''} z-10`}
             />
           </Button>
         </PopoverTrigger>

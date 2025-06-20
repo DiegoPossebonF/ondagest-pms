@@ -94,6 +94,7 @@ export default function BookingForm({ booking }: BookingFormProps) {
   const watchUnit = form.watch('unitId')
   const watchPeople = form.watch('numberOfPeople')
   const watchPeriod = form.watch('period')
+  const watchDaily = form.watch('daily')
 
   useEffect(() => {
     if (!unitIdParam) return
@@ -139,6 +140,15 @@ export default function BookingForm({ booking }: BookingFormProps) {
         dayjs(watchPeriod.to).diff(dayjs(watchPeriod.from), 'day')
     )
   }, [rates, selectedRateName, watchPeople, watchPeriod])
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    if (!watchDaily) return
+    form.setValue(
+      'totalAmount',
+      watchDaily * dayjs(watchPeriod.to).diff(dayjs(watchPeriod.from), 'day')
+    )
+  }, [watchDaily, watchPeriod])
 
   async function onSubmit(values: BookingSchema) {
     if (booking) {

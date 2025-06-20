@@ -28,6 +28,9 @@ async function main() {
       name: 'João Silva',
       email: 'joao@cliente.com',
       phone: '(11) 99999-0000',
+      cpf: '123.456.789-00',
+      city: 'São Paulo',
+      carPlate: 'ABC-1234',
     },
   })
 

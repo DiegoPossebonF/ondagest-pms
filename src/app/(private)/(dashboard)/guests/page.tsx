@@ -1,10 +1,9 @@
-import { GuestList } from '@/components/guest/GuestList'
-import db from '@/lib/db'
+import { GuestsList } from '@/components/guest/GuestList'
 
 export default async function GuestsPage() {
-  const guests = await db.guest.findMany({
-    orderBy: { name: 'asc' },
-  })
-
-  return <GuestList guests={guests} />
+  return (
+    <div className="p-6">
+      <GuestsList />
+    </div>
+  )
 }
