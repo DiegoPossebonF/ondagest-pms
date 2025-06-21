@@ -53,8 +53,6 @@ export default function BookingForm({ booking }: BookingFormProps) {
     ? dayjs(searchParams.get('startDate')).toDate()
     : null
 
-  console.log('Booking:', booking)
-
   const router = useRouter()
   const [serverError, setServerError] = useState<string | null>(null)
   const [rates, setRates] = useState<Dictionary<Rate[]> | null>(null)
@@ -164,7 +162,6 @@ export default function BookingForm({ booking }: BookingFormProps) {
   }, [watchDaily, watchPeriod])
 
   async function onSubmit(values: BookingSchema) {
-    console.log('Submitting booking form with values:', values)
     if (booking) {
       startTransition(() => {
         updateBooking(booking.id, values).then(data => {

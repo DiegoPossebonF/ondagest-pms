@@ -63,3 +63,26 @@ export async function getGuests({
     totalPages: Math.ceil(total / perPage),
   }
 }
+
+export async function searchGuestName(searchTerm: string) {
+  if (searchTerm.length < 3) {
+    return []
+  }
+
+  try {
+    const guests = await db.guest.findMany({
+      where: {
+        name: { contains: searchTerm },
+      },
+      take: 5,
+      orderBy: {
+        createdAt: 'desc',
+      },
+    })
+
+    return guests
+  } catch (error) {
+    console.error('Erro ao buscar hóspedes por nome!', error)
+    return []
+  }
+}

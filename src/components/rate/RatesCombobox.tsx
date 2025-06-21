@@ -136,7 +136,7 @@ export function RatesCombobox({
       </Popover>
 
       {/** popover info rates */}
-      {selectedRateName && !disabled && (
+      {selectedRateName && !disabled && selectedRateName !== 'MANUAL' && (
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="outline" size="sm" className="self-start">
