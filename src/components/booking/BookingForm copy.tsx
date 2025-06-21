@@ -53,22 +53,18 @@ export default function BookingForm({ booking }: BookingFormProps) {
     ? dayjs(searchParams.get('startDate')).toDate()
     : null
 
-  console.log('Booking:', booking)
-
   const router = useRouter()
   const [serverError, setServerError] = useState<string | null>(null)
   const [rates, setRates] = useState<Dictionary<Rate[]> | null>(null)
-
-  const [selectedUnit, setSelectedUnit] = useState<UnitWithType | null>(
-    booking?.unit || null
-  )
   const [selectedGuestName, setSelectedGuestName] = useState<string | null>(
     booking?.guest?.name || null
   )
   const [selectedRateName, setSelectedRateName] = useState<string | null>(
-    booking?.rate?.name || booking?.pricingMode || null
+    booking?.rate?.name || null
   )
-  const [selectedRate, setSelectedRate] = useState<Rate | null>(null)
+  const [selectedUnit, setSelectedUnit] = useState<UnitWithType | null>(
+    booking?.unit || null
+  )
 
   const [isDisabled, setIsDisabled] = useState(!!booking || false)
   const [isPending, startTransition] = useTransition()
@@ -91,7 +87,7 @@ export default function BookingForm({ booking }: BookingFormProps) {
       rateId: booking?.rateId || '',
       daily: booking?.daily || 0,
       totalAmount: booking?.totalAmount || 0,
-      pricingMode: booking?.pricingMode || 'MANUAL',
+      pricingMode: booking?.pricingMode || 'RATE', // 'RATE' or 'MANUAL'
     },
   })
 
@@ -100,7 +96,6 @@ export default function BookingForm({ booking }: BookingFormProps) {
   const watchPeriod = form.watch('period')
   const watchDaily = form.watch('daily')
   const watchPricingMode = form.watch('pricingMode')
-  const watchRateId = form.watch('rateId')
 
   useEffect(() => {
     if (!unitIdParam) return
@@ -126,7 +121,7 @@ export default function BookingForm({ booking }: BookingFormProps) {
     if (!selectedRateName || !rates) return
 
     if (watchPricingMode === 'MANUAL' && selectedRateName === 'MANUAL') {
-      form.setValue('rateId', '')
+      // Se for modo manual, não usa rates
       return
     }
 
@@ -142,21 +137,25 @@ export default function BookingForm({ booking }: BookingFormProps) {
 
       const finalRate = matched || sorted[sorted.length - 1] // usa maior disponível se não encontrou
 
-      setSelectedRate(finalRate || null)
-      form.setValue('rateId', finalRate?.id || '')
+      form.setValue('rateId', finalRate?.id || '', {
+        shouldValidate: true,
+      })
+
+      form.setValue('daily', finalRate?.value || 0, {
+        shouldValidate: true,
+      })
+
+      form.setValue(
+        'totalAmount',
+        finalRate?.value *
+          dayjs(watchPeriod.to).diff(dayjs(watchPeriod.from), 'day')
+      )
     }
-  }, [rates, selectedRateName, watchPeople])
+  }, [rates, selectedRateName, watchPeople, watchPeriod])
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (!watchRateId || watchPricingMode === 'MANUAL') return
-    form.setValue('daily', selectedRate?.value || 0)
-  }, [watchRateId])
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    if (!watchDaily || !watchPeriod) return
-    form.setValue('daily', watchDaily)
+    if (!watchDaily) return
     form.setValue(
       'totalAmount',
       watchDaily * dayjs(watchPeriod.to).diff(dayjs(watchPeriod.from), 'day')
@@ -164,7 +163,6 @@ export default function BookingForm({ booking }: BookingFormProps) {
   }, [watchDaily, watchPeriod])
 
   async function onSubmit(values: BookingSchema) {
-    console.log('Submitting booking form with values:', values)
     if (booking) {
       startTransition(() => {
         updateBooking(booking.id, values).then(data => {

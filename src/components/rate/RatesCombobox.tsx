@@ -16,20 +16,24 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { cn, formatCurrency } from '@/lib/utils'
+import type { BookingSchema } from '@/schemas/booking-schema'
 import { IconCurrencyReal, IconUserFilled } from '@tabler/icons-react'
 import type { Dictionary } from 'lodash'
 import { Check, ChevronsUpDown, Info } from 'lucide-react'
 import { type Dispatch, type SetStateAction, useEffect, useState } from 'react'
+import type { UseFormSetValue } from 'react-hook-form'
 
 interface RatesComboboxProps {
   rates: Dictionary<Rate[]> | null
   selectedRateName: string | null
   setSelectedRateName: Dispatch<SetStateAction<string | null>>
+  setValue: UseFormSetValue<BookingSchema>
   disabled?: boolean
 }
 
 export function RatesCombobox({
   rates,
+  setValue,
   selectedRateName,
   setSelectedRateName,
   disabled,
@@ -67,7 +71,11 @@ export function RatesCombobox({
               )}
               size={'sm'}
             >
-              {selectedRateName ? selectedRateName : 'Selecione uma tarifa...'}
+              {selectedRateName
+                ? selectedRateName === 'MANUAL'
+                  ? 'Tarifa Manual'
+                  : selectedRateName
+                : 'Selecione uma tarifa...'}
               <ChevronsUpDown className="opacity-50" />
             </Button>
           </FormControl>
@@ -78,6 +86,26 @@ export function RatesCombobox({
             <CommandList>
               <CommandEmpty>{'Nenhuma tarifa encontrada'}</CommandEmpty>
               <CommandGroup>
+                <CommandItem
+                  className="form-sm"
+                  value={'MANUAL'}
+                  key={'MANUAL'}
+                  onSelect={() => {
+                    setSelectedRateName('MANUAL')
+                    setValue('pricingMode', 'MANUAL')
+                    setOpen(false)
+                  }}
+                >
+                  Tarifa Manual
+                  <Check
+                    className={cn(
+                      'ml-auto',
+                      selectedRateName === 'MANUAL'
+                        ? 'opacity-100'
+                        : 'opacity-0'
+                    )}
+                  />
+                </CommandItem>
                 {rates &&
                   Object.entries(rates).map(([rate]) => (
                     <CommandItem
@@ -86,6 +114,7 @@ export function RatesCombobox({
                       key={rate}
                       onSelect={() => {
                         setSelectedRateName(rate)
+                        setValue('pricingMode', 'RATE')
                         setOpen(false)
                       }}
                     >
@@ -118,6 +147,7 @@ export function RatesCombobox({
           <PopoverContent className="space-y-3 text-xs w-40">
             {rates &&
               selectedRateName &&
+              selectedRateName !== 'MANUAL' &&
               rates[selectedRateName].map(r => (
                 <div
                   className="flex flex-col"

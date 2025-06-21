@@ -63,7 +63,15 @@ export type Payment = $Result.DefaultSelection<Prisma.$PaymentPayload>
  * Enums
  */
 export namespace $Enums {
-  export const Role: {
+  export const PricingMode: {
+  RATE: 'RATE',
+  MANUAL: 'MANUAL'
+};
+
+export type PricingMode = (typeof PricingMode)[keyof typeof PricingMode]
+
+
+export const Role: {
   USER: 'USER',
   ADMIN: 'ADMIN'
 };
@@ -105,6 +113,10 @@ export const PaymentType: {
 export type PaymentType = (typeof PaymentType)[keyof typeof PaymentType]
 
 }
+
+export type PricingMode = $Enums.PricingMode
+
+export const PricingMode: typeof $Enums.PricingMode
 
 export type Role = $Enums.Role
 
@@ -6236,12 +6248,14 @@ export namespace Prisma {
 
   export type BookingAvgAggregateOutputType = {
     id: number | null
+    daily: number | null
     numberOfPeople: number | null
     totalAmount: number | null
   }
 
   export type BookingSumAggregateOutputType = {
     id: number | null
+    daily: number | null
     numberOfPeople: number | null
     totalAmount: number | null
   }
@@ -6251,6 +6265,8 @@ export namespace Prisma {
     guestId: string | null
     unitId: string | null
     rateId: string | null
+    daily: number | null
+    pricingMode: $Enums.PricingMode | null
     startDate: Date | null
     endDate: Date | null
     status: $Enums.BookingStatus | null
@@ -6266,6 +6282,8 @@ export namespace Prisma {
     guestId: string | null
     unitId: string | null
     rateId: string | null
+    daily: number | null
+    pricingMode: $Enums.PricingMode | null
     startDate: Date | null
     endDate: Date | null
     status: $Enums.BookingStatus | null
@@ -6281,6 +6299,8 @@ export namespace Prisma {
     guestId: number
     unitId: number
     rateId: number
+    daily: number
+    pricingMode: number
     startDate: number
     endDate: number
     status: number
@@ -6295,12 +6315,14 @@ export namespace Prisma {
 
   export type BookingAvgAggregateInputType = {
     id?: true
+    daily?: true
     numberOfPeople?: true
     totalAmount?: true
   }
 
   export type BookingSumAggregateInputType = {
     id?: true
+    daily?: true
     numberOfPeople?: true
     totalAmount?: true
   }
@@ -6310,6 +6332,8 @@ export namespace Prisma {
     guestId?: true
     unitId?: true
     rateId?: true
+    daily?: true
+    pricingMode?: true
     startDate?: true
     endDate?: true
     status?: true
@@ -6325,6 +6349,8 @@ export namespace Prisma {
     guestId?: true
     unitId?: true
     rateId?: true
+    daily?: true
+    pricingMode?: true
     startDate?: true
     endDate?: true
     status?: true
@@ -6340,6 +6366,8 @@ export namespace Prisma {
     guestId?: true
     unitId?: true
     rateId?: true
+    daily?: true
+    pricingMode?: true
     startDate?: true
     endDate?: true
     status?: true
@@ -6441,7 +6469,9 @@ export namespace Prisma {
     id: number
     guestId: string
     unitId: string
-    rateId: string
+    rateId: string | null
+    daily: number | null
+    pricingMode: $Enums.PricingMode
     startDate: Date
     endDate: Date
     status: $Enums.BookingStatus
@@ -6476,6 +6506,8 @@ export namespace Prisma {
     guestId?: boolean
     unitId?: boolean
     rateId?: boolean
+    daily?: boolean
+    pricingMode?: boolean
     startDate?: boolean
     endDate?: boolean
     status?: boolean
@@ -6486,7 +6518,7 @@ export namespace Prisma {
     updatedAt?: boolean
     guest?: boolean | GuestDefaultArgs<ExtArgs>
     unit?: boolean | UnitDefaultArgs<ExtArgs>
-    rate?: boolean | RateDefaultArgs<ExtArgs>
+    rate?: boolean | Booking$rateArgs<ExtArgs>
     payments?: boolean | Booking$paymentsArgs<ExtArgs>
     services?: boolean | Booking$servicesArgs<ExtArgs>
     discounts?: boolean | Booking$discountsArgs<ExtArgs>
@@ -6498,6 +6530,8 @@ export namespace Prisma {
     guestId?: boolean
     unitId?: boolean
     rateId?: boolean
+    daily?: boolean
+    pricingMode?: boolean
     startDate?: boolean
     endDate?: boolean
     status?: boolean
@@ -6508,7 +6542,7 @@ export namespace Prisma {
     updatedAt?: boolean
     guest?: boolean | GuestDefaultArgs<ExtArgs>
     unit?: boolean | UnitDefaultArgs<ExtArgs>
-    rate?: boolean | RateDefaultArgs<ExtArgs>
+    rate?: boolean | Booking$rateArgs<ExtArgs>
   }, ExtArgs["result"]["booking"]>
 
   export type BookingSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -6516,6 +6550,8 @@ export namespace Prisma {
     guestId?: boolean
     unitId?: boolean
     rateId?: boolean
+    daily?: boolean
+    pricingMode?: boolean
     startDate?: boolean
     endDate?: boolean
     status?: boolean
@@ -6526,7 +6562,7 @@ export namespace Prisma {
     updatedAt?: boolean
     guest?: boolean | GuestDefaultArgs<ExtArgs>
     unit?: boolean | UnitDefaultArgs<ExtArgs>
-    rate?: boolean | RateDefaultArgs<ExtArgs>
+    rate?: boolean | Booking$rateArgs<ExtArgs>
   }, ExtArgs["result"]["booking"]>
 
   export type BookingSelectScalar = {
@@ -6534,6 +6570,8 @@ export namespace Prisma {
     guestId?: boolean
     unitId?: boolean
     rateId?: boolean
+    daily?: boolean
+    pricingMode?: boolean
     startDate?: boolean
     endDate?: boolean
     status?: boolean
@@ -6544,11 +6582,11 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type BookingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "guestId" | "unitId" | "rateId" | "startDate" | "endDate" | "status" | "numberOfPeople" | "totalAmount" | "paymentStatus" | "createdAt" | "updatedAt", ExtArgs["result"]["booking"]>
+  export type BookingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "guestId" | "unitId" | "rateId" | "daily" | "pricingMode" | "startDate" | "endDate" | "status" | "numberOfPeople" | "totalAmount" | "paymentStatus" | "createdAt" | "updatedAt", ExtArgs["result"]["booking"]>
   export type BookingInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     guest?: boolean | GuestDefaultArgs<ExtArgs>
     unit?: boolean | UnitDefaultArgs<ExtArgs>
-    rate?: boolean | RateDefaultArgs<ExtArgs>
+    rate?: boolean | Booking$rateArgs<ExtArgs>
     payments?: boolean | Booking$paymentsArgs<ExtArgs>
     services?: boolean | Booking$servicesArgs<ExtArgs>
     discounts?: boolean | Booking$discountsArgs<ExtArgs>
@@ -6557,12 +6595,12 @@ export namespace Prisma {
   export type BookingIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     guest?: boolean | GuestDefaultArgs<ExtArgs>
     unit?: boolean | UnitDefaultArgs<ExtArgs>
-    rate?: boolean | RateDefaultArgs<ExtArgs>
+    rate?: boolean | Booking$rateArgs<ExtArgs>
   }
   export type BookingIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     guest?: boolean | GuestDefaultArgs<ExtArgs>
     unit?: boolean | UnitDefaultArgs<ExtArgs>
-    rate?: boolean | RateDefaultArgs<ExtArgs>
+    rate?: boolean | Booking$rateArgs<ExtArgs>
   }
 
   export type $BookingPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6570,7 +6608,7 @@ export namespace Prisma {
     objects: {
       guest: Prisma.$GuestPayload<ExtArgs>
       unit: Prisma.$UnitPayload<ExtArgs>
-      rate: Prisma.$RatePayload<ExtArgs>
+      rate: Prisma.$RatePayload<ExtArgs> | null
       payments: Prisma.$PaymentPayload<ExtArgs>[]
       services: Prisma.$ServicePayload<ExtArgs>[]
       discounts: Prisma.$DiscountPayload<ExtArgs>[]
@@ -6579,7 +6617,9 @@ export namespace Prisma {
       id: number
       guestId: string
       unitId: string
-      rateId: string
+      rateId: string | null
+      daily: number | null
+      pricingMode: $Enums.PricingMode
       startDate: Date
       endDate: Date
       status: $Enums.BookingStatus
@@ -6984,7 +7024,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     guest<T extends GuestDefaultArgs<ExtArgs> = {}>(args?: Subset<T, GuestDefaultArgs<ExtArgs>>): Prisma__GuestClient<$Result.GetResult<Prisma.$GuestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     unit<T extends UnitDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UnitDefaultArgs<ExtArgs>>): Prisma__UnitClient<$Result.GetResult<Prisma.$UnitPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    rate<T extends RateDefaultArgs<ExtArgs> = {}>(args?: Subset<T, RateDefaultArgs<ExtArgs>>): Prisma__RateClient<$Result.GetResult<Prisma.$RatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    rate<T extends Booking$rateArgs<ExtArgs> = {}>(args?: Subset<T, Booking$rateArgs<ExtArgs>>): Prisma__RateClient<$Result.GetResult<Prisma.$RatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     payments<T extends Booking$paymentsArgs<ExtArgs> = {}>(args?: Subset<T, Booking$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     services<T extends Booking$servicesArgs<ExtArgs> = {}>(args?: Subset<T, Booking$servicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     discounts<T extends Booking$discountsArgs<ExtArgs> = {}>(args?: Subset<T, Booking$discountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DiscountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -7021,6 +7061,8 @@ export namespace Prisma {
     readonly guestId: FieldRef<"Booking", 'String'>
     readonly unitId: FieldRef<"Booking", 'String'>
     readonly rateId: FieldRef<"Booking", 'String'>
+    readonly daily: FieldRef<"Booking", 'Float'>
+    readonly pricingMode: FieldRef<"Booking", 'PricingMode'>
     readonly startDate: FieldRef<"Booking", 'DateTime'>
     readonly endDate: FieldRef<"Booking", 'DateTime'>
     readonly status: FieldRef<"Booking", 'BookingStatus'>
@@ -7420,6 +7462,25 @@ export namespace Prisma {
      * Limit how many Bookings to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Booking.rate
+   */
+  export type Booking$rateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Rate
+     */
+    select?: RateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Rate
+     */
+    omit?: RateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RateInclude<ExtArgs> | null
+    where?: RateWhereInput
   }
 
   /**
@@ -12039,6 +12100,8 @@ export namespace Prisma {
     guestId: 'guestId',
     unitId: 'unitId',
     rateId: 'rateId',
+    daily: 'daily',
+    pricingMode: 'pricingMode',
     startDate: 'startDate',
     endDate: 'endDate',
     status: 'status',
@@ -12150,16 +12213,23 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'BookingStatus'
+   * Reference to a field of type 'Float'
    */
-  export type EnumBookingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BookingStatus'>
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
     
 
 
   /**
-   * Reference to a field of type 'Float'
+   * Reference to a field of type 'PricingMode'
    */
-  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+  export type EnumPricingModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PricingMode'>
+    
+
+
+  /**
+   * Reference to a field of type 'BookingStatus'
+   */
+  export type EnumBookingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BookingStatus'>
     
 
 
@@ -12452,7 +12522,9 @@ export namespace Prisma {
     id?: IntFilter<"Booking"> | number
     guestId?: StringFilter<"Booking"> | string
     unitId?: StringFilter<"Booking"> | string
-    rateId?: StringFilter<"Booking"> | string
+    rateId?: StringNullableFilter<"Booking"> | string | null
+    daily?: FloatNullableFilter<"Booking"> | number | null
+    pricingMode?: EnumPricingModeFilter<"Booking"> | $Enums.PricingMode
     startDate?: DateTimeFilter<"Booking"> | Date | string
     endDate?: DateTimeFilter<"Booking"> | Date | string
     status?: EnumBookingStatusFilter<"Booking"> | $Enums.BookingStatus
@@ -12463,7 +12535,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Booking"> | Date | string
     guest?: XOR<GuestScalarRelationFilter, GuestWhereInput>
     unit?: XOR<UnitScalarRelationFilter, UnitWhereInput>
-    rate?: XOR<RateScalarRelationFilter, RateWhereInput>
+    rate?: XOR<RateNullableScalarRelationFilter, RateWhereInput> | null
     payments?: PaymentListRelationFilter
     services?: ServiceListRelationFilter
     discounts?: DiscountListRelationFilter
@@ -12473,7 +12545,9 @@ export namespace Prisma {
     id?: SortOrder
     guestId?: SortOrder
     unitId?: SortOrder
-    rateId?: SortOrder
+    rateId?: SortOrderInput | SortOrder
+    daily?: SortOrderInput | SortOrder
+    pricingMode?: SortOrder
     startDate?: SortOrder
     endDate?: SortOrder
     status?: SortOrder
@@ -12497,7 +12571,9 @@ export namespace Prisma {
     NOT?: BookingWhereInput | BookingWhereInput[]
     guestId?: StringFilter<"Booking"> | string
     unitId?: StringFilter<"Booking"> | string
-    rateId?: StringFilter<"Booking"> | string
+    rateId?: StringNullableFilter<"Booking"> | string | null
+    daily?: FloatNullableFilter<"Booking"> | number | null
+    pricingMode?: EnumPricingModeFilter<"Booking"> | $Enums.PricingMode
     startDate?: DateTimeFilter<"Booking"> | Date | string
     endDate?: DateTimeFilter<"Booking"> | Date | string
     status?: EnumBookingStatusFilter<"Booking"> | $Enums.BookingStatus
@@ -12508,7 +12584,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Booking"> | Date | string
     guest?: XOR<GuestScalarRelationFilter, GuestWhereInput>
     unit?: XOR<UnitScalarRelationFilter, UnitWhereInput>
-    rate?: XOR<RateScalarRelationFilter, RateWhereInput>
+    rate?: XOR<RateNullableScalarRelationFilter, RateWhereInput> | null
     payments?: PaymentListRelationFilter
     services?: ServiceListRelationFilter
     discounts?: DiscountListRelationFilter
@@ -12518,7 +12594,9 @@ export namespace Prisma {
     id?: SortOrder
     guestId?: SortOrder
     unitId?: SortOrder
-    rateId?: SortOrder
+    rateId?: SortOrderInput | SortOrder
+    daily?: SortOrderInput | SortOrder
+    pricingMode?: SortOrder
     startDate?: SortOrder
     endDate?: SortOrder
     status?: SortOrder
@@ -12541,7 +12619,9 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Booking"> | number
     guestId?: StringWithAggregatesFilter<"Booking"> | string
     unitId?: StringWithAggregatesFilter<"Booking"> | string
-    rateId?: StringWithAggregatesFilter<"Booking"> | string
+    rateId?: StringNullableWithAggregatesFilter<"Booking"> | string | null
+    daily?: FloatNullableWithAggregatesFilter<"Booking"> | number | null
+    pricingMode?: EnumPricingModeWithAggregatesFilter<"Booking"> | $Enums.PricingMode
     startDate?: DateTimeWithAggregatesFilter<"Booking"> | Date | string
     endDate?: DateTimeWithAggregatesFilter<"Booking"> | Date | string
     status?: EnumBookingStatusWithAggregatesFilter<"Booking"> | $Enums.BookingStatus
@@ -13099,6 +13179,8 @@ export namespace Prisma {
   }
 
   export type BookingCreateInput = {
+    daily?: number | null
+    pricingMode?: $Enums.PricingMode
     startDate: Date | string
     endDate: Date | string
     status?: $Enums.BookingStatus
@@ -13109,7 +13191,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     guest: GuestCreateNestedOneWithoutBookingsInput
     unit: UnitCreateNestedOneWithoutBookingsInput
-    rate: RateCreateNestedOneWithoutBookingsInput
+    rate?: RateCreateNestedOneWithoutBookingsInput
     payments?: PaymentCreateNestedManyWithoutBookingInput
     services?: ServiceCreateNestedManyWithoutBookingInput
     discounts?: DiscountCreateNestedManyWithoutBookingInput
@@ -13119,7 +13201,9 @@ export namespace Prisma {
     id?: number
     guestId: string
     unitId: string
-    rateId: string
+    rateId?: string | null
+    daily?: number | null
+    pricingMode?: $Enums.PricingMode
     startDate: Date | string
     endDate: Date | string
     status?: $Enums.BookingStatus
@@ -13134,6 +13218,8 @@ export namespace Prisma {
   }
 
   export type BookingUpdateInput = {
+    daily?: NullableFloatFieldUpdateOperationsInput | number | null
+    pricingMode?: EnumPricingModeFieldUpdateOperationsInput | $Enums.PricingMode
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -13144,7 +13230,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guest?: GuestUpdateOneRequiredWithoutBookingsNestedInput
     unit?: UnitUpdateOneRequiredWithoutBookingsNestedInput
-    rate?: RateUpdateOneRequiredWithoutBookingsNestedInput
+    rate?: RateUpdateOneWithoutBookingsNestedInput
     payments?: PaymentUpdateManyWithoutBookingNestedInput
     services?: ServiceUpdateManyWithoutBookingNestedInput
     discounts?: DiscountUpdateManyWithoutBookingNestedInput
@@ -13154,7 +13240,9 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     guestId?: StringFieldUpdateOperationsInput | string
     unitId?: StringFieldUpdateOperationsInput | string
-    rateId?: StringFieldUpdateOperationsInput | string
+    rateId?: NullableStringFieldUpdateOperationsInput | string | null
+    daily?: NullableFloatFieldUpdateOperationsInput | number | null
+    pricingMode?: EnumPricingModeFieldUpdateOperationsInput | $Enums.PricingMode
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -13172,7 +13260,9 @@ export namespace Prisma {
     id?: number
     guestId: string
     unitId: string
-    rateId: string
+    rateId?: string | null
+    daily?: number | null
+    pricingMode?: $Enums.PricingMode
     startDate: Date | string
     endDate: Date | string
     status?: $Enums.BookingStatus
@@ -13184,6 +13274,8 @@ export namespace Prisma {
   }
 
   export type BookingUpdateManyMutationInput = {
+    daily?: NullableFloatFieldUpdateOperationsInput | number | null
+    pricingMode?: EnumPricingModeFieldUpdateOperationsInput | $Enums.PricingMode
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -13198,7 +13290,9 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     guestId?: StringFieldUpdateOperationsInput | string
     unitId?: StringFieldUpdateOperationsInput | string
-    rateId?: StringFieldUpdateOperationsInput | string
+    rateId?: NullableStringFieldUpdateOperationsInput | string | null
+    daily?: NullableFloatFieldUpdateOperationsInput | number | null
+    pricingMode?: EnumPricingModeFieldUpdateOperationsInput | $Enums.PricingMode
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -13760,6 +13854,24 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type EnumPricingModeFilter<$PrismaModel = never> = {
+    equals?: $Enums.PricingMode | EnumPricingModeFieldRefInput<$PrismaModel>
+    in?: $Enums.PricingMode[]
+    notIn?: $Enums.PricingMode[]
+    not?: NestedEnumPricingModeFilter<$PrismaModel> | $Enums.PricingMode
+  }
+
   export type EnumBookingStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.BookingStatus | EnumBookingStatusFieldRefInput<$PrismaModel>
     in?: $Enums.BookingStatus[]
@@ -13795,9 +13907,9 @@ export namespace Prisma {
     isNot?: UnitWhereInput
   }
 
-  export type RateScalarRelationFilter = {
-    is?: RateWhereInput
-    isNot?: RateWhereInput
+  export type RateNullableScalarRelationFilter = {
+    is?: RateWhereInput | null
+    isNot?: RateWhereInput | null
   }
 
   export type PaymentListRelationFilter = {
@@ -13835,6 +13947,8 @@ export namespace Prisma {
     guestId?: SortOrder
     unitId?: SortOrder
     rateId?: SortOrder
+    daily?: SortOrder
+    pricingMode?: SortOrder
     startDate?: SortOrder
     endDate?: SortOrder
     status?: SortOrder
@@ -13847,6 +13961,7 @@ export namespace Prisma {
 
   export type BookingAvgOrderByAggregateInput = {
     id?: SortOrder
+    daily?: SortOrder
     numberOfPeople?: SortOrder
     totalAmount?: SortOrder
   }
@@ -13856,6 +13971,8 @@ export namespace Prisma {
     guestId?: SortOrder
     unitId?: SortOrder
     rateId?: SortOrder
+    daily?: SortOrder
+    pricingMode?: SortOrder
     startDate?: SortOrder
     endDate?: SortOrder
     status?: SortOrder
@@ -13871,6 +13988,8 @@ export namespace Prisma {
     guestId?: SortOrder
     unitId?: SortOrder
     rateId?: SortOrder
+    daily?: SortOrder
+    pricingMode?: SortOrder
     startDate?: SortOrder
     endDate?: SortOrder
     status?: SortOrder
@@ -13883,8 +14002,35 @@ export namespace Prisma {
 
   export type BookingSumOrderByAggregateInput = {
     id?: SortOrder
+    daily?: SortOrder
     numberOfPeople?: SortOrder
     totalAmount?: SortOrder
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
+  export type EnumPricingModeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PricingMode | EnumPricingModeFieldRefInput<$PrismaModel>
+    in?: $Enums.PricingMode[]
+    notIn?: $Enums.PricingMode[]
+    not?: NestedEnumPricingModeWithAggregatesFilter<$PrismaModel> | $Enums.PricingMode
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPricingModeFilter<$PrismaModel>
+    _max?: NestedEnumPricingModeFilter<$PrismaModel>
   }
 
   export type EnumBookingStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -14359,6 +14505,18 @@ export namespace Prisma {
     connect?: DiscountWhereUniqueInput | DiscountWhereUniqueInput[]
   }
 
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type EnumPricingModeFieldUpdateOperationsInput = {
+    set?: $Enums.PricingMode
+  }
+
   export type EnumBookingStatusFieldUpdateOperationsInput = {
     set?: $Enums.BookingStatus
   }
@@ -14391,10 +14549,12 @@ export namespace Prisma {
     update?: XOR<XOR<UnitUpdateToOneWithWhereWithoutBookingsInput, UnitUpdateWithoutBookingsInput>, UnitUncheckedUpdateWithoutBookingsInput>
   }
 
-  export type RateUpdateOneRequiredWithoutBookingsNestedInput = {
+  export type RateUpdateOneWithoutBookingsNestedInput = {
     create?: XOR<RateCreateWithoutBookingsInput, RateUncheckedCreateWithoutBookingsInput>
     connectOrCreate?: RateCreateOrConnectWithoutBookingsInput
     upsert?: RateUpsertWithoutBookingsInput
+    disconnect?: RateWhereInput | boolean
+    delete?: RateWhereInput | boolean
     connect?: RateWhereUniqueInput
     update?: XOR<XOR<RateUpdateToOneWithWhereWithoutBookingsInput, RateUpdateWithoutBookingsInput>, RateUncheckedUpdateWithoutBookingsInput>
   }
@@ -14738,6 +14898,24 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedEnumPricingModeFilter<$PrismaModel = never> = {
+    equals?: $Enums.PricingMode | EnumPricingModeFieldRefInput<$PrismaModel>
+    in?: $Enums.PricingMode[]
+    notIn?: $Enums.PricingMode[]
+    not?: NestedEnumPricingModeFilter<$PrismaModel> | $Enums.PricingMode
+  }
+
   export type NestedEnumBookingStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.BookingStatus | EnumBookingStatusFieldRefInput<$PrismaModel>
     in?: $Enums.BookingStatus[]
@@ -14750,6 +14928,32 @@ export namespace Prisma {
     in?: $Enums.PaymentStatus[]
     notIn?: $Enums.PaymentStatus[]
     not?: NestedEnumPaymentStatusFilter<$PrismaModel> | $Enums.PaymentStatus
+  }
+
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumPricingModeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PricingMode | EnumPricingModeFieldRefInput<$PrismaModel>
+    in?: $Enums.PricingMode[]
+    notIn?: $Enums.PricingMode[]
+    not?: NestedEnumPricingModeWithAggregatesFilter<$PrismaModel> | $Enums.PricingMode
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPricingModeFilter<$PrismaModel>
+    _max?: NestedEnumPricingModeFilter<$PrismaModel>
   }
 
   export type NestedEnumBookingStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -14806,6 +15010,8 @@ export namespace Prisma {
   }
 
   export type BookingCreateWithoutGuestInput = {
+    daily?: number | null
+    pricingMode?: $Enums.PricingMode
     startDate: Date | string
     endDate: Date | string
     status?: $Enums.BookingStatus
@@ -14815,7 +15021,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     unit: UnitCreateNestedOneWithoutBookingsInput
-    rate: RateCreateNestedOneWithoutBookingsInput
+    rate?: RateCreateNestedOneWithoutBookingsInput
     payments?: PaymentCreateNestedManyWithoutBookingInput
     services?: ServiceCreateNestedManyWithoutBookingInput
     discounts?: DiscountCreateNestedManyWithoutBookingInput
@@ -14824,7 +15030,9 @@ export namespace Prisma {
   export type BookingUncheckedCreateWithoutGuestInput = {
     id?: number
     unitId: string
-    rateId: string
+    rateId?: string | null
+    daily?: number | null
+    pricingMode?: $Enums.PricingMode
     startDate: Date | string
     endDate: Date | string
     status?: $Enums.BookingStatus
@@ -14870,7 +15078,9 @@ export namespace Prisma {
     id?: IntFilter<"Booking"> | number
     guestId?: StringFilter<"Booking"> | string
     unitId?: StringFilter<"Booking"> | string
-    rateId?: StringFilter<"Booking"> | string
+    rateId?: StringNullableFilter<"Booking"> | string | null
+    daily?: FloatNullableFilter<"Booking"> | number | null
+    pricingMode?: EnumPricingModeFilter<"Booking"> | $Enums.PricingMode
     startDate?: DateTimeFilter<"Booking"> | Date | string
     endDate?: DateTimeFilter<"Booking"> | Date | string
     status?: EnumBookingStatusFilter<"Booking"> | $Enums.BookingStatus
@@ -15017,6 +15227,8 @@ export namespace Prisma {
   }
 
   export type BookingCreateWithoutUnitInput = {
+    daily?: number | null
+    pricingMode?: $Enums.PricingMode
     startDate: Date | string
     endDate: Date | string
     status?: $Enums.BookingStatus
@@ -15026,7 +15238,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     guest: GuestCreateNestedOneWithoutBookingsInput
-    rate: RateCreateNestedOneWithoutBookingsInput
+    rate?: RateCreateNestedOneWithoutBookingsInput
     payments?: PaymentCreateNestedManyWithoutBookingInput
     services?: ServiceCreateNestedManyWithoutBookingInput
     discounts?: DiscountCreateNestedManyWithoutBookingInput
@@ -15035,7 +15247,9 @@ export namespace Prisma {
   export type BookingUncheckedCreateWithoutUnitInput = {
     id?: number
     guestId: string
-    rateId: string
+    rateId?: string | null
+    daily?: number | null
+    pricingMode?: $Enums.PricingMode
     startDate: Date | string
     endDate: Date | string
     status?: $Enums.BookingStatus
@@ -15455,6 +15669,8 @@ export namespace Prisma {
   }
 
   export type BookingCreateWithoutRateInput = {
+    daily?: number | null
+    pricingMode?: $Enums.PricingMode
     startDate: Date | string
     endDate: Date | string
     status?: $Enums.BookingStatus
@@ -15474,6 +15690,8 @@ export namespace Prisma {
     id?: number
     guestId: string
     unitId: string
+    daily?: number | null
+    pricingMode?: $Enums.PricingMode
     startDate: Date | string
     endDate: Date | string
     status?: $Enums.BookingStatus
@@ -15544,6 +15762,8 @@ export namespace Prisma {
   }
 
   export type BookingCreateWithoutServicesInput = {
+    daily?: number | null
+    pricingMode?: $Enums.PricingMode
     startDate: Date | string
     endDate: Date | string
     status?: $Enums.BookingStatus
@@ -15554,7 +15774,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     guest: GuestCreateNestedOneWithoutBookingsInput
     unit: UnitCreateNestedOneWithoutBookingsInput
-    rate: RateCreateNestedOneWithoutBookingsInput
+    rate?: RateCreateNestedOneWithoutBookingsInput
     payments?: PaymentCreateNestedManyWithoutBookingInput
     discounts?: DiscountCreateNestedManyWithoutBookingInput
   }
@@ -15563,7 +15783,9 @@ export namespace Prisma {
     id?: number
     guestId: string
     unitId: string
-    rateId: string
+    rateId?: string | null
+    daily?: number | null
+    pricingMode?: $Enums.PricingMode
     startDate: Date | string
     endDate: Date | string
     status?: $Enums.BookingStatus
@@ -15593,6 +15815,8 @@ export namespace Prisma {
   }
 
   export type BookingUpdateWithoutServicesInput = {
+    daily?: NullableFloatFieldUpdateOperationsInput | number | null
+    pricingMode?: EnumPricingModeFieldUpdateOperationsInput | $Enums.PricingMode
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -15603,7 +15827,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guest?: GuestUpdateOneRequiredWithoutBookingsNestedInput
     unit?: UnitUpdateOneRequiredWithoutBookingsNestedInput
-    rate?: RateUpdateOneRequiredWithoutBookingsNestedInput
+    rate?: RateUpdateOneWithoutBookingsNestedInput
     payments?: PaymentUpdateManyWithoutBookingNestedInput
     discounts?: DiscountUpdateManyWithoutBookingNestedInput
   }
@@ -15612,7 +15836,9 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     guestId?: StringFieldUpdateOperationsInput | string
     unitId?: StringFieldUpdateOperationsInput | string
-    rateId?: StringFieldUpdateOperationsInput | string
+    rateId?: NullableStringFieldUpdateOperationsInput | string | null
+    daily?: NullableFloatFieldUpdateOperationsInput | number | null
+    pricingMode?: EnumPricingModeFieldUpdateOperationsInput | $Enums.PricingMode
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -15626,6 +15852,8 @@ export namespace Prisma {
   }
 
   export type BookingCreateWithoutDiscountsInput = {
+    daily?: number | null
+    pricingMode?: $Enums.PricingMode
     startDate: Date | string
     endDate: Date | string
     status?: $Enums.BookingStatus
@@ -15636,7 +15864,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     guest: GuestCreateNestedOneWithoutBookingsInput
     unit: UnitCreateNestedOneWithoutBookingsInput
-    rate: RateCreateNestedOneWithoutBookingsInput
+    rate?: RateCreateNestedOneWithoutBookingsInput
     payments?: PaymentCreateNestedManyWithoutBookingInput
     services?: ServiceCreateNestedManyWithoutBookingInput
   }
@@ -15645,7 +15873,9 @@ export namespace Prisma {
     id?: number
     guestId: string
     unitId: string
-    rateId: string
+    rateId?: string | null
+    daily?: number | null
+    pricingMode?: $Enums.PricingMode
     startDate: Date | string
     endDate: Date | string
     status?: $Enums.BookingStatus
@@ -15675,6 +15905,8 @@ export namespace Prisma {
   }
 
   export type BookingUpdateWithoutDiscountsInput = {
+    daily?: NullableFloatFieldUpdateOperationsInput | number | null
+    pricingMode?: EnumPricingModeFieldUpdateOperationsInput | $Enums.PricingMode
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -15685,7 +15917,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guest?: GuestUpdateOneRequiredWithoutBookingsNestedInput
     unit?: UnitUpdateOneRequiredWithoutBookingsNestedInput
-    rate?: RateUpdateOneRequiredWithoutBookingsNestedInput
+    rate?: RateUpdateOneWithoutBookingsNestedInput
     payments?: PaymentUpdateManyWithoutBookingNestedInput
     services?: ServiceUpdateManyWithoutBookingNestedInput
   }
@@ -15694,7 +15926,9 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     guestId?: StringFieldUpdateOperationsInput | string
     unitId?: StringFieldUpdateOperationsInput | string
-    rateId?: StringFieldUpdateOperationsInput | string
+    rateId?: NullableStringFieldUpdateOperationsInput | string | null
+    daily?: NullableFloatFieldUpdateOperationsInput | number | null
+    pricingMode?: EnumPricingModeFieldUpdateOperationsInput | $Enums.PricingMode
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -15708,6 +15942,8 @@ export namespace Prisma {
   }
 
   export type BookingCreateWithoutPaymentsInput = {
+    daily?: number | null
+    pricingMode?: $Enums.PricingMode
     startDate: Date | string
     endDate: Date | string
     status?: $Enums.BookingStatus
@@ -15718,7 +15954,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     guest: GuestCreateNestedOneWithoutBookingsInput
     unit: UnitCreateNestedOneWithoutBookingsInput
-    rate: RateCreateNestedOneWithoutBookingsInput
+    rate?: RateCreateNestedOneWithoutBookingsInput
     services?: ServiceCreateNestedManyWithoutBookingInput
     discounts?: DiscountCreateNestedManyWithoutBookingInput
   }
@@ -15727,7 +15963,9 @@ export namespace Prisma {
     id?: number
     guestId: string
     unitId: string
-    rateId: string
+    rateId?: string | null
+    daily?: number | null
+    pricingMode?: $Enums.PricingMode
     startDate: Date | string
     endDate: Date | string
     status?: $Enums.BookingStatus
@@ -15757,6 +15995,8 @@ export namespace Prisma {
   }
 
   export type BookingUpdateWithoutPaymentsInput = {
+    daily?: NullableFloatFieldUpdateOperationsInput | number | null
+    pricingMode?: EnumPricingModeFieldUpdateOperationsInput | $Enums.PricingMode
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -15767,7 +16007,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guest?: GuestUpdateOneRequiredWithoutBookingsNestedInput
     unit?: UnitUpdateOneRequiredWithoutBookingsNestedInput
-    rate?: RateUpdateOneRequiredWithoutBookingsNestedInput
+    rate?: RateUpdateOneWithoutBookingsNestedInput
     services?: ServiceUpdateManyWithoutBookingNestedInput
     discounts?: DiscountUpdateManyWithoutBookingNestedInput
   }
@@ -15776,7 +16016,9 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     guestId?: StringFieldUpdateOperationsInput | string
     unitId?: StringFieldUpdateOperationsInput | string
-    rateId?: StringFieldUpdateOperationsInput | string
+    rateId?: NullableStringFieldUpdateOperationsInput | string | null
+    daily?: NullableFloatFieldUpdateOperationsInput | number | null
+    pricingMode?: EnumPricingModeFieldUpdateOperationsInput | $Enums.PricingMode
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -15792,7 +16034,9 @@ export namespace Prisma {
   export type BookingCreateManyGuestInput = {
     id?: number
     unitId: string
-    rateId: string
+    rateId?: string | null
+    daily?: number | null
+    pricingMode?: $Enums.PricingMode
     startDate: Date | string
     endDate: Date | string
     status?: $Enums.BookingStatus
@@ -15804,6 +16048,8 @@ export namespace Prisma {
   }
 
   export type BookingUpdateWithoutGuestInput = {
+    daily?: NullableFloatFieldUpdateOperationsInput | number | null
+    pricingMode?: EnumPricingModeFieldUpdateOperationsInput | $Enums.PricingMode
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -15813,7 +16059,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     unit?: UnitUpdateOneRequiredWithoutBookingsNestedInput
-    rate?: RateUpdateOneRequiredWithoutBookingsNestedInput
+    rate?: RateUpdateOneWithoutBookingsNestedInput
     payments?: PaymentUpdateManyWithoutBookingNestedInput
     services?: ServiceUpdateManyWithoutBookingNestedInput
     discounts?: DiscountUpdateManyWithoutBookingNestedInput
@@ -15822,7 +16068,9 @@ export namespace Prisma {
   export type BookingUncheckedUpdateWithoutGuestInput = {
     id?: IntFieldUpdateOperationsInput | number
     unitId?: StringFieldUpdateOperationsInput | string
-    rateId?: StringFieldUpdateOperationsInput | string
+    rateId?: NullableStringFieldUpdateOperationsInput | string | null
+    daily?: NullableFloatFieldUpdateOperationsInput | number | null
+    pricingMode?: EnumPricingModeFieldUpdateOperationsInput | $Enums.PricingMode
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -15839,7 +16087,9 @@ export namespace Prisma {
   export type BookingUncheckedUpdateManyWithoutGuestInput = {
     id?: IntFieldUpdateOperationsInput | number
     unitId?: StringFieldUpdateOperationsInput | string
-    rateId?: StringFieldUpdateOperationsInput | string
+    rateId?: NullableStringFieldUpdateOperationsInput | string | null
+    daily?: NullableFloatFieldUpdateOperationsInput | number | null
+    pricingMode?: EnumPricingModeFieldUpdateOperationsInput | $Enums.PricingMode
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -15921,7 +16171,9 @@ export namespace Prisma {
   export type BookingCreateManyUnitInput = {
     id?: number
     guestId: string
-    rateId: string
+    rateId?: string | null
+    daily?: number | null
+    pricingMode?: $Enums.PricingMode
     startDate: Date | string
     endDate: Date | string
     status?: $Enums.BookingStatus
@@ -15933,6 +16185,8 @@ export namespace Prisma {
   }
 
   export type BookingUpdateWithoutUnitInput = {
+    daily?: NullableFloatFieldUpdateOperationsInput | number | null
+    pricingMode?: EnumPricingModeFieldUpdateOperationsInput | $Enums.PricingMode
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -15942,7 +16196,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     guest?: GuestUpdateOneRequiredWithoutBookingsNestedInput
-    rate?: RateUpdateOneRequiredWithoutBookingsNestedInput
+    rate?: RateUpdateOneWithoutBookingsNestedInput
     payments?: PaymentUpdateManyWithoutBookingNestedInput
     services?: ServiceUpdateManyWithoutBookingNestedInput
     discounts?: DiscountUpdateManyWithoutBookingNestedInput
@@ -15951,7 +16205,9 @@ export namespace Prisma {
   export type BookingUncheckedUpdateWithoutUnitInput = {
     id?: IntFieldUpdateOperationsInput | number
     guestId?: StringFieldUpdateOperationsInput | string
-    rateId?: StringFieldUpdateOperationsInput | string
+    rateId?: NullableStringFieldUpdateOperationsInput | string | null
+    daily?: NullableFloatFieldUpdateOperationsInput | number | null
+    pricingMode?: EnumPricingModeFieldUpdateOperationsInput | $Enums.PricingMode
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -15968,7 +16224,9 @@ export namespace Prisma {
   export type BookingUncheckedUpdateManyWithoutUnitInput = {
     id?: IntFieldUpdateOperationsInput | number
     guestId?: StringFieldUpdateOperationsInput | string
-    rateId?: StringFieldUpdateOperationsInput | string
+    rateId?: NullableStringFieldUpdateOperationsInput | string | null
+    daily?: NullableFloatFieldUpdateOperationsInput | number | null
+    pricingMode?: EnumPricingModeFieldUpdateOperationsInput | $Enums.PricingMode
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -16075,6 +16333,8 @@ export namespace Prisma {
     id?: number
     guestId: string
     unitId: string
+    daily?: number | null
+    pricingMode?: $Enums.PricingMode
     startDate: Date | string
     endDate: Date | string
     status?: $Enums.BookingStatus
@@ -16086,6 +16346,8 @@ export namespace Prisma {
   }
 
   export type BookingUpdateWithoutRateInput = {
+    daily?: NullableFloatFieldUpdateOperationsInput | number | null
+    pricingMode?: EnumPricingModeFieldUpdateOperationsInput | $Enums.PricingMode
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -16105,6 +16367,8 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     guestId?: StringFieldUpdateOperationsInput | string
     unitId?: StringFieldUpdateOperationsInput | string
+    daily?: NullableFloatFieldUpdateOperationsInput | number | null
+    pricingMode?: EnumPricingModeFieldUpdateOperationsInput | $Enums.PricingMode
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus
@@ -16122,6 +16386,8 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     guestId?: StringFieldUpdateOperationsInput | string
     unitId?: StringFieldUpdateOperationsInput | string
+    daily?: NullableFloatFieldUpdateOperationsInput | number | null
+    pricingMode?: EnumPricingModeFieldUpdateOperationsInput | $Enums.PricingMode
     startDate?: DateTimeFieldUpdateOperationsInput | Date | string
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     status?: EnumBookingStatusFieldUpdateOperationsInput | $Enums.BookingStatus

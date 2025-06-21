@@ -1,6 +1,7 @@
 import BookingForm from '@/components/booking/BookingForm'
 import { BookingSummaryCard } from '@/components/booking/BookingSummaryCard'
 import db from '@/lib/db'
+import { notFound } from 'next/navigation'
 
 export default async function BookingId({
   params,
@@ -20,7 +21,7 @@ export default async function BookingId({
   })
 
   if (!booking) {
-    throw new Error('Reserva não encontrada')
+    notFound()
   }
 
   return (

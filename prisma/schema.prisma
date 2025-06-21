@@ -66,8 +66,10 @@ model Booking {
   guestId        String
   unit           Unit           @relation(fields: [unitId], references: [id])
   unitId         String
-  rate           Rate          @relation(fields: [rateId], references: [id])
-  rateId         String        // 🔥 Temporário opcional para migração segura
+  rate           Rate?          @relation(fields: [rateId], references: [id])
+  rateId         String?
+  daily          Float?
+  pricingMode    PricingMode    @default(RATE)
   startDate      DateTime
   endDate        DateTime
   status         BookingStatus  @default(PENDING)
@@ -79,6 +81,11 @@ model Booking {
   discounts      Discount[]
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
+}
+
+enum PricingMode {
+  RATE      // Segue tarifa selecionada
+  MANUAL    // Valor diário personalizado
 }
 
 model Rate {

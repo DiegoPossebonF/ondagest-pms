@@ -143,3 +143,24 @@ export async function getBookingsPerPeriod(period: { from: Date; to: Date }) {
     return null
   }
 }
+
+export async function getBookingById(id: number) {
+  try {
+    const booking = await db.booking.findUnique({
+      where: { id },
+      include: {
+        guest: true,
+        unit: { include: { type: { include: { rates: true } } } },
+        payments: { orderBy: { paidAt: 'desc' } },
+        discounts: { orderBy: { createdAt: 'desc' } },
+        services: { orderBy: { createdAt: 'desc' } },
+        rate: { include: { type: true } },
+      },
+    })
+
+    return booking
+  } catch (error) {
+    console.error('Erro ao buscar reserva:', error)
+    return null
+  }
+}

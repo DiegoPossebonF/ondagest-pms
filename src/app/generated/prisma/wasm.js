@@ -162,6 +162,8 @@ exports.Prisma.BookingScalarFieldEnum = {
   guestId: 'guestId',
   unitId: 'unitId',
   rateId: 'rateId',
+  daily: 'daily',
+  pricingMode: 'pricingMode',
   startDate: 'startDate',
   endDate: 'endDate',
   status: 'status',
@@ -220,6 +222,11 @@ exports.Prisma.NullsOrder = {
 exports.Role = exports.$Enums.Role = {
   USER: 'USER',
   ADMIN: 'ADMIN'
+};
+
+exports.PricingMode = exports.$Enums.PricingMode = {
+  RATE: 'RATE',
+  MANUAL: 'MANUAL'
 };
 
 exports.BookingStatus = exports.$Enums.BookingStatus = {

@@ -2,7 +2,7 @@
 
 'use server'
 
-import { BookingStatus } from '@/app/generated/prisma'
+import { BookingStatus, PricingMode } from '@/app/generated/prisma'
 import db from '@/lib/db'
 import { type BookingSchema, bookingSchema } from '@/schemas/booking-schema'
 import { revalidatePath } from 'next/cache'
@@ -25,20 +25,24 @@ export async function createBooking(data: BookingSchema) {
     period,
     numberOfPeople,
     totalAmount,
+    pricingMode,
+    daily,
   } = parsed.data
 
   try {
     await db.booking.create({
       data: {
-        guestId,
-        unitId,
-        rateId,
+        guestId: guestId,
+        unitId: unitId,
+        rateId: rateId || null,
         startDate: period.from,
         endDate: period.to,
-        numberOfPeople,
-        totalAmount,
+        numberOfPeople: numberOfPeople,
+        daily: daily,
+        totalAmount: totalAmount,
         status: BookingStatus[status as keyof typeof BookingStatus],
         paymentStatus: 'PENDING',
+        pricingMode: PricingMode[pricingMode as keyof typeof PricingMode],
       },
     })
 
