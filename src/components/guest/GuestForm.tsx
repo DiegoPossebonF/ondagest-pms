@@ -1,254 +1,249 @@
 'use client'
-import { createGuest } from '@/actions/guest/createGuest'
-import { deleteGuest } from '@/actions/guest/deleteGuest'
-import { updateGuest } from '@/actions/guest/updateGuest'
+
+import { createGuest } from '@/app/actions/guest/createGuest'
+import { updateGuest } from '@/app/actions/guest/updateGuest'
 import type { Guest } from '@/app/generated/prisma'
 import { Button } from '@/components/ui/button'
+import { type GuestSchema, guestSchema } from '@/schemas/guest-schema'
+import { cpfMask, phoneMask } from '@/utils/masks'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
+import { useState, useTransition } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import {
   Form,
-  FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useRouter } from 'next/navigation'
-import { type Dispatch, type SetStateAction, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
-import { z } from 'zod'
-import { AlertCustom } from '../AlertCustom'
-import { Separator } from '../ui/separator'
-
-// id         String      @id @default(uuid())
-//   name       String
-//   email      String      @unique
-//   phone      String?
-
-const guestSchema = z.object({
-  name: z.string().min(2, 'O nome deve ter pelo menos 2 caracteres'),
-  email: z.string().email('E-mail inválido'),
-  phone: z.string().regex(/^(\(?\d{2}\)?\s?)?(9?\d{4}-?\d{4})$/, {
-    message:
-      'Número de telefone inválido. Use o formato (99) 99999-9999 ou (99) 9999-9999',
-  }),
-})
-
-export type GuestFormValues = z.infer<typeof guestSchema>
+} from '../ui/form'
+import { Input } from '../ui/input'
+import { GuesFormError } from './GuesFormError'
+import { GuestDeleteAlertDialog } from './GuestDeleteAlertDialog'
 
 interface GuestFormProps {
   guest?: Guest
-  setOpen: Dispatch<SetStateAction<boolean>>
 }
 
-export function GuestForm({ guest, setOpen }: GuestFormProps) {
+export default function GuestForm({ guest }: GuestFormProps) {
   const router = useRouter()
-  const [loading, setLoading] = useState(false)
+  const [serverError, setServerError] = useState<string | null>(null)
 
-  const form = useForm<GuestFormValues>({
+  const [isDisabled, setIsDisabled] = useState(!!guest || false)
+  const [isPending, startTransition] = useTransition()
+
+  const form = useForm<GuestSchema>({
     resolver: zodResolver(guestSchema),
     defaultValues: {
       name: guest?.name || '',
       email: guest?.email || '',
       phone: guest?.phone || '',
+      cpf: guest?.cpf || '',
+      city: guest?.city || '',
+      carPlate: guest?.carPlate || '',
     },
   })
 
-  const phone = form.watch('phone')
-
-  const handleMaskPhoneHandle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value
-    const previousValue = phone.replace(/\D/g, '') // Valor sem máscara atual
-
-    if (value.length < phone.length) {
-      // Backspace: permite apagar normalmente
-      form.setValue('phone', value)
-      return
-    }
-
-    value = value.replace(/\D/g, '') // Remove tudo que não for número
-
-    if (value.length > 10) {
-      value = value.replace(/^(\d{2})(\d{5})(\d{4}).*/, '($1) $2-$3') // Formato (99) 99999-9999
-    } else if (value.length > 5) {
-      value = value.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3') // Formato (99) 9999-9999
-    } else if (value.length > 2) {
-      value = value.replace(/^(\d{2})(\d{0,5})/, '($1) $2') // Formato (99) 9999
-    }
-    form.setValue('phone', value)
-  }
-
-  async function onSubmitHandle(values: GuestFormValues) {
-    setLoading(true)
-
-    try {
-      if (guest) {
-        const data = await updateGuest(values, guest.id)
-
-        if (!data.error) {
-          toast('Sucesso', {
-            description: 'Hóspede atualizado com sucesso',
-          })
-          setOpen(false)
-          router.refresh()
-        } else {
-          toast('Erro', {
-            description: data.error,
-          })
-        }
-      } else {
-        const data = await createGuest(values)
-
-        if (!data.error) {
-          toast('Sucesso', {
-            description: 'Hóspede criado com sucesso',
-          })
-          setOpen(false)
-          router.refresh()
-        } else {
-          toast('Erro', {
-            description: data.error,
-          })
-        }
-      }
-    } catch (err) {
-      if (err instanceof Error) {
-        toast('Erro', {
-          description: err.message,
+  async function onSubmit(values: GuestSchema) {
+    if (guest) {
+      startTransition(() => {
+        updateGuest(guest.id, values).then(data => {
+          if (data.error) {
+            setServerError(data.error)
+            return
+          }
+          if (data.success) {
+            toast('Sucesso', {
+              description: data.success,
+              duration: 5000,
+              icon: '✅',
+            })
+            setIsDisabled(true)
+            setServerError(null)
+            router.push(`/guests/${guest.id}`)
+          }
         })
-      } else {
-        toast('Erro', {
-          description: 'Erro não tratado - fale com o desenvolvedor',
+      })
+    } else {
+      startTransition(() => {
+        createGuest(values).then(data => {
+          if (data.error) {
+            setServerError(data.error)
+            return
+          }
+          if (data.success) {
+            toast('Sucesso', {
+              description: data.success,
+            })
+            form.reset()
+            setServerError(null)
+            router.push('/guests')
+          }
         })
-      }
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const deleteGuestHandle = async (id: string) => {
-    try {
-      const data = await deleteGuest(id)
-
-      if (!data.error) {
-        toast('Sucesso', {
-          description: 'Hóspede excluido com sucesso',
-        })
-        setOpen(false)
-        router.refresh()
-      } else {
-        toast('Erro', {
-          description: data.error,
-        })
-      }
-    } catch (err) {
-      if (err instanceof Error) {
-        toast('Erro', {
-          description: err.message,
-        })
-      } else {
-        toast('Erro', {
-          description: 'Erro não tratado - fale com o desenvolvedor',
-        })
-      }
+      })
     }
   }
 
   return (
-    <div className="flex flex-col gap-6 max-w-6xl">
+    <>
+      <GuesFormError errors={form.formState.errors} serverError={serverError} />
+
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(onSubmitHandle)}
-          className="space-y-4"
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-full space-y-4"
         >
-          {/* Campo de Nome */}
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
-              <FormItem className="space-y-0">
-                <FormLabel className="font-semibold">Nome</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="text"
-                    placeholder="Seu nome completo"
-                    className="focus-visible:ring-0 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none border-2 border-blue-200"
-                    autoFocus
-                  />
-                </FormControl>
+              <FormItem className="flex flex-col">
+                <FormLabel>Nome completo</FormLabel>
+                <Input
+                  {...field}
+                  placeholder="Digite o nome completo"
+                  disabled={isDisabled}
+                />
+                <FormDescription className="sr-only">
+                  Informe o nome completo do hóspede
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          {/* Campo de E-mail */}
+          <FormField
+            control={form.control}
+            name="cpf"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>CPF</FormLabel>
+                <Input
+                  {...field}
+                  value={cpfMask(field.value)}
+                  onChange={e => {
+                    const raw = e.target.value.replace(/\D/g, '').slice(0, 11)
+                    field.onChange(raw)
+                  }}
+                  placeholder="000.000.000-00"
+                  disabled={isDisabled}
+                />
+                <FormDescription className="sr-only">
+                  Informe o CPF do hóspede
+                </FormDescription>
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem className="space-y-0">
-                <FormLabel className="font-semibold">E-mail</FormLabel>
-                <FormControl>
-                  <Input {...field} type="email" placeholder="Seu e-mail" />
-                </FormControl>
-                <FormMessage />
+              <FormItem className="flex flex-col">
+                <FormLabel>E-mail</FormLabel>
+                <Input
+                  {...field}
+                  type="email"
+                  placeholder="Digite o e-mail"
+                  disabled={isDisabled}
+                />
+                <FormDescription className="sr-only">
+                  Informe o e-mail do hóspede
+                </FormDescription>
               </FormItem>
             )}
           />
 
-          {/* Campo de Telefone */}
           <FormField
             control={form.control}
             name="phone"
             render={({ field }) => (
-              <FormItem className="space-y-0">
-                <FormLabel className="font-semibold">Telefone</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="text"
-                    placeholder="Seu telefone"
-                    onChange={handleMaskPhoneHandle}
-                  />
-                </FormControl>
-                <FormMessage />
+              <FormItem className="flex flex-col">
+                <FormLabel>Telefone</FormLabel>
+                <Input
+                  {...field}
+                  value={phoneMask(field.value || '')}
+                  onChange={e => {
+                    const raw = e.target.value.replace(/\D/g, '').slice(0, 11)
+                    field.onChange(raw)
+                  }}
+                  placeholder="(00) 90000-0000"
+                  disabled={isDisabled}
+                />
+                <FormDescription className="sr-only">
+                  Informe o telefone do hóspede
+                </FormDescription>
               </FormItem>
             )}
           />
 
-          <Separator className="my-4" />
+          <FormField
+            control={form.control}
+            name="city"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Cidade</FormLabel>
+                <Input
+                  {...field}
+                  placeholder="Digite a cidade"
+                  disabled={isDisabled}
+                />
+                <FormDescription className="sr-only">
+                  Informe a cidade do hóspede
+                </FormDescription>
+              </FormItem>
+            )}
+          />
 
-          {/* Botão de Envio */}
-          <Button type="submit" className="w-full mt-4" disabled={loading}>
-            {loading
-              ? guest
-                ? 'Salvando...'
-                : 'Cadastrando...'
-              : guest
-                ? 'Salvar'
-                : 'Criar'}
-          </Button>
+          <FormField
+            control={form.control}
+            name="carPlate"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Placa do carro</FormLabel>
+                <Input
+                  {...field}
+                  placeholder="Digite a placa do carro"
+                  disabled={isDisabled}
+                />
+                <FormDescription className="sr-only">
+                  Informe a placa do carro do hóspede
+                </FormDescription>
+              </FormItem>
+            )}
+          />
 
-          {/* Botão de Excluir */}
-          {guest && (
-            <AlertCustom
-              textButton="Excluir"
-              title="Excluir Hóspede"
-              description="Tem certeza que deseja excluir este hóspede?"
-              textButtonCancel="Cancelar"
-              textButtonAction="Excluir"
-              action={() => deleteGuestHandle(guest.id)}
-            >
-              <Button className="w-full" variant={'destructive'}>
-                Excluir
+          {guest ? (
+            isDisabled ? (
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  className="w-full"
+                  onClick={e => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    setIsDisabled(false)
+                  }}
+                  size={'sm'}
+                >
+                  Editar
+                </Button>
+                <GuestDeleteAlertDialog guestId={guest.id} />
+              </div>
+            ) : (
+              <Button type="submit" className="w-full" size={'sm'}>
+                {isPending ? 'Atualizando...' : 'Atualizar'}
               </Button>
-            </AlertCustom>
+            )
+          ) : (
+            <Button type="submit" className="w-full" size={'sm'}>
+              {isPending ? 'Criando...' : 'Novo hóspede'}
+            </Button>
           )}
         </form>
       </Form>
-    </div>
+    </>
   )
 }

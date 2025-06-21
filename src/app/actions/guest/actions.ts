@@ -86,3 +86,20 @@ export async function searchGuestName(searchTerm: string) {
     return []
   }
 }
+
+export async function getGuestById(id: string) {
+  try {
+    const guest = await db.guest.findUnique({
+      where: { id },
+    })
+
+    if (!guest) {
+      return null
+    }
+
+    return guest
+  } catch (error) {
+    console.error('Erro ao buscar hóspede por ID!', error)
+    return null
+  }
+}
