@@ -23,6 +23,7 @@ import { Button } from '../ui/button'
 import { Label } from '../ui/label'
 
 interface Filters {
+  id: string
   guestName: string
   unitName: string
   status: string
@@ -46,6 +47,15 @@ export function BookingsFiltersForm({
 
   return (
     <div className="flex flex-col md:flex-row flex-wrap gap-3 pb-4 z-50">
+      <div className="flex flex-col w-full space-y-2">
+        <Label htmlFor="guestName">Nº da reserva</Label>
+        <Input
+          name="id"
+          placeholder="Buscar por Nº da reserva"
+          value={filters.id}
+          onChange={e => onChange('id', e.target.value)}
+        />
+      </div>
       <div className="flex flex-col w-full space-y-2">
         <Label htmlFor="guestName">Hóspede</Label>
         <Input
@@ -73,7 +83,7 @@ export function BookingsFiltersForm({
           value={filters.status}
           onValueChange={value => onChange('status', value)}
         >
-          <SelectTrigger>
+          <SelectTrigger className={'h-8 rounded-md px-3 text-xs bg-popover'}>
             <SelectValue placeholder="Todos" />
           </SelectTrigger>
           <SelectContent className="z-50">
@@ -93,7 +103,7 @@ export function BookingsFiltersForm({
           value={filters.paymentStatus}
           onValueChange={value => onChange('paymentStatus', value)}
         >
-          <SelectTrigger>
+          <SelectTrigger className={'h-8 rounded-md px-3 text-xs bg-popover'}>
             <SelectValue placeholder="Pagamento" />
           </SelectTrigger>
           <SelectContent className="z-50">
@@ -131,15 +141,14 @@ export function BookingsFiltersForm({
           </PopoverTrigger>
           <PopoverContent align="start" className="w-auto p-0">
             <Calendar
-              initialFocus
               mode="range"
               locale={ptBR}
+              captionLayout="dropdown"
               selected={range}
               onSelect={range => {
                 onChange('startDate', range?.from ?? null)
                 onChange('endDate', range?.to ?? null)
               }}
-              numberOfMonths={2}
             />
           </PopoverContent>
         </Popover>

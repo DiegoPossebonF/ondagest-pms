@@ -16,21 +16,19 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { STATUS_LABELS, cn } from '@/lib/utils'
-import type { BookingSchema } from '@/schemas/booking-schema'
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import type { UseFormSetValue } from 'react-hook-form'
 
 interface BookingStatusComboboxProps {
   disabled?: boolean
   value: string
-  setValue: UseFormSetValue<BookingSchema>
+  onChange: (value: string) => void
 }
 
 export function BookingStatusCombobox({
   disabled,
   value,
-  setValue,
+  onChange,
 }: BookingStatusComboboxProps) {
   const [open, setOpen] = useState(false)
 
@@ -76,7 +74,7 @@ export function BookingStatusCombobox({
                   value={STATUS_LABELS[status]}
                   key={STATUS_LABELS[status]}
                   onSelect={() => {
-                    setValue('status', status)
+                    onChange(status)
                     setOpen(false)
                   }}
                 >

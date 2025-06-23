@@ -225,7 +225,7 @@ export default function BookingForm({ booking }: BookingFormProps) {
                 <FormLabel>Status da reserva</FormLabel>
                 <BookingStatusCombobox
                   value={field.value}
-                  setValue={form.setValue}
+                  onChange={field.onChange}
                   disabled={isDisabled}
                 />
                 <FormDescription className="sr-only">
@@ -263,7 +263,7 @@ export default function BookingForm({ booking }: BookingFormProps) {
                 <FormLabel>Período</FormLabel>
                 <BookingDateRangeCalendar
                   period={field.value}
-                  setValue={form.setValue}
+                  onChange={field.onChange}
                   disabled={isDisabled}
                 />
                 <FormDescription>

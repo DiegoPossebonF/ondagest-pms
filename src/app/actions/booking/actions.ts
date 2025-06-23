@@ -15,6 +15,7 @@ interface GetBookingsParams {
   sortKey?: SortKey
   sortDirection?: 'asc' | 'desc'
   filters?: {
+    id?: string
     guestName?: string
     unitName?: string
     status?: BookingStatus
@@ -32,6 +33,9 @@ export async function getBookings({
   filters = {},
 }: GetBookingsParams) {
   const where: Prisma.BookingWhereInput = {
+    id: {
+      equals: filters.id ? Number(filters.id) : undefined,
+    },
     guest: {
       name: filters.guestName ? { contains: filters.guestName } : undefined,
     },

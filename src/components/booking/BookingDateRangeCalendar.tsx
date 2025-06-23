@@ -7,25 +7,23 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import type { BookingSchema } from '@/schemas/booking-schema'
 import { ptBR } from 'date-fns/locale'
 import dayjs from 'dayjs'
 import { ChevronsUpDown } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import type { UseFormSetValue } from 'react-hook-form'
 
 interface BookingDateRangeCalendarProps {
   period: {
     from: Date
     to: Date
   }
-  setValue: UseFormSetValue<BookingSchema>
+  onChange: (period: { from: Date; to: Date }) => void
   disabled?: boolean
 }
 
 export function BookingDateRangeCalendar({
   period,
-  setValue,
+  onChange,
   disabled,
 }: BookingDateRangeCalendarProps) {
   const [open, setOpen] = useState(false)
@@ -63,7 +61,7 @@ export function BookingDateRangeCalendar({
           selected={period}
           onSelect={range => {
             if (range?.from && range.to) {
-              setValue('period', { from: range.from, to: range.to })
+              onChange({ from: range.from, to: range.to })
             }
           }}
         />

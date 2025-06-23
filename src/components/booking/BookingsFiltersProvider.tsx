@@ -21,6 +21,7 @@ export type SortKey =
 export type SortDirection = 'asc' | 'desc'
 
 export type Filters = {
+  id: string
   guestName: string
   unitName: string
   status: BookingStatus
@@ -65,7 +66,7 @@ export function BookingsFiltersProvider({
 }: { children: React.ReactNode }) {
   const isMobile = useIsMobile()
   const [bookings, setBookings] = useState<BookingAllIncludes[]>([])
-  const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc')
   const [activeFilters, setActiveFilters] = useState(false)
   const [totalPages, setTotalPages] = useState(1)
   const [page, setPage] = useState(1)
@@ -74,6 +75,7 @@ export function BookingsFiltersProvider({
   const perPage = isMobile ? 5 : 10
 
   const [filters, setFilters] = useState({
+    id: '',
     guestName: '',
     unitName: '',
     status: '' as BookingStatus,
@@ -104,6 +106,7 @@ export function BookingsFiltersProvider({
 
   const resetFilters = () => {
     setFilters({
+      id: '',
       guestName: '',
       unitName: '',
       status: '' as BookingStatus,
