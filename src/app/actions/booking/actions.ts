@@ -4,6 +4,7 @@ import type {
   PaymentStatus,
   Prisma,
 } from '@/app/generated/prisma'
+import type { SortKey } from '@/components/booking/BookingFiltersProvider'
 import db from '@/lib/db'
 import { activeBookingStatuses } from '@/lib/db/scopes'
 import type { BookingAllIncludes } from '@/types/booking'
@@ -11,14 +12,7 @@ import type { BookingAllIncludes } from '@/types/booking'
 interface GetBookingsParams {
   page?: number
   perPage?: number
-  sortKey?:
-    | 'guest'
-    | 'unit'
-    | 'startDate'
-    | 'numberOfPeople'
-    | 'status'
-    | 'paymentStatus'
-    | 'totalAmount'
+  sortKey?: SortKey
   sortDirection?: 'asc' | 'desc'
   filters?: {
     guestName?: string

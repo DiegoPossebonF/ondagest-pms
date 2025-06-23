@@ -144,3 +144,7 @@ export const formatCurrency = (amount: number) =>
 export function parseCurrencyToNumber(value: string): number {
   return Number(value.replace(/[^\d,-]+/g, '').replace(',', '.'))
 }
+
+export function padNumber(num: number, length = 6) {
+  return String(num).padStart(length, '0')
+}

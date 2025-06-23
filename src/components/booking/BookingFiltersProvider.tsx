@@ -8,6 +8,7 @@ import { type JSX, createContext, useContext, useEffect, useState } from 'react'
 import { Button } from '../ui/button'
 
 export type SortKey =
+  | 'id'
   | 'guest'
   | 'unit'
   | 'startDate'
