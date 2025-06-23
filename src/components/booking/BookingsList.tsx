@@ -23,7 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from '../ui/table'
-import { useBookingFilters } from './BookingFiltersProvider'
+import { useBookingFilters } from './BookingsFiltersProvider'
 import BookingsListFooter from './BookingsListFooter'
 import BookingsListHeader from './BookingsListHeader'
 import { BookingsListMobile } from './BoookingListMobile'

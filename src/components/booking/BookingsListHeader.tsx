@@ -2,9 +2,9 @@
 import { Button } from '@/components/ui/button'
 import { IconCalendarPlus } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
-import { useBookingFilters } from './BookingFiltersProvider'
 import { BookingStatusLegend } from './BookingStatusLegend'
 import BookingsFilters from './BookingsFilters'
+import { useBookingFilters } from './BookingsFiltersProvider'
 
 export default function BookingsListHeader() {
   const router = useRouter()

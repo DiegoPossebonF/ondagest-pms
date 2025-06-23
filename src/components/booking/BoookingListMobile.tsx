@@ -17,7 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from '../ui/table'
-import { useBookingFilters } from './BookingFiltersProvider'
+import { useBookingFilters } from './BookingsFiltersProvider'
 import BookingsListHeader from './BookingsListHeader'
 
 export function BookingsListMobile() {

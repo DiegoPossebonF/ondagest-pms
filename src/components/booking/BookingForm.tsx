@@ -37,6 +37,7 @@ import { BookingCancelAlertDialog } from './BookingCancelAlertDialog'
 import { BookingDateRangeCalendar } from './BookingDateRangeCalendar'
 import { BookingFormError } from './BookingFormError'
 import { BookingStatusCombobox } from './BookingStatusCombobox'
+import { useBookingFilters } from './BookingsFiltersProvider'
 
 interface BookingFormProps {
   booking?: BookingAllIncludes
@@ -47,6 +48,7 @@ interface UnitWithType extends Unit {
 }
 
 export default function BookingForm({ booking }: BookingFormProps) {
+  const { refetch } = useBookingFilters()
   const searchParams = useSearchParams()
   const unitIdParam = searchParams.get('unitId')
   const startDateParam = searchParams.get('startDate')
@@ -178,6 +180,7 @@ export default function BookingForm({ booking }: BookingFormProps) {
             setIsDisabled(true)
             setServerError(null)
             router.push(`/bookings/${booking.id}`)
+            refetch()
           }
         })
       })
@@ -195,6 +198,7 @@ export default function BookingForm({ booking }: BookingFormProps) {
             form.reset()
             setServerError(null)
             router.push('/bookings')
+            refetch()
           }
         })
       })

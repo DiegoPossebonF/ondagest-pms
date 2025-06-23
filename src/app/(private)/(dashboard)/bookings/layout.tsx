@@ -1,7 +1,7 @@
-import { BookingFiltersProvider } from '@/components/booking/BookingFiltersProvider'
+import { BookingsFiltersProvider } from '@/components/booking/BookingsFiltersProvider'
 
 export default function BookingsLayout({
   children,
 }: { children: React.ReactNode }) {
-  return <BookingFiltersProvider>{children}</BookingFiltersProvider>
+  return <BookingsFiltersProvider>{children}</BookingsFiltersProvider>
 }

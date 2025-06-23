@@ -46,6 +46,7 @@ type BookingFilters = {
   setSortDirection: (direction: SortDirection) => void
   setTotalPages: (total: number) => void
   resetFilters: () => void
+  refetch: () => Promise<void>
   SortHeader: ({
     label,
     column,
@@ -59,7 +60,7 @@ const BookingFiltersContext = createContext<BookingFilters | undefined>(
   undefined
 )
 
-export function BookingFiltersProvider({
+export function BookingsFiltersProvider({
   children,
 }: { children: React.ReactNode }) {
   const isMobile = useIsMobile()
@@ -81,22 +82,25 @@ export function BookingFiltersProvider({
     endDate: null,
   })
 
+  const fetchData = async () => {
+    const result = await getBookings({
+      page,
+      perPage,
+      sortKey,
+      sortDirection,
+      filters,
+    })
+
+    setBookings(result.data)
+    setTotalPages(result.totalPages)
+  }
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    const fetchData = async () => {
-      const result = await getBookings({
-        page,
-        perPage,
-        sortKey,
-        sortDirection,
-        filters,
-      })
-
-      setBookings(result.data)
-      setTotalPages(result.totalPages)
-    }
-
     fetchData()
   }, [page, sortKey, sortDirection, filters, perPage])
+
+  const refetch = () => fetchData()
 
   const resetFilters = () => {
     setFilters({
@@ -162,6 +166,7 @@ export function BookingFiltersProvider({
           setPage,
           resetFilters,
           SortHeader,
+          refetch,
         } as BookingFilters
       }
     >

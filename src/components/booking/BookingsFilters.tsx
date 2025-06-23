@@ -17,7 +17,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '../ui/drawer'
-import { useBookingFilters } from './BookingFiltersProvider'
+import { useBookingFilters } from './BookingsFiltersProvider'
 
 export default function BookingsFilters() {
   const isMobile = useIsMobile()
