@@ -11,13 +11,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { IconFilterEdit, IconFilterX } from '@tabler/icons-react'
 import dayjs from 'dayjs'
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
-import { type GuestFiltersProps, GuestsFilters } from './GuestsFilters'
+import type { GuestFiltersProps } from './GuestsFilters'
 
 export function GuestsList() {
   const router = useRouter()
@@ -98,41 +96,6 @@ export function GuestsList() {
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-2">
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="outline" size="sm" className="self-start">
-              <IconFilterEdit className="w-4 h-4" /> Filtros
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="z-50">
-            <GuestsFilters filters={filters} onChange={handleFilterChange} />
-          </PopoverContent>
-        </Popover>
-
-        {activeFilters && (
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={() => {
-              setFilters({
-                name: '',
-                email: '',
-                phone: '',
-                cpf: '',
-                city: '',
-                carPlate: '',
-                startDate: null,
-                endDate: null,
-              })
-              setActiveFilters(false)
-            }}
-          >
-            <IconFilterX className="w-4 h-4" />
-          </Button>
-        )}
-      </div>
-
       <div className="rounded-md border overflow-x-auto">
         <Table className="w-full text-sm">
           <TableHeader className="bg-muted text-left">
