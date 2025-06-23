@@ -6,58 +6,85 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import {
-  IconCalendarPlus,
-  IconFilterEdit,
-  IconFilterX,
-} from '@tabler/icons-react'
+import { useIsMobile } from '@/hooks/use-mobile'
+import { IconFilterEdit, IconFilterX } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '../ui/drawer'
 import { useBookingFilters } from './BookingFiltersProvider'
 
 export default function BookingsFilters() {
+  const isMobile = useIsMobile()
   const router = useRouter()
   const { filters, activeFilters, handleFilterChange, resetFilters } =
     useBookingFilters()
 
-  return (
-    <div className="flex flex-row justify-between gap-2">
+  if (isMobile)
+    return (
       <div className="flex flex-row gap-2">
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="outline" size="sm" className="self-start">
-              <IconFilterEdit className="w-4 h-4" /> Filtros
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="z-50">
-            <BookingsFiltersForm
-              filters={filters}
-              onChange={handleFilterChange}
-            />
-          </PopoverContent>
-        </Popover>
-
         {activeFilters && (
           <Button
             variant="destructive"
-            size="sm"
+            size="icon"
             onClick={() => resetFilters()}
           >
             <IconFilterX className="w-4 h-4" />
           </Button>
         )}
+        <Drawer>
+          <DrawerTrigger asChild>
+            <Button variant="outline" size="icon">
+              <IconFilterEdit className="w-4 h-4" />
+            </Button>
+          </DrawerTrigger>
+          <DrawerContent>
+            <DrawerHeader className="text-left">
+              <DrawerTitle>Filtros</DrawerTitle>
+              <DrawerDescription className="sr-only">
+                Filtros da lista de reservas
+              </DrawerDescription>
+            </DrawerHeader>
+            <div className="p-4">
+              <BookingsFiltersForm
+                filters={filters}
+                onChange={handleFilterChange}
+              />
+            </div>
+          </DrawerContent>
+        </Drawer>
       </div>
-      <Button
-        variant="outline"
-        size="sm"
-        className="self-start"
-        onClick={e => {
-          e.preventDefault()
-          e.stopPropagation()
-          router.push('/bookings/new')
-        }}
-      >
-        <IconCalendarPlus className="w-4 h-4" />
-      </Button>
+    )
+
+  return (
+    <div className="flex flex-row gap-2">
+      {activeFilters && (
+        <Button
+          variant="destructive"
+          size="icon"
+          onClick={() => resetFilters()}
+        >
+          <IconFilterX className="w-4 h-4" />
+        </Button>
+      )}
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline" size="icon">
+            <IconFilterEdit className="w-4 h-4" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="z-50">
+          <BookingsFiltersForm
+            filters={filters}
+            onChange={handleFilterChange}
+          />
+        </PopoverContent>
+      </Popover>
     </div>
   )
 }

@@ -2,6 +2,7 @@
 
 import { getBookings } from '@/app/actions/booking/actions'
 import type { BookingStatus, PaymentStatus } from '@/app/generated/prisma'
+import { useIsMobile } from '@/hooks/use-mobile'
 import type { BookingAllIncludes } from '@/types/booking'
 import { ArrowDown, ArrowUp } from 'lucide-react'
 import { type JSX, createContext, useContext, useEffect, useState } from 'react'
@@ -61,13 +62,15 @@ const BookingFiltersContext = createContext<BookingFilters | undefined>(
 export function BookingFiltersProvider({
   children,
 }: { children: React.ReactNode }) {
+  const isMobile = useIsMobile()
   const [bookings, setBookings] = useState<BookingAllIncludes[]>([])
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
   const [activeFilters, setActiveFilters] = useState(false)
   const [totalPages, setTotalPages] = useState(1)
   const [page, setPage] = useState(1)
   const [sortKey, setSortKey] = useState<SortKey>('startDate')
-  const perPage = 10
+
+  const perPage = isMobile ? 5 : 10
 
   const [filters, setFilters] = useState({
     guestName: '',
@@ -93,7 +96,7 @@ export function BookingFiltersProvider({
     }
 
     fetchData()
-  }, [page, sortKey, sortDirection, filters])
+  }, [page, sortKey, sortDirection, filters, perPage])
 
   const resetFilters = () => {
     setFilters({

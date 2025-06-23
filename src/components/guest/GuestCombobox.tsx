@@ -41,18 +41,20 @@ export function GuestCombobox({
   const [guests, setGuests] = useState<Guest[] | null>([])
 
   useEffect(() => {
-    if (!searchValue) {
+    const fetchGuests = async () => {
+      const data = await searchGuestName(searchValue)
+      setGuests(data)
+    }
+
+    if (!searchValue && !selectedGuestName) {
       onChange('')
       setSelectedGuestName(null)
       setGuests([])
       return
     }
-    const fetchGuests = async () => {
-      const data = await searchGuestName(searchValue)
-      setGuests(data)
-    }
+
     fetchGuests()
-  }, [searchValue, onChange, setSelectedGuestName])
+  }, [searchValue, onChange, setSelectedGuestName, selectedGuestName])
 
   return (
     <div className="flex flex-row items-center gap-2">
@@ -88,23 +90,13 @@ export function GuestCombobox({
             <CommandList>
               <CommandEmpty>
                 {searchValue.length > 2 ? (
-                  <>
-                    <p>
-                      Nenhum hóspede encontrado. Você pode criar um novo hóspede
-                      clicando no botão abaixo.
-                    </p>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full"
-                      onClick={() => {
-                        // Implementar a lógica para criar um novo hóspede
-                        console.log('Criar novo hóspede')
-                      }}
-                    >
-                      Criar novo hóspede
-                    </Button>
-                  </>
+                  <div className="px-4">
+                    <p>Nenhum hóspede encontrado.</p>
+                    <span className="font-bold">
+                      {' '}
+                      Crie um novo clicando no botão ao lado.
+                    </span>
+                  </div>
                 ) : (
                   'Minimo 3 caracteres para buscar.'
                 )}

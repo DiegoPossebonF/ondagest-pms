@@ -18,7 +18,7 @@ import {
   TableRow,
 } from '../ui/table'
 import { useBookingFilters } from './BookingFiltersProvider'
-import BookingsFilters from './BookingsFilters'
+import BookingsListHeader from './BookingsListHeader'
 
 export function BookingsListMobile() {
   const router = useRouter()
@@ -26,19 +26,19 @@ export function BookingsListMobile() {
   return (
     <div className="border overflow-x-auto">
       <Table className="w-full text-sm">
-        <TableHeader className="bg-muted text-left border-b-4">
+        <TableHeader className="bg-muted dark:bg-background text-left border-b-4">
           <TableRow>
             <TableHead className="p-4">
-              <BookingsFilters />
+              <BookingsListHeader />
             </TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
+        <TableBody className="bg-white dark:bg-muted">
           {bookings.map(booking => (
             <TableRow key={booking.id} className="border-b-4">
               <TableCell className="p-0">
                 <div className="flex flex-row overflow-hidden">
-                  <div className="min-w-[120px] flex flex-col border-r bg-muted">
+                  <div className="min-w-[120px] flex flex-col border-r bg-muted dark:bg-background">
                     <div className="border-b">
                       <SortHeader label="Nº da reserva" column="id" />
                     </div>

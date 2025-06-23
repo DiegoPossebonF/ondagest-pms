@@ -24,8 +24,8 @@ import {
   TableRow,
 } from '../ui/table'
 import { useBookingFilters } from './BookingFiltersProvider'
-import BookingListFooter from './BookingListFooter'
-import BookingsFilters from './BookingsFilters'
+import BookingsListFooter from './BookingsListFooter'
+import BookingsListHeader from './BookingsListHeader'
 import { BookingsListMobile } from './BoookingListMobile'
 dayjs.extend(isSameOrAfter)
 dayjs.extend(isSameOrBefore)
@@ -41,14 +41,14 @@ export function BookingsList() {
     return (
       <div className="space-y-4 mb-4">
         <BookingsListMobile />
-        <BookingListFooter />
+        <BookingsListFooter />
       </div>
     )
   }
 
   return (
     <div className="p-6 space-y-4">
-      <BookingsFilters />
+      <BookingsListHeader />
       <div className="rounded-md border overflow-x-auto">
         <Table className="w-full text-sm">
           <TableHeader className="bg-muted text-left">
@@ -79,7 +79,7 @@ export function BookingsList() {
               </TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody className="bg-white">
+          <TableBody className="bg-white dark:bg-background">
             {bookings.length > 0 ? (
               bookings.map(booking => (
                 <TableRow
@@ -132,7 +132,7 @@ export function BookingsList() {
           </TableBody>
         </Table>
       </div>
-      <BookingListFooter />
+      <BookingsListFooter />
     </div>
   )
 }

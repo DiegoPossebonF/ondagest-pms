@@ -113,6 +113,7 @@ export function BookingsFiltersForm({
           <PopoverTrigger asChild name="period">
             <Button
               variant={'outline'}
+              size={'sm'}
               className={cn(
                 'flex items-center justify-between rounded-md border px-3 py-2 text-sm shadow-sm',
                 !range.from && 'text-muted-foreground'

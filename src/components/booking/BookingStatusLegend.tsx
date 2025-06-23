@@ -4,7 +4,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { STATUS_COLORS, STATUS_PAYMENT_COLORS } from '@/lib/utils'
-import { Info } from 'lucide-react'
+import { IconMessageQuestion } from '@tabler/icons-react'
 import { Button } from '../ui/button'
 
 type StatusLegendItem = {
@@ -32,9 +32,8 @@ export function BookingStatusLegend() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="self-start">
-          <Info className="w-4 h-4" />
-          Legenda
+        <Button variant="outline" size="icon" className="self-start">
+          <IconMessageQuestion className="w-4 h-4" />
         </Button>
       </PopoverTrigger>
 
