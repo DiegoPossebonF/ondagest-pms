@@ -27,6 +27,7 @@ export async function getGuests({
   direction = 'desc',
   filters = {},
 }: GetGuestsParams) {
+  console.log('filters', filters)
   const where = {
     name: filters.name ? { contains: filters.name } : undefined,
     email: filters.email ? { contains: filters.email } : undefined,

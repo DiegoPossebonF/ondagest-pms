@@ -7,23 +7,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { STATUS_LABELS, STATUS_PAYMENT_LABELS, cn } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { CalendarIcon } from 'lucide-react'
 import type { DateRange } from 'react-day-picker'
 import { Button } from '../ui/button'
 import { Label } from '../ui/label'
-import type { Filters } from './BookingsFiltersProvider'
+import type { Filters } from './GuestsFiltersProvider'
 
-export function BookingsFiltersForm({
+export function GuestsFiltersForm({
   filters,
   onChange,
 }: {
@@ -39,82 +32,71 @@ export function BookingsFiltersForm({
   return (
     <div className="flex flex-col md:flex-row flex-wrap gap-3 pb-4 z-50">
       <div className="flex flex-col w-full space-y-2">
-        <Label htmlFor="guestName">Nº da reserva</Label>
+        <Label htmlFor="name">Hóspede</Label>
         <Input
-          name="id"
-          placeholder="Buscar por Nº da reserva"
-          value={filters.id}
-          onChange={e => onChange('id', e.target.value)}
-        />
-      </div>
-      <div className="flex flex-col w-full space-y-2">
-        <Label htmlFor="guestName">Hóspede</Label>
-        <Input
-          name="guestName"
-          placeholder="Buscar hóspede"
-          value={filters.guestName}
-          onChange={e => onChange('guestName', e.target.value)}
+          name="name"
+          placeholder="Buscar nome"
+          value={filters.name}
+          onChange={e => onChange('name', e.target.value)}
         />
       </div>
 
       <div className="flex flex-col w-full space-y-2">
-        <Label htmlFor="unitName">Acomodação</Label>
+        <Label htmlFor="email">E-mail</Label>
         <Input
-          name="unitName"
-          placeholder="Buscar acomodação"
-          value={filters.unitName}
-          onChange={e => onChange('unitName', e.target.value)}
+          name="email"
+          placeholder="Buscar e-mail"
+          value={filters.email}
+          onChange={e => onChange('email', e.target.value)}
         />
       </div>
 
       <div className="flex flex-col w-full space-y-2">
-        <Label htmlFor="booking">Reserva</Label>
-        <Select
-          name="booking"
-          value={filters.status}
-          onValueChange={value => onChange('status', value)}
-        >
-          <SelectTrigger className={'h-8 rounded-md px-3 text-xs bg-popover'}>
-            <SelectValue placeholder="Todos" />
-          </SelectTrigger>
-          <SelectContent className="z-50">
-            <SelectItem value="ALL">Todos</SelectItem>
-            {Object.entries(STATUS_LABELS).map(([key, label]) => (
-              <SelectItem key={key} value={key}>
-                {label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-      <div className="flex flex-col w-full space-y-2">
-        <Label htmlFor="payment">Pagamento</Label>
-        <Select
-          name="payment"
-          value={filters.paymentStatus}
-          onValueChange={value => onChange('paymentStatus', value)}
-        >
-          <SelectTrigger className={'h-8 rounded-md px-3 text-xs bg-popover'}>
-            <SelectValue placeholder="Pagamento" />
-          </SelectTrigger>
-          <SelectContent className="z-50">
-            <SelectItem value="ALL">Todos</SelectItem>
-            {Object.entries(STATUS_PAYMENT_LABELS).map(([key, label]) => (
-              <SelectItem key={key} value={key}>
-                {label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <Label htmlFor="phone">Telefone</Label>
+        <Input
+          name="phone"
+          placeholder="Buscar telefone"
+          value={filters.phone}
+          onChange={e => onChange('phone', e.target.value)}
+        />
       </div>
 
       <div className="flex flex-col w-full space-y-2">
-        <Label htmlFor="period">Período</Label>
+        <Label htmlFor="cpf">CPF</Label>
+        <Input
+          name="cpf"
+          placeholder="Buscar CPF"
+          value={filters.cpf}
+          onChange={e => onChange('cpf', e.target.value)}
+        />
+      </div>
+
+      <div className="flex flex-col w-full space-y-2">
+        <Label htmlFor="carPlate">Placa do carro</Label>
+        <Input
+          name="carPlate"
+          placeholder="Buscar placa"
+          value={filters.carPlate}
+          onChange={e => onChange('carPlate', e.target.value)}
+        />
+      </div>
+
+      <div className="flex flex-col w-full space-y-2">
+        <Label htmlFor="city">Cidade</Label>
+        <Input
+          name="city"
+          placeholder="Buscar cidade"
+          value={filters.city}
+          onChange={e => onChange('city', e.target.value)}
+        />
+      </div>
+
+      <div className="flex flex-col w-full space-y-2">
+        <Label htmlFor="period">Período de cadastro</Label>
         <Popover>
           <PopoverTrigger asChild name="period">
             <Button
               variant={'outline'}
-              size={'sm'}
               className={cn(
                 'flex items-center justify-between rounded-md border px-3 py-2 text-sm shadow-sm',
                 !range.from && 'text-muted-foreground'
@@ -134,12 +116,12 @@ export function BookingsFiltersForm({
             <Calendar
               mode="range"
               locale={ptBR}
-              captionLayout="dropdown"
               selected={range}
               onSelect={range => {
                 onChange('startDate', range?.from ?? null)
                 onChange('endDate', range?.to ?? null)
               }}
+              numberOfMonths={2}
             />
           </PopoverContent>
         </Popover>

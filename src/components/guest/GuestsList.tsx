@@ -1,8 +1,4 @@
 'use client'
-
-import { getGuests } from '@/app/actions/guest/actions'
-import type { Guest } from '@/app/generated/prisma'
-import { Button } from '@/components/ui/button'
 import {
   Table,
   TableBody,
@@ -11,91 +7,32 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { useIsMobile } from '@/hooks/use-mobile'
 import dayjs from 'dayjs'
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import type { GuestFiltersProps } from './GuestsFilters'
+import { GuestsListMobile } from './GuestListMobile'
+import { type SortKey, useGuestsFilters } from './GuestsFiltersProvider'
+import GuestsListFooter from './GuestsListFooter'
+import GuestsListHeader from './GuestsListHeader'
 
 export function GuestsList() {
   const router = useRouter()
+  const { guests, SortHeader } = useGuestsFilters()
 
-  const [guests, setGuests] = useState<Guest[]>([])
-  const [totalPages, setTotalPages] = useState(1)
-  const [page, setPage] = useState(1)
+  const isMobile = useIsMobile()
 
-  const [activeFilters, setActiveFilters] = useState(false)
-  const [filters, setFilters] = useState<GuestFiltersProps>({
-    name: '',
-    email: '',
-    phone: '',
-    cpf: '',
-    city: '',
-    carPlate: '',
-    startDate: null,
-    endDate: null,
-  })
-  const [orderBy, setOrderBy] = useState<keyof Guest>('createdAt')
-  const [direction, setDirection] = useState<'asc' | 'desc'>('desc')
-  const perPage = 10
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await getGuests({
-        page,
-        perPage,
-        orderBy,
-        direction,
-        filters,
-      })
-
-      setGuests(result.data)
-      setTotalPages(result.totalPages)
-    }
-
-    fetchData()
-  }, [page, orderBy, direction, filters])
-
-  const handleFilterChange = (
-    key: keyof GuestFiltersProps,
-    value: string | Date | null
-  ) => {
-    setFilters(prev => ({ ...prev, [key]: value }))
-    setPage(1)
-    setActiveFilters(true)
+  if (isMobile) {
+    return (
+      <div className="space-y-4 mb-4">
+        <GuestsListMobile />
+        <GuestsListFooter />
+      </div>
+    )
   }
-
-  const handleSort = (column: keyof Guest) => {
-    if (orderBy === column) {
-      setDirection(direction === 'asc' ? 'desc' : 'asc')
-    } else {
-      setOrderBy(column)
-      setDirection('asc')
-    }
-  }
-
-  const SortHeader = ({
-    label,
-    column,
-  }: { label: string; column: keyof Guest }) => (
-    <Button
-      variant="ghost"
-      size="sm"
-      className="flex items-center gap-1"
-      onClick={() => handleSort(column)}
-    >
-      {label}
-      {orderBy === column &&
-        (direction === 'asc' ? (
-          <ArrowUp className="w-4 h-4" />
-        ) : (
-          <ArrowDown className="w-4 h-4" />
-        ))}
-    </Button>
-  )
 
   return (
-    <div className="space-y-4">
+    <div className="p-6 space-y-4">
+      <GuestsListHeader />
       <div className="rounded-md border overflow-x-auto">
         <Table className="w-full text-sm">
           <TableHeader className="bg-muted text-left">
@@ -113,10 +50,7 @@ export function GuestsList() {
                   key={col.key}
                   className="min-w-[150px] text-ellipsis overflow-hidden whitespace-nowrap"
                 >
-                  <SortHeader
-                    label={col.label}
-                    column={col.key as keyof Guest}
-                  />
+                  <SortHeader label={col.label} column={col.key as SortKey} />
                 </TableHead>
               ))}
             </TableRow>
@@ -174,30 +108,7 @@ export function GuestsList() {
           </TableBody>
         </Table>
       </div>
-
-      <div className="flex items-center justify-between px-2">
-        <div className="text-sm text-muted-foreground">
-          Página {page} de {totalPages || 1}
-        </div>
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={page === 1}
-            onClick={() => setPage(page - 1)}
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={page === totalPages || totalPages === 0}
-            onClick={() => setPage(page + 1)}
-          >
-            <ArrowRight className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
+      <GuestsListFooter />
     </div>
   )
 }

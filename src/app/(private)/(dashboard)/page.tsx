@@ -1,5 +1,5 @@
 import { getUnitsWithUpdatedBookings } from '@/app/actions/unit/actions'
-import { BookingStatusLegend } from '@/components/booking/BookingStatusLegend'
+import { StatusLegend } from '@/components/StatusLegend'
 import UnitCard from '@/components/unit/UnitCard'
 import dayjs from 'dayjs'
 import isBetween from 'dayjs/plugin/isBetween'
@@ -20,7 +20,7 @@ export default async function Dashboard() {
   return (
     <div className="p-6 overflow-auto flex flex-col gap-4">
       <div className="flex flex-row w-full justify-end items-end">
-        <BookingStatusLegend />
+        <StatusLegend />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2">
         {units.map(unit => {

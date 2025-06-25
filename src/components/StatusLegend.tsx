@@ -1,11 +1,17 @@
+import { BookingStatus, PaymentStatus } from '@/app/generated/prisma'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { STATUS_COLORS, STATUS_PAYMENT_COLORS } from '@/lib/utils'
+import {
+  STATUS_COLORS,
+  STATUS_LABELS,
+  STATUS_PAYMENT_COLORS,
+  STATUS_PAYMENT_LABELS,
+} from '@/lib/utils'
 import { IconMessageQuestion } from '@tabler/icons-react'
-import { Button } from '../ui/button'
+import { Button } from './ui/button'
 
 type StatusLegendItem = {
   label: string
@@ -28,7 +34,7 @@ const paymentItems: StatusLegendItem[] = [
   { label: 'Pagamento Concluído', className: STATUS_PAYMENT_COLORS.COMPLETED },
 ]
 
-export function BookingStatusLegend() {
+export function StatusLegend() {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -41,10 +47,12 @@ export function BookingStatusLegend() {
         <div>
           <p className="font-semibold mb-1">Reserva</p>
           <div className="flex flex-wrap gap-2">
-            {statusItems.map(item => (
-              <div key={item.label} className="flex items-center gap-1">
-                <span className={`w-3 h-3 rounded-full ${item.className}`} />
-                <span>{item.label}</span>
+            {Object.values(BookingStatus).map(status => (
+              <div key={status} className="flex items-center gap-1">
+                <span
+                  className={`w-3 h-3 rounded-full ${STATUS_COLORS[status]}`}
+                />
+                <span>{STATUS_LABELS[status]}</span>
               </div>
             ))}
           </div>
@@ -53,10 +61,12 @@ export function BookingStatusLegend() {
         <div>
           <p className="font-semibold mb-1">Pagamento</p>
           <div className="flex flex-wrap gap-2">
-            {paymentItems.map(item => (
-              <div key={item.label} className="flex items-center gap-1">
-                <span className={`w-3 h-3 rounded-full ${item.className}`} />
-                <span>{item.label}</span>
+            {Object.values(PaymentStatus).map(status => (
+              <div key={status} className="flex items-center gap-1">
+                <span
+                  className={`w-3 h-3 rounded-full ${STATUS_PAYMENT_COLORS[status]}`}
+                />
+                <span>{STATUS_PAYMENT_LABELS[status]}</span>
               </div>
             ))}
           </div>
