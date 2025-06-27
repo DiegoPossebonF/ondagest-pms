@@ -69,7 +69,7 @@ export function GuestsFiltersProvider({
   const [page, setPage] = useState(1)
   const [sortKey, setSortKey] = useState<SortKey>('createdAt')
 
-  const perPage = isMobile ? 5 : 10
+  const perPage = 10
 
   const [filters, setFilters] = useState<Filters>({
     name: '',
@@ -138,7 +138,7 @@ export function GuestsFiltersProvider({
     <Button
       variant="ghost"
       size="sm"
-      className="flex items-center gap-1"
+      className="flex items-center gap-1 text-foreground"
       onClick={() => handleSort(column)}
     >
       {label}

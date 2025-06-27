@@ -32,7 +32,6 @@ import { AccessDenied } from './AccessDenied'
 import { NavSecondary } from './NavSecondary'
 import { SiteHeader } from './SiteHeader'
 
-// This is sample data.
 const data = {
   enterprise: {
     name: 'OndaGest',
@@ -84,7 +83,7 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 
 export function AppSidebar({ children, user, ...props }: AppSidebarProps) {
   return (
-    <SidebarProvider className="overflow-hidden">
+    <SidebarProvider defaultOpen={false} className="overflow-hidden">
       <Sidebar collapsible="icon" {...props}>
         <SidebarHeader>
           <EnterpriseLogo enterprise={data.enterprise} />

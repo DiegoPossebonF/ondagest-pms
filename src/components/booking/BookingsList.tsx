@@ -40,8 +40,13 @@ export function BookingsList() {
   if (isMobile) {
     return (
       <div className="space-y-4 mb-4">
+        <div className="px-6">
+          <BookingsListHeader />
+        </div>
         <BookingsListMobile />
-        <BookingsListFooter />
+        <div className="px-6">
+          <BookingsListFooter />
+        </div>
       </div>
     )
   }
@@ -51,10 +56,10 @@ export function BookingsList() {
       <BookingsListHeader />
       <div className="rounded-md border overflow-x-auto">
         <Table className="w-full text-sm">
-          <TableHeader className="bg-muted text-left">
+          <TableHeader className="bg-sidebar text-left h-12 p-2">
             <TableRow>
               <TableHead className="px-2 py-1">
-                <SortHeader label="Nº da reserva" column="id" />
+                <SortHeader label="Nº" column="id" />
               </TableHead>
               <TableHead className="px-2 py-1">
                 <SortHeader label="Hóspede" column="guest" />
@@ -75,30 +80,32 @@ export function BookingsList() {
                 <SortHeader label="Pagamento" column="paymentStatus" />
               </TableHead>
               <TableHead className="px-2 py-1">
-                <SortHeader label="Total" column="totalAmount" />
+                <div className={`flex justify-end`}>
+                  <SortHeader label="Total" column="totalAmount" />
+                </div>
               </TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody className="bg-white dark:bg-background">
+          <TableBody className="bg-white dark:bg-muted">
             {bookings.length > 0 ? (
               bookings.map(booking => (
                 <TableRow
                   key={booking.id}
-                  className="cursor-pointer border-t"
+                  className="cursor-pointer border-t hover:bg-muted"
                   onClick={() => {
                     router.push(`/bookings/${booking.id}`)
                   }}
                 >
-                  <TableCell className="px-4 py-2">
+                  <TableCell className="px-4 py-2 whitespace-nowrap">
                     {padNumber(booking.id, 5)}
                   </TableCell>
-                  <TableCell className="px-4 py-2">
+                  <TableCell className="px-4 py-2 whitespace-nowrap">
                     {booking.guest.name}
                   </TableCell>
                   <TableCell className="px-4 py-2">
                     {booking.unit.name}
                   </TableCell>
-                  <TableCell className="px-4 py-2">
+                  <TableCell className="px-4 py-2 whitespace-nowrap">
                     {dayjs(booking.startDate).format('DD/MM/YYYY')} -{' '}
                     {dayjs(booking.endDate).format('DD/MM/YYYY')}
                   </TableCell>
@@ -117,7 +124,7 @@ export function BookingsList() {
                       {STATUS_PAYMENT_LABELS[booking.paymentStatus]}
                     </Badge>
                   </TableCell>
-                  <TableCell className="px-4 py-2">
+                  <TableCell className="px-4 py-2 text-right">
                     {formatCurrency(booking.totalAmount)}
                   </TableCell>
                 </TableRow>

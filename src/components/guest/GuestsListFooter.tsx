@@ -7,7 +7,7 @@ export default function GuestsListFooter() {
   const { page, setPage, totalPages } = useGuestsFilters()
 
   return (
-    <div className="flex items-center justify-between px-2">
+    <div className="flex items-center justify-between">
       <div className="text-sm text-muted-foreground">
         Página {page} de {totalPages || 1}
       </div>

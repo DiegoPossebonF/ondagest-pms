@@ -24,8 +24,13 @@ export function GuestsList() {
   if (isMobile) {
     return (
       <div className="space-y-4 mb-4">
+        <div className="px-6">
+          <GuestsListHeader />
+        </div>
         <GuestsListMobile />
-        <GuestsListFooter />
+        <div className="px-6">
+          <GuestsListFooter />
+        </div>
       </div>
     )
   }
@@ -35,7 +40,7 @@ export function GuestsList() {
       <GuestsListHeader />
       <div className="rounded-md border overflow-x-auto">
         <Table className="w-full text-sm">
-          <TableHeader className="bg-muted text-left">
+          <TableHeader className="bg-sidebar text-left h-12 p-2">
             <TableRow>
               {[
                 { key: 'name', label: 'Nome' },
@@ -50,12 +55,16 @@ export function GuestsList() {
                   key={col.key}
                   className="min-w-[150px] text-ellipsis overflow-hidden whitespace-nowrap"
                 >
-                  <SortHeader label={col.label} column={col.key as SortKey} />
+                  <div
+                    className={`flex ${col.key === 'createdAt' ? 'justify-end' : ''}`}
+                  >
+                    <SortHeader label={col.label} column={col.key as SortKey} />
+                  </div>
                 </TableHead>
               ))}
             </TableRow>
           </TableHeader>
-          <TableBody className="bg-white">
+          <TableBody className="bg-white dark:bg-muted">
             {guests.length > 0 ? (
               guests.map(guest => (
                 <TableRow
@@ -65,37 +74,27 @@ export function GuestsList() {
                   }}
                   className="cursor-pointer"
                 >
-                  <TableCell className="px-4 py-1 font-medium">
+                  <TableCell className="px-4 py-1 font-medium whitespace-nowrap">
                     {guest.name}
                   </TableCell>
-                  <TableCell className="px-4 py-2">{guest.email}</TableCell>
-                  <TableCell className="px-4 py-2">{guest.phone}</TableCell>
-                  <TableCell className="px-4 py-2">{guest.cpf}</TableCell>
-                  <TableCell className="px-4 py-2">
+                  <TableCell className="px-4 py-2 whitespace-nowrap">
+                    {guest.email}
+                  </TableCell>
+                  <TableCell className="px-4 py-2 whitespace-nowrap">
+                    {guest.phone}
+                  </TableCell>
+                  <TableCell className="px-4 py-2 whitespace-nowrap">
+                    {guest.cpf}
+                  </TableCell>
+                  <TableCell className="px-4 py-2 whitespace-nowrap">
                     {guest.carPlate || '-'}
                   </TableCell>
-                  <TableCell className="px-4 py-2">{guest.city}</TableCell>
-                  <TableCell className="px-4 py-2">
+                  <TableCell className="px-4 py-2 whitespace-nowrap">
+                    {guest.city}
+                  </TableCell>
+                  <TableCell className="px-4 py-2 text-right whitespace-nowrap">
                     {dayjs(guest.createdAt).format('DD/MM/YYYY')}
                   </TableCell>
-
-                  {/* <TableCell className="px-4 py-1 text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <span className="sr-only">Abrir menu</span>
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem>Visualizar</DropdownMenuItem>
-                        <DropdownMenuItem>Editar</DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-600">
-                          Excluir
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell> */}
                 </TableRow>
               ))
             ) : (

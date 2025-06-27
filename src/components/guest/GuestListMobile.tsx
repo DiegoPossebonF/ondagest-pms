@@ -8,6 +8,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '../ui/accordion'
+import { Button } from '../ui/button'
 import {
   Table,
   TableBody,
@@ -17,40 +18,43 @@ import {
   TableRow,
 } from '../ui/table'
 import { useGuestsFilters } from './GuestsFiltersProvider'
-import GuestsListHeader from './GuestsListHeader'
 
 export function GuestsListMobile() {
   const router = useRouter()
-  const { guests } = useGuestsFilters()
+  const { guests, SortHeader } = useGuestsFilters()
   return (
     <div className="border overflow-x-auto">
       <Table className="w-full text-sm">
-        <TableHeader className="bg-muted dark:bg-background text-left">
+        <TableHeader className="bg-sidebar dark:bg-background text-left">
           <TableRow>
-            <TableHead className="p-4">
-              <GuestsListHeader />
+            <TableHead className="flex flex-row items-center justify-between h-12 p-2">
+              <SortHeader label="Nome" column="name" />
+              <SortHeader label="Criado em" column="createdAt" />
             </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody className="bg-white dark:bg-muted">
           {guests.map(guest => (
-            <TableRow key={guest.id}>
+            <TableRow key={guest.id} className="border-0">
               <TableCell className="p-0">
                 <Accordion type="single" collapsible>
-                  <AccordionItem value={guest.id} className="border-0">
-                    <AccordionTrigger className="no-underline hover:no-underline bg-muted dark:bg-background pr-2">
-                      <div className="flex flex-row items-center justify-between w-full px-4">
-                        <span className="font-medium">
+                  <AccordionItem
+                    value={guest.id}
+                    className="border-0 text-muted-foreground"
+                  >
+                    <AccordionTrigger className="no-underline hover:no-underline bg-sidebar dark:bg-background p-3 pr-2">
+                      <div className="flex flex-row items-center justify-between w-full pr-4 pl-2 text-xs font-normal">
+                        <span className="font-semibold">
                           {guest.name || 'N/A'}
                         </span>
-                        <span className="font-thin text-muted-foreground text-sm">
-                          {guest.phone || 'N/A'}
+                        <span>
+                          {dayjs(guest.createdAt).format('DD/MM/YYYY') || 'N/A'}
                         </span>
                       </div>
                     </AccordionTrigger>
-                    <AccordionContent className="border-t pb-0">
-                      <div className="flex flex-row overflow-hidden text-xs">
-                        <div className="min-w-[100px] flex flex-col border-r bg-muted dark:bg-background">
+                    <AccordionContent className="border-t pb-0 text-xs">
+                      <div className="flex flex-row overflow-hidden">
+                        <div className="min-w-[100px] flex flex-col border-r bg-sidebar dark:bg-background">
                           <p className="text-right border-b p-2 font-semibold">
                             E-mail
                           </p>
@@ -65,9 +69,6 @@ export function GuestsListMobile() {
                           </p>
                           <p className="text-right border-b p-2 font-semibold">
                             Placa
-                          </p>
-                          <p className="text-right p-2 font-semibold">
-                            Criado em
                           </p>
                         </div>
                         <div className="w-full flex flex-col">
@@ -97,11 +98,18 @@ export function GuestsListMobile() {
                           <div className="text-right border-b p-2">
                             {guest.carPlate || 'N/A'}
                           </div>
-                          <p className="text-right p-2">
-                            {guest.createdAt
-                              ? dayjs(guest.createdAt).format('DD/MM/YYYY')
-                              : 'N/A'}
-                          </p>
+                          <div className="flex flex-row overflow-hidden">
+                            <Button
+                              className="w-full rounded-none"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                router.push(`/guests/${guest.id}`)
+                              }}
+                            >
+                              Editar
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     </AccordionContent>

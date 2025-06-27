@@ -7,7 +7,7 @@ export default function BookingsListFooter() {
   const { page, setPage, totalPages } = useBookingFilters()
 
   return (
-    <div className="flex items-center justify-between px-2">
+    <div className="flex items-center justify-between">
       <div className="text-xs text-muted-foreground">
         Página {page} de {totalPages || 1}
       </div>

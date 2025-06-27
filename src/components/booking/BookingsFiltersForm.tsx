@@ -42,6 +42,7 @@ export function BookingsFiltersForm({
         <Label htmlFor="guestName">Nº da reserva</Label>
         <Input
           name="id"
+          type="number"
           placeholder="Buscar por Nº da reserva"
           value={filters.id}
           onChange={e => onChange('id', e.target.value)}

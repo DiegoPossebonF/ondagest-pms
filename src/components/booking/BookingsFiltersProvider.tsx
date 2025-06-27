@@ -72,7 +72,7 @@ export function BookingsFiltersProvider({
   const [page, setPage] = useState(1)
   const [sortKey, setSortKey] = useState<SortKey>('startDate')
 
-  const perPage = isMobile ? 5 : 10
+  const perPage = 10
 
   const [filters, setFilters] = useState({
     id: '',
@@ -139,7 +139,7 @@ export function BookingsFiltersProvider({
     <Button
       variant="ghost"
       size="sm"
-      className="flex items-center gap-1"
+      className="flex items-center gap-1 text-foreground"
       onClick={() => handleSort(column)}
     >
       {label}
