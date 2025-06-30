@@ -1,41 +1,50 @@
 'use server'
-import type { Payment } from '@/app/generated/prisma'
+import type { Payment, PaymentType } from '@/app/generated/prisma'
+import { updateBookingPaymentStatus } from '@/lib/actions/updateBookingPaymentStatus'
 import db from '@/lib/db'
+import { type PaymentSchema, paymentSchema } from '@/schemas/payment-schema'
 
 type PaymentPayload = Omit<Payment, 'id' | 'createdAt' | 'updatedAt'>
 
-export async function createPayment(payment: PaymentPayload) {
+export async function createPayment(data: PaymentSchema) {
+  const parsed = paymentSchema.safeParse(data)
+
+  if (!parsed.success) {
+    return {
+      error: 'Dados inválidos',
+      issues: parsed.error.flatten().fieldErrors,
+    }
+  }
+
+  const payment = parsed.data
+
   try {
-    if (!payment) {
-      return {
-        success: false,
-        msg: 'Erro ao criar pagamento - dados inválidos',
-      }
-    }
-
-    const paymentCreated = await db.payment.create({
-      data: {
-        ...payment,
-      },
-    })
-
-    if (!paymentCreated) {
-      return {
-        success: false,
-        msg: 'Erro ao criar pagamento - DB',
-      }
-    }
-
-    // 2. Buscar a reserva
+    // 1. Buscar a reserva
     const booking = await db.booking.findUnique({
-      where: { id: payment.bookingId },
+      where: { id: Number(payment.bookingId) },
       include: { payments: true },
     })
 
     if (!booking) {
       return {
-        success: false,
-        msg: 'Erro ao criar pagamento - Reserva nao encontrada',
+        error: 'Erro ao criar pagamento - Reserva nao encontrada',
+      }
+    }
+
+    // 2. Criar o pagamento
+
+    const paymentCreated = await db.payment.create({
+      data: {
+        bookingId: Number(payment.bookingId),
+        paymentType: payment.paymentType as PaymentType,
+        paidAt: payment.paidAt,
+        amount: payment.amount,
+      },
+    })
+
+    if (!paymentCreated) {
+      return {
+        error: 'Erro ao criar pagamento - DB',
       }
     }
 
@@ -43,21 +52,20 @@ export async function createPayment(payment: PaymentPayload) {
     if (booking.status === 'PENDING') {
       // 4. Atualizar para CONFIRMED
       await db.booking.update({
-        where: { id: payment.bookingId },
+        where: { id: Number(payment.bookingId) },
         data: { status: 'CONFIRMED' },
       })
     }
 
+    await updateBookingPaymentStatus(booking.id)
+
     return {
-      success: true,
-      payment: paymentCreated,
-      msg: 'Pagamento lançado com sucesso',
+      success: 'Pagamento lançado com sucesso',
     }
   } catch (err) {
     console.error('Erro ao criar pagamento', err)
     return {
-      success: false,
-      msg: 'Erro interno ao criar pagamento - entre em contato com o suporte',
+      error: 'Erro interno ao criar pagamento - entre em contato com o suporte',
     }
   }
 }

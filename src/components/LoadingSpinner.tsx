@@ -24,7 +24,7 @@ export function LoadingSpinner({
       )}
     >
       <IconLoader
-        className={cn('animate-spin duration-[1000ms]', sizes[size], className)}
+        className={cn('animate-spin duration-1000', sizes[size], className)}
       />
     </div>
   )

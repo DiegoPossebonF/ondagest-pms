@@ -8,20 +8,17 @@ import {
   STATUS_COLORS_TEXT,
   STATUS_ICONS,
   STATUS_LABELS,
-  STATUS_PAYMENT_COLORS_TEXT,
   formatCurrency,
 } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import type { UnitWithTypeAndBookings } from '@/types/unit'
+import { IconCalendarPlus, IconEdit } from '@tabler/icons-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import { BookingActionsSheet } from '../booking/BookingActionsSheet'
 import { BookingDescriptions } from '../booking/BookingDescriptions'
-import MaterialSymbolsRealEstateAgent from '../icons/MaterialSymbolsRealEstateAgent'
 import FluentDoor16Filled from '../icons/fluent-ui/FluentDoor16Filled'
-import MageCalendarPlusFill from '../icons/mage/MageCalendarPlusFill'
-import MdiBookEdit from '../icons/mdi/MdiBookEdit'
-import { PaymentSheet } from '../payment/PaymentSheet'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -43,6 +40,7 @@ import {
   CardHeader,
   CardTitle,
 } from '../ui/card'
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
 
 interface UnitCardProps {
   className?: string
@@ -229,7 +227,8 @@ export default function UnitCard({ unit }: UnitCardProps) {
       >
         {booking ? (
           <>
-            <PaymentSheet booking={booking}>
+            {/*
+              <PaymentSheet booking={booking}>
               <Button
                 size="icon"
                 className={`size-8 group-data-[collapsible=icon]:opacity-0 ${STATUS_PAYMENT_COLORS_TEXT[booking.paymentStatus]}`}
@@ -240,30 +239,47 @@ export default function UnitCard({ unit }: UnitCardProps) {
                 <span className="sr-only">Lançar pagamento</span>
               </Button>
             </PaymentSheet>
-            <Link href={`/bookings/${booking.id}`} title="Ir para a reserva">
-              <Button
-                size="icon"
-                className={`size-8 group-data-[collapsible=icon]:opacity-0`}
-                variant="outline"
-                title="Editar pagamento"
-              >
-                <MdiBookEdit className="h-4 w-4" />
-                <span className="sr-only">Editar pagamento</span>
-              </Button>
-            </Link>
-            {managerAction && booking.status === 'PENDING' && (
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
+             */}
+
+            <BookingActionsSheet booking={booking} />
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link href={`/bookings/${booking.id}`}>
                   <Button
                     size="icon"
-                    className={`size-8 group-data-[collapsible=icon]:opacity-0 ${STATUS_COLORS_TEXT[booking.status]}`}
+                    className={`size-8 group-data-[collapsible=icon]:opacity-0`}
                     variant="outline"
-                    title="Confirmar sem pagamento"
                   >
-                    {StatusIcon && <StatusIcon className="h-4 w-4" />}
-                    <span className="sr-only">Confirmar sem pagamento</span>
+                    <IconEdit className="h-4 w-4" />
+                    <span className="sr-only">Editar reserva</span>
                   </Button>
-                </AlertDialogTrigger>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Editar reserva</p>
+              </TooltipContent>
+            </Tooltip>
+
+            {managerAction && booking.status === 'PENDING' && (
+              <AlertDialog>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        size="icon"
+                        className={`size-8 group-data-[collapsible=icon]:opacity-0 ${STATUS_COLORS_TEXT[booking.status]}`}
+                        variant="outline"
+                      >
+                        {StatusIcon && <StatusIcon className="h-4 w-4" />}
+                        <span className="sr-only">Confirmar sem pagamento</span>
+                      </Button>
+                    </AlertDialogTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Confirmar sem pagamento</p>
+                  </TooltipContent>
+                </Tooltip>
 
                 <AlertDialogContent>
                   <AlertDialogHeader>
@@ -286,41 +302,60 @@ export default function UnitCard({ unit }: UnitCardProps) {
               </AlertDialog>
             )}
             {managerAction && booking.status === 'CHECKED_IN' && (
-              <Button
-                size="icon"
-                variant="outline"
-                onClick={() => handleCheckIn(booking)}
-                className={`size-8 group-data-[collapsible=icon]:opacity-0 ${STATUS_COLORS_TEXT[booking.status]}`}
-                title="Fazer Check-in"
-              >
-                {StatusIcon && <StatusIcon className="h-4 w-4" />}
-                <span className="sr-only">Fazer check-in</span>
-              </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="icon"
+                    variant="outline"
+                    onClick={() => handleCheckIn(booking)}
+                    className={`size-8 group-data-[collapsible=icon]:opacity-0 ${STATUS_COLORS_TEXT[booking.status]}`}
+                  >
+                    {StatusIcon && <StatusIcon className="h-4 w-4" />}
+                    <span className="sr-only">Fazer check-in</span>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Fazer check-in</p>
+                </TooltipContent>
+              </Tooltip>
             )}
             {managerAction && booking.status === 'CHECKED_OUT' && (
-              <Button
-                size="icon"
-                variant="outline"
-                onClick={() => handleFinalizeBooking(booking)}
-                className={`size-8 group-data-[collapsible=icon]:opacity-0 ${STATUS_COLORS_TEXT[booking.status]}`}
-                title="Fazer Check-out"
-              >
-                {StatusIcon && <StatusIcon className="h-4 w-4" />}
-                <span className="sr-only">Fazer check-out</span>
-              </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="icon"
+                    variant="outline"
+                    onClick={() => handleFinalizeBooking(booking)}
+                    className={`size-8 group-data-[collapsible=icon]:opacity-0 ${STATUS_COLORS_TEXT[booking.status]}`}
+                  >
+                    {StatusIcon && <StatusIcon className="h-4 w-4" />}
+                    <span className="sr-only">Fazer check-out</span>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Fazer check-out</p>
+                </TooltipContent>
+              </Tooltip>
             )}
           </>
         ) : (
-          <Link href={`/bookings/new`} title="Fazer reserva">
-            <Button
-              size="icon"
-              variant="outline"
-              className={`size-8 group-data-[collapsible=icon]:opacity-0`}
-            >
-              <MageCalendarPlusFill className="w-4 h-4" />
-              <span className="sr-only">Fazer reserva</span>
-            </Button>
-          </Link>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link href={`/bookings/new`}>
+                <Button
+                  size="icon"
+                  variant="outline"
+                  className={`size-8 group-data-[collapsible=icon]:opacity-0`}
+                >
+                  <IconCalendarPlus className="w-4 h-4" />
+                  <span className="sr-only">Fazer reserva</span>
+                </Button>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Fazer reserva</p>
+            </TooltipContent>
+          </Tooltip>
         )}
       </CardFooter>
     </Card>

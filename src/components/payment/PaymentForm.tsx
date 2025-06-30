@@ -1,7 +1,6 @@
 'use client'
 import { createPayment } from '@/app/actions/payment/createPayment'
-import { updatePayment } from '@/app/actions/payment/updatePayment'
-import type { Payment } from '@/app/generated/prisma'
+import { type Payment, PaymentType } from '@/app/generated/prisma'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -12,17 +11,25 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { updateBookingPaymentStatus } from '@/lib/actions/updateBookingPaymentStatus'
-import { cn, formatCurrency, parseCurrencyToNumber } from '@/lib/utils'
-import type { BookingAllIncludes } from '@/types/booking'
+import {
+  PAYMENT_TYPE_ICONS,
+  PAYMENT_TYPE_LABELS,
+  cn,
+  formatCurrency,
+} from '@/lib/utils'
+import { type PaymentSchema, paymentSchema } from '@/schemas/payment-schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import dayjs from 'dayjs'
 import { CalendarIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { type Dispatch, type SetStateAction, useEffect, useState } from 'react'
+import {
+  type Dispatch,
+  type SetStateAction,
+  useState,
+  useTransition,
+} from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import { z } from 'zod'
 import { Calendar } from '../ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import {
@@ -33,103 +40,54 @@ import {
   SelectValue,
 } from '../ui/select'
 
-const PaymentSchema = z.object({
-  bookingId: z.string().min(1, 'ID da reserva é obrigatório'),
-  amount: z.string().min(1, 'Valor é obrigatório'),
-  paymentType: z.enum([
-    '',
-    'CASH',
-    'PIX',
-    'CREDIT_CARD',
-    'DEBIT_CARD',
-    'BANK_TRANSFER',
-    'OTHER',
-  ]),
-  paidAt: z.coerce.date(),
-  paymentId: z.string().optional(),
-})
-
-export type PaymentFormValues = z.infer<typeof PaymentSchema>
-
 interface PaymentFormProps {
-  booking: BookingAllIncludes
+  bookingId: number
   payment?: Payment
   openDialog?: Dispatch<SetStateAction<boolean>>
 }
 
 export function PaymentForm({
-  booking,
+  bookingId,
   payment,
   openDialog,
 }: PaymentFormProps) {
   const [openPopover, setOpenPopover] = useState(false)
   const router = useRouter()
-  const [loading, setLoading] = useState(false)
+  const [isPending, startTransition] = useTransition()
+  const [serverError, setServerError] = useState<string | null>(null)
 
-  const form = useForm<PaymentFormValues>({
-    resolver: zodResolver(PaymentSchema),
+  const form = useForm<PaymentSchema>({
+    resolver: zodResolver(paymentSchema),
     defaultValues: {
-      bookingId: booking.id.toString(),
-      amount: payment ? formatCurrency(payment?.amount) : '',
-      paymentId: payment?.id,
-      paymentType: payment ? payment.paymentType : '',
-      paidAt: payment?.paidAt,
+      bookingId: bookingId.toString(),
+      amount: payment?.amount || 0,
+      paymentType: payment?.paymentType || 'PIX',
+      paidAt: payment?.paidAt || dayjs().toDate(),
     },
   })
 
-  // 🔁 Atualiza o valor quando a edição muda (ex: abrir o dialog com outro pagamento)
-  useEffect(() => {
-    form.reset({
-      bookingId: booking.id.toString(),
-      amount: payment ? formatCurrency(payment?.amount) : '',
-      paymentId: payment?.id,
-      paymentType: payment ? payment.paymentType : 'CASH',
-      paidAt: payment?.paidAt,
-    })
-  }, [booking.id, payment, form])
-
-  async function onSubmitHandle(values: PaymentFormValues) {
-    setLoading(true)
-
-    try {
-      const action = payment
-        ? await updatePayment({
-            id: payment.id,
-            bookingId: booking.id,
-            amount: parseCurrencyToNumber(values.amount),
-            paidAt: values.paidAt,
-            paymentType: values.paymentType as Payment['paymentType'],
-          })
-        : await createPayment({
-            bookingId: booking.id,
-            amount: parseCurrencyToNumber(values.amount),
-            paidAt: values.paidAt,
-            paymentType: values.paymentType as Payment['paymentType'],
-          })
-
-      if (action.success) {
-        toast('Sucesso', {
-          description: payment
-            ? 'Pagamento atualizado com sucesso'
-            : 'Pagamento lançado com sucesso',
+  async function onSubmitHandle(values: PaymentSchema) {
+    if (payment) {
+      //await updatePayment(values)
+    } else {
+      startTransition(() => {
+        createPayment(values).then(data => {
+          if (data.error) {
+            setServerError(data.error)
+            return
+          }
+          if (data.success) {
+            toast('Sucesso', {
+              description: data.success,
+              duration: 5000,
+              icon: '✅',
+            })
+            setServerError(null)
+            form.reset()
+            router.refresh()
+          }
         })
-        await updateBookingPaymentStatus(booking.id)
-        router.refresh()
-        openDialog?.(false)
-      } else {
-        toast('Erro', {
-          description: action.msg,
-        })
-      }
-    } catch (err) {
-      toast('Erro', {
-        description:
-          err instanceof Error
-            ? err.message
-            : 'Erro interno - fale com o desenvolvedor',
       })
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -151,21 +109,24 @@ export function PaymentForm({
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger
+                      className={'h-8 rounded-md px-3 text-xs bg-popover'}
+                    >
                       <SelectValue placeholder="Selecione a forma de pagamento..." />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="CREDIT_CARD">
-                      Cartão de Crédito
-                    </SelectItem>
-                    <SelectItem value="DEBIT_CARD">Cartão de Débito</SelectItem>
-                    <SelectItem value="CASH">Dinheiro</SelectItem>
-                    <SelectItem value="PIX">PIX</SelectItem>
-                    <SelectItem value="BANK_TRANSFER">
-                      Transferência Bancária
-                    </SelectItem>
-                    <SelectItem value="OTHER">Outro</SelectItem>
+                    {Object.values(PaymentType).map(status => {
+                      const Icon = PAYMENT_TYPE_ICONS[status]
+                      return (
+                        <SelectItem key={status} value={status}>
+                          <div className="flex items-center gap-2">
+                            <Icon className="w-4 h-4" />
+                            {PAYMENT_TYPE_LABELS[status]}
+                          </div>
+                        </SelectItem>
+                      )
+                    })}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -187,9 +148,10 @@ export function PaymentForm({
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
-                        variant={'default'}
+                        variant={'outline'}
+                        size={'sm'}
                         className={cn(
-                          'w-full pl-3 text-left font-normal',
+                          'w-full pl-3 text-left font-normal bg-popover',
                           !field.value && 'text-muted-foreground'
                         )}
                       >
@@ -240,16 +202,13 @@ export function PaymentForm({
                       const rawValue = e.target.value
                       const onlyDigits = rawValue.replace(/\D/g, '')
                       const numberValue = Number(onlyDigits) / 100
-                      const formatted = numberValue.toLocaleString('pt-BR', {
-                        style: 'currency',
-                        currency: 'BRL',
-                      })
-                      field.onChange(formatted)
+                      field.onChange(formatCurrency(numberValue))
                     }}
-                    value={field.value}
+                    value={formatCurrency(field.value)}
                     placeholder="Informe o valor"
-                    className="focus-visible:ring-0 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none border-2 border-blue-200"
-                    autoFocus
+                    className={
+                      'h-8 rounded-md px-3 text-xs md:text-xs bg-popover'
+                    }
                   />
                 </FormControl>
                 <FormMessage />
@@ -257,8 +216,8 @@ export function PaymentForm({
             )}
           />
 
-          <Button type="submit" className="w-full mt-4" disabled={loading}>
-            {loading
+          <Button type="submit" className="w-full mt-4" disabled={isPending}>
+            {isPending
               ? payment
                 ? 'Salvando...'
                 : 'Lançando...'

@@ -116,12 +116,12 @@ export function GuestsFiltersForm({
             <Calendar
               mode="range"
               locale={ptBR}
+              captionLayout="dropdown"
               selected={range}
               onSelect={range => {
                 onChange('startDate', range?.from ?? null)
                 onChange('endDate', range?.to ?? null)
               }}
-              numberOfMonths={2}
             />
           </PopoverContent>
         </Popover>
