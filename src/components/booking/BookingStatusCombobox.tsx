@@ -23,14 +23,24 @@ interface BookingStatusComboboxProps {
   disabled?: boolean
   value: string
   onChange: (value: string) => void
+  havePayments: boolean
 }
 
 export function BookingStatusCombobox({
   disabled,
   value,
   onChange,
+  havePayments,
 }: BookingStatusComboboxProps) {
   const [open, setOpen] = useState(false)
+
+  const statusAvailable = Object.values(BookingStatus).filter(
+    status =>
+      status !== BookingStatus.CHECKED_IN &&
+      status !== BookingStatus.CHECKED_OUT &&
+      status !== BookingStatus.CANCELLED &&
+      status !== BookingStatus.NO_SHOW
+  )
 
   useEffect(() => {
     if (open) {
@@ -68,7 +78,7 @@ export function BookingStatusCombobox({
           <CommandList>
             <CommandEmpty>Nenhum status encontrado</CommandEmpty>
             <CommandGroup>
-              {Object.values(BookingStatus).map(status => (
+              {statusAvailable.map(status => (
                 <CommandItem
                   className="form-sm"
                   value={STATUS_LABELS[status]}
@@ -87,6 +97,12 @@ export function BookingStatusCombobox({
                   />
                 </CommandItem>
               ))}
+              {havePayments && (
+                <p className="p-4 text-xs text-muted-foreground text-orange-400 text-center">
+                  Não é possível cancelar ou marcar como no show pois existem
+                  pagamentos lançados.
+                </p>
+              )}
             </CommandGroup>
           </CommandList>
         </Command>

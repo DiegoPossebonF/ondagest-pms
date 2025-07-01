@@ -8,12 +8,7 @@ import { groupedByRateNamePerUnit } from '@/app/(private)/(dashboard)/bookings/n
 import { createBooking } from '@/app/actions/booking/createBooking'
 import { updateBooking } from '@/app/actions/booking/updateBooking'
 import { getUnitById } from '@/app/actions/unit/actions'
-import {
-  BookingStatus,
-  type Rate,
-  type Unit,
-  type UnitType,
-} from '@/app/generated/prisma'
+import type { Rate, Unit, UnitType } from '@/app/generated/prisma'
 import { Button } from '@/components/ui/button'
 import { type BookingSchema, bookingSchema } from '@/schemas/booking-schema'
 import type { BookingAllIncludes } from '@/types/booking'
@@ -40,14 +35,15 @@ import { BookingStatusCombobox } from './BookingStatusCombobox'
 import { useBookingFilters } from './BookingsFiltersProvider'
 
 interface BookingFormProps {
-  booking?: BookingAllIncludes
+  bookingData: BookingAllIncludes
 }
 
 interface UnitWithType extends Unit {
   type: UnitType
 }
 
-export default function BookingForm({ booking }: BookingFormProps) {
+export default function BookingForm({ bookingData }: BookingFormProps) {
+  const [booking, setBooking] = useState<BookingAllIncludes>(bookingData)
   const { refetch } = useBookingFilters()
   const searchParams = useSearchParams()
   const unitIdParam = searchParams.get('unitId')
@@ -76,7 +72,7 @@ export default function BookingForm({ booking }: BookingFormProps) {
   const form = useForm<BookingSchema>({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
-      status: booking?.status || BookingStatus.PENDING,
+      status: booking?.status || '',
       guestId: booking?.guestId || '',
       period: {
         from: booking?.startDate || startDateParam || dayjs().toDate(),
@@ -94,6 +90,28 @@ export default function BookingForm({ booking }: BookingFormProps) {
       pricingMode: booking?.pricingMode || 'MANUAL',
     },
   })
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    form.reset({
+      status: booking?.status || '',
+      guestId: booking?.guestId || '',
+      period: {
+        from: booking?.startDate || startDateParam || dayjs().toDate(),
+        to: booking
+          ? booking.endDate
+          : startDateParam
+            ? dayjs(startDateParam).add(1, 'day').toDate()
+            : dayjs().add(1, 'day').toDate(),
+      },
+      unitId: booking?.unitId || unitIdParam || '',
+      numberOfPeople: booking?.numberOfPeople || 1,
+      rateId: booking?.rateId || '',
+      daily: booking?.daily || 0,
+      totalAmount: booking?.totalAmount || 0,
+      pricingMode: booking?.pricingMode || 'MANUAL',
+    })
+  }, [booking])
 
   const watchUnit = form.watch('unitId')
   const watchPeople = form.watch('numberOfPeople')
@@ -171,15 +189,16 @@ export default function BookingForm({ booking }: BookingFormProps) {
             setServerError(data.error)
             return
           }
-          if (data.success) {
+          if (data.success && data.booking) {
             toast('Sucesso', {
               description: data.success,
               duration: 5000,
               icon: '✅',
             })
+            setBooking(data.booking)
             setIsDisabled(true)
             setServerError(null)
-            router.push(`/bookings/${booking.id}`)
+            router.refresh()
             refetch()
           }
         })
@@ -207,7 +226,6 @@ export default function BookingForm({ booking }: BookingFormProps) {
 
   return (
     <>
-      {serverError && <p className="text-destructive text-sm">{serverError}</p>}
       <BookingFormError
         errors={form.formState.errors}
         serverError={serverError}
@@ -227,6 +245,9 @@ export default function BookingForm({ booking }: BookingFormProps) {
                   value={field.value}
                   onChange={field.onChange}
                   disabled={isDisabled}
+                  havePayments={
+                    booking?.payments ? booking.payments.length > 0 : false
+                  }
                 />
                 <FormDescription className="sr-only">
                   Selecione o status da reserva
@@ -429,9 +450,23 @@ export default function BookingForm({ booking }: BookingFormProps) {
                 <BookingCancelAlertDialog bookingId={booking.id} />
               </div>
             ) : (
-              <Button type="submit" className="w-full" size={'sm'}>
-                {isPending ? 'Atualizando...' : 'Atualizar'}
-              </Button>
+              <div className="flex gap-2">
+                <Button type="submit" className="w-full" size={'sm'}>
+                  {isPending ? 'Atualizando...' : 'Atualizar'}
+                </Button>
+                <Button
+                  type="button"
+                  variant={'outline'}
+                  size={'sm'}
+                  onClick={() => {
+                    setIsDisabled(true)
+                    form.reset()
+                    setServerError(null)
+                  }}
+                >
+                  {isPending ? 'Cancelando...' : 'Cancelar Atualização'}
+                </Button>
+              </div>
             )
           ) : (
             <Button type="submit" className="w-full" size={'sm'}>

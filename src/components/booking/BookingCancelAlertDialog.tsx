@@ -32,7 +32,7 @@ export function BookingCancelAlertDialog({
     startTransition(async () => {
       const result = await cancelBooking(bookingId, status)
 
-      if (result?.success) {
+      if (result.success) {
         toast.success(result.success)
       } else {
         toast.error(result?.error || 'Erro ao cancelar reserva')

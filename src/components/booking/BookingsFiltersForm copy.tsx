@@ -1,18 +1,23 @@
 'use client'
 
 import { Calendar } from '@/components/ui/calendar'
-import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { STATUS_LABELS, STATUS_PAYMENT_LABELS, cn } from '@/lib/utils'
-import type { BookingStatus } from '@/types/types'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { CalendarIcon, Check, ChevronsUpDown } from 'lucide-react'
+import { CalendarIcon } from 'lucide-react'
 import type { DateRange } from 'react-day-picker'
 import { Button } from '../ui/button'
 import { Label } from '../ui/label'
@@ -31,17 +36,10 @@ export function BookingsFiltersForm({
     to: filters.endDate ?? undefined,
   }
 
-  const handleStatusChange = (status: string) => {
-    const newStatuses = filters.status.includes(status as BookingStatus)
-      ? filters.status.filter(s => s !== status)
-      : [...filters.status, status]
-    onChange('status', newStatuses)
-  }
-
   return (
     <div className="flex flex-col md:flex-row flex-wrap gap-3 pb-4 z-50">
       <div className="flex flex-col w-full space-y-2">
-        <Label htmlFor="id">Nº da reserva</Label>
+        <Label htmlFor="guestName">Nº da reserva</Label>
         <Input
           name="id"
           type="number"
@@ -50,7 +48,6 @@ export function BookingsFiltersForm({
           onChange={e => onChange('id', e.target.value)}
         />
       </div>
-
       <div className="flex flex-col w-full space-y-2">
         <Label htmlFor="guestName">Hóspede</Label>
         <Input
@@ -71,86 +68,45 @@ export function BookingsFiltersForm({
         />
       </div>
 
-      {/* Filtro multi-select de status */}
       <div className="flex flex-col w-full space-y-2">
-        <Label>Status da reserva</Label>
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              // biome-ignore lint/a11y/useSemanticElements: <explanation>
-              role="combobox"
-              size="sm"
-              className="justify-between px-3 text-xs bg-popover"
-            >
-              {filters.status.length > 0
-                ? `${filters.status.length} selecionado(s)`
-                : 'Todos'}
-              <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-60 p-2">
-            <div className="flex flex-col gap-1 max-h-60 overflow-y-auto">
-              {Object.entries(STATUS_LABELS).map(
-                ([key, label]) =>
-                  key !== 'NO_SHOW' &&
-                  key !== 'CANCELLED' && (
-                    <div
-                      key={key}
-                      className="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-muted"
-                    >
-                      <Checkbox
-                        id={`status-${key}`}
-                        checked={filters.status.includes(key as BookingStatus)}
-                        onCheckedChange={() => handleStatusChange(key)}
-                      />
-                      <label
-                        htmlFor={`status-${key}`}
-                        className="text-sm leading-none peer-disabled:cursor-not-allowed"
-                      >
-                        {label}
-                      </label>
-                    </div>
-                  )
-              )}
-            </div>
-          </PopoverContent>
-        </Popover>
+        <Label htmlFor="booking">Reserva</Label>
+        <Select
+          name="booking"
+          value={filters.status}
+          onValueChange={value => onChange('status', value)}
+        >
+          <SelectTrigger className={'h-8 rounded-md px-3 text-xs bg-popover'}>
+            <SelectValue placeholder="Todos" />
+          </SelectTrigger>
+          <SelectContent className="z-50">
+            <SelectItem value="ALL">Todos</SelectItem>
+            {Object.entries(STATUS_LABELS).map(([key, label]) => (
+              <SelectItem key={key} value={key}>
+                {label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
-
       <div className="flex flex-col w-full space-y-2">
         <Label htmlFor="payment">Pagamento</Label>
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              size="sm"
-              className="justify-between px-3 text-xs bg-popover"
-            >
-              {filters.paymentStatus || 'Todos'}
-              <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-52 p-2">
+        <Select
+          name="payment"
+          value={filters.paymentStatus}
+          onValueChange={value => onChange('paymentStatus', value)}
+        >
+          <SelectTrigger className={'h-8 rounded-md px-3 text-xs bg-popover'}>
+            <SelectValue placeholder="Pagamento" />
+          </SelectTrigger>
+          <SelectContent className="z-50">
+            <SelectItem value="ALL">Todos</SelectItem>
             {Object.entries(STATUS_PAYMENT_LABELS).map(([key, label]) => (
-              <Button
-                key={key}
-                variant="ghost"
-                size="sm"
-                className={cn(
-                  'w-full justify-start',
-                  filters.paymentStatus === key && 'font-bold text-primary'
-                )}
-                onClick={() => onChange('paymentStatus', key)}
-              >
+              <SelectItem key={key} value={key}>
                 {label}
-                {filters.paymentStatus === key && (
-                  <Check className="ml-auto h-4 w-4" />
-                )}
-              </Button>
+              </SelectItem>
             ))}
-          </PopoverContent>
-        </Popover>
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="flex flex-col w-full space-y-2">
@@ -158,8 +114,8 @@ export function BookingsFiltersForm({
         <Popover>
           <PopoverTrigger asChild name="period">
             <Button
-              variant="outline"
-              size="sm"
+              variant={'outline'}
+              size={'sm'}
               className={cn(
                 'flex items-center justify-between rounded-md border px-3 py-2 text-sm shadow-sm',
                 !range.from && 'text-muted-foreground'

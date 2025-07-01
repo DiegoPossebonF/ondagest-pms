@@ -18,7 +18,7 @@ interface GetBookingsParams {
     id?: string
     guestName?: string
     unitName?: string
-    status?: BookingStatus
+    status?: BookingStatus[]
     paymentStatus?: PaymentStatus
     startDate?: string | null
     endDate?: string | null
@@ -43,8 +43,8 @@ export async function getBookings({
       name: filters.unitName ? { contains: filters.unitName } : undefined,
     },
     status: {
-      in: filters.status ? [filters.status] : undefined,
-      notIn: ['CANCELLED', 'NO_SHOW'] as BookingStatus[],
+      in: filters.status ? filters.status : undefined,
+      //notIn: ['CANCELLED', 'NO_SHOW'] as BookingStatus[],
     },
     paymentStatus: filters.paymentStatus || undefined,
     startDate: filters.startDate

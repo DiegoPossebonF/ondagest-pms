@@ -12,10 +12,14 @@ export default async function BookingId({
     where: { id: Number(id) },
     include: {
       guest: true,
-      unit: { include: { type: { include: { rates: true } } } },
-      payments: { orderBy: { paidAt: 'desc' } },
-      discounts: { orderBy: { createdAt: 'desc' } },
-      services: { orderBy: { createdAt: 'desc' } },
+      unit: {
+        include: {
+          type: { include: { rates: { include: { type: true } } } },
+        },
+      },
+      payments: true,
+      services: true,
+      discounts: true,
       rate: { include: { type: true } },
     },
   })
@@ -28,7 +32,7 @@ export default async function BookingId({
     <div className="p-6 overflow-auto">
       <div className="flex flex-col lg:flex-row gap-6">
         <div className="md:basis-3/5">
-          <BookingForm booking={booking} />
+          <BookingForm bookingData={booking} />
         </div>
         <div className="flex flex-col md:basis-2/5 gap-4">
           <BookingSummaryCard booking={booking} />

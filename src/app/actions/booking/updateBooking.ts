@@ -3,9 +3,11 @@
 'use server'
 
 import { BookingStatus, PricingMode } from '@/app/generated/prisma'
+import { updateBookingStatusIfNeeded } from '@/lib/actions/updateBookingStatusIfNeeded'
 import db from '@/lib/db'
 import { type BookingSchema, bookingSchema } from '@/schemas/booking-schema'
 import { revalidatePath } from 'next/cache'
+import validateBookingStatusChange from './validateBookingStatusChange'
 
 export async function updateBooking(id: number, data: BookingSchema) {
   const parsed = bookingSchema.safeParse(data)
@@ -17,8 +19,29 @@ export async function updateBooking(id: number, data: BookingSchema) {
     }
   }
 
+  const booking = await db.booking.findUnique({
+    where: { id },
+    include: {
+      guest: true,
+      unit: {
+        include: {
+          type: { include: { rates: { include: { type: true } } } },
+        },
+      },
+      payments: true,
+      services: true,
+      discounts: true,
+      rate: { include: { type: true } },
+    },
+  })
+
+  if (!booking) {
+    return {
+      error: 'Reserva nao encontrada!',
+    }
+  }
+
   const {
-    status,
     guestId,
     unitId,
     rateId,
@@ -29,8 +52,21 @@ export async function updateBooking(id: number, data: BookingSchema) {
     daily,
   } = parsed.data
 
+  const { status } = parsed.data
+
+  const validation = await validateBookingStatusChange(
+    booking,
+    status as BookingStatus
+  )
+
+  if (validation.error) {
+    return {
+      error: validation.error,
+    }
+  }
+
   try {
-    await db.booking.update({
+    const updatedBooking = await db.booking.update({
       where: { id },
       data: {
         guestId: guestId,
@@ -45,11 +81,32 @@ export async function updateBooking(id: number, data: BookingSchema) {
         paymentStatus: 'PENDING',
         pricingMode: PricingMode[pricingMode as keyof typeof PricingMode],
       },
+      include: {
+        guest: true,
+        unit: {
+          include: {
+            type: { include: { rates: { include: { type: true } } } },
+          },
+        },
+        payments: true,
+        services: true,
+        discounts: true,
+        rate: { include: { type: true } },
+      },
     })
+
+    if (!updatedBooking) {
+      return {
+        error: 'Erro ao atualizar reserva',
+      }
+    }
+
+    const updatedFinal = await updateBookingStatusIfNeeded(updatedBooking)
 
     revalidatePath(`/bookings/${id}`)
     return {
       success: 'Reserva atualizada com sucesso!',
+      booking: updatedFinal,
     }
   } catch (error) {
     console.error('#### Erro ao atualizar reserva', error)

@@ -24,7 +24,7 @@ export type Filters = {
   id: string
   guestName: string
   unitName: string
-  status: BookingStatus
+  status: BookingStatus[]
   paymentStatus: PaymentStatus
   startDate: Date | null
   endDate: Date | null
@@ -78,7 +78,13 @@ export function BookingsFiltersProvider({
     id: '',
     guestName: '',
     unitName: '',
-    status: '' as BookingStatus,
+    status: [
+      'PENDING',
+      'CONFIRMED',
+      'CHECKED_IN',
+      'CHECKED_OUT',
+      'IN_PROGRESS',
+    ] as BookingStatus[],
     paymentStatus: '' as PaymentStatus,
     startDate: null,
     endDate: null,
@@ -109,7 +115,13 @@ export function BookingsFiltersProvider({
       id: '',
       guestName: '',
       unitName: '',
-      status: '' as BookingStatus,
+      status: [
+        'PENDING',
+        'CONFIRMED',
+        'CHECKED_IN',
+        'CHECKED_OUT',
+        'IN_PROGRESS',
+      ] as BookingStatus[],
       paymentStatus: '' as PaymentStatus,
       startDate: null,
       endDate: null,
