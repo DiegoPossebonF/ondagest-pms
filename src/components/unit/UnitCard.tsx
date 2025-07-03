@@ -142,13 +142,14 @@ export default function UnitCard({ unit }: UnitCardProps) {
   const handleFinalizeBooking = async (booking: BookingAllIncludes) => {
     canFinalizeBooking(booking)
       ? await updateBookingStatus(booking.id, 'FINALIZED').then(() => {
-          toast('Reserva finalizada', {
+          toast.success('Reserva finalizada', {
             description: 'A reserva foi finalizada com sucesso.',
           })
           router.refresh()
         })
       : toast('Pagamento pendente', {
           description: `Ainda faltam ${formatCurrency(calculateBookingValues(booking).totalAll - calculateBookingValues(booking).totalPayment)} para finalizar a reserva.`,
+          duration: 15000,
         })
   }
 

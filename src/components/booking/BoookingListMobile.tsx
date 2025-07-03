@@ -14,6 +14,7 @@ import {
   AccordionTrigger,
 } from '../ui/accordion'
 import { Badge } from '../ui/badge'
+import { Button } from '../ui/button'
 import {
   Table,
   TableBody,
@@ -74,7 +75,7 @@ export function BookingsListMobile() {
                       </div>
                     </AccordionTrigger>
                     <AccordionContent className="border-t pb-0 text-xs">
-                      <div className="flex flex-row overflow-hidden text-xs font-normal">
+                      <div className="flex flex-row overflow-hidden text-xs font-normal border-b">
                         <div className="min-w-[100px] flex flex-col border-r bg-sidebar dark:bg-background">
                           <p className="text-right border-b p-2 font-semibold">
                             Período
@@ -122,12 +123,24 @@ export function BookingsListMobile() {
                               'N/A'
                             )}
                           </div>
-                          <p className="text-right p-2">
+                          <div className="text-right border-b p-2">
                             {booking.totalAmount.toLocaleString('pt-BR', {
                               style: 'currency',
                               currency: 'BRL',
                             })}
-                          </p>
+                          </div>
+                          <div className="flex flex-row overflow-hidden">
+                            <Button
+                              className="w-full rounded-none"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                router.push(`/bookings/${booking.id}`)
+                              }}
+                            >
+                              Editar
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     </AccordionContent>

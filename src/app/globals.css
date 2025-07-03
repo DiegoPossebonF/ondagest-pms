@@ -113,8 +113,10 @@
     --sidebar-border: 220 20% 20%;
     --sidebar-ring: 193 70% 55%;
   }
+}
 
-  .form-sm {
-    @apply h-8 rounded-md px-3 text-xs;
+@layer utilities {
+  [data-sonner-toast]:has(> div > div:nth-child(2)) div:nth-child(2) {
+    @apply text-gray-800;
   }
 }
