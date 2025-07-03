@@ -1,1 +1,2 @@
-1  - deletar pagamento não está atualizando o status da reserva.
+1 - deletar pagamento não está atualizando o status da reserva.
+2 - verificar tratamento ao excluir usuário logado, não está deslogando.

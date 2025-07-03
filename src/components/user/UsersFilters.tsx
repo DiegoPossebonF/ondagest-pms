@@ -7,6 +7,7 @@ import {
 } from '@/components/ui/popover'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { IconFilterEdit, IconFilterX } from '@tabler/icons-react'
+import { useRouter } from 'next/navigation'
 import { ButtonTooltip } from '../ButtonTooltip'
 import {
   Drawer,
@@ -16,13 +17,14 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '../ui/drawer'
-import { GuestsFiltersForm } from './GuestsFiltersForm'
-import { useGuestsFilters } from './GuestsFiltersProvider'
+import { UsersFiltersForm } from './UsersFiltersForm'
+import { useUsersFilters } from './UsersFiltersProvider'
 
-export default function GuestsFilters() {
+export default function UsersFilters() {
   const isMobile = useIsMobile()
+  const router = useRouter()
   const { filters, activeFilters, handleFilterChange, resetFilters } =
-    useGuestsFilters()
+    useUsersFilters()
 
   if (isMobile)
     return (
@@ -46,11 +48,11 @@ export default function GuestsFilters() {
             <DrawerHeader className="text-left">
               <DrawerTitle>Filtros</DrawerTitle>
               <DrawerDescription className="sr-only">
-                Filtros da lista de reservas
+                Filtros da lista de usuários
               </DrawerDescription>
             </DrawerHeader>
             <div className="p-4">
-              <GuestsFiltersForm
+              <UsersFiltersForm
                 filters={filters}
                 onChange={handleFilterChange}
               />
@@ -72,9 +74,9 @@ export default function GuestsFilters() {
       )}
       <Popover>
         <ButtonTooltip
-          onClick={() => {}}
           tooltipText="Filtros"
           tooltipSide="top"
+          onClick={() => {}}
         >
           <PopoverTrigger asChild>
             <Button variant="outline" size="icon">
@@ -84,7 +86,7 @@ export default function GuestsFilters() {
         </ButtonTooltip>
 
         <PopoverContent className="z-50">
-          <GuestsFiltersForm filters={filters} onChange={handleFilterChange} />
+          <UsersFiltersForm filters={filters} onChange={handleFilterChange} />
         </PopoverContent>
       </Popover>
     </div>

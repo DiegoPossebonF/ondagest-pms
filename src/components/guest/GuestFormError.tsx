@@ -7,7 +7,7 @@ interface FormErrorProps {
   errors: FieldErrors
 }
 
-export function GuesFormError({ errors, serverError }: FormErrorProps) {
+export function GuestFormError({ errors, serverError }: FormErrorProps) {
   const hasErrors = Object.keys(errors).length > 0
 
   if (!hasErrors && !serverError) {
@@ -15,7 +15,7 @@ export function GuesFormError({ errors, serverError }: FormErrorProps) {
   }
 
   return (
-    <Alert variant="destructive" className="mb-6">
+    <Alert variant="destructive" className="mb-6 bg-red-100">
       <AlertCircle className="h-4 w-4" />
       <AlertTitle>
         {hasErrors ? 'Formulário incompleto!' : 'Ocorreu um erro'}

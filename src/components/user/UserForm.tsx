@@ -1,32 +1,25 @@
 'use client'
-import { createUser } from '@/actions/user/createUserAction'
-import { deleteUser } from '@/actions/user/deleteUser'
-import { updateUser } from '@/actions/user/updateUser'
-import type { User } from '@/app/generated/prisma'
+
+import { createUser } from '@/app/actions/user/createUser'
+import { updateUser } from '@/app/actions/user/updateUser'
+import { Role } from '@/app/generated/prisma'
 import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { useToast } from '@/hooks/use-toast'
+import { type UserSchema, userSchema } from '@/schemas/user-schema'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { UserRound } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import {
-  type ChangeEvent,
-  type Dispatch,
-  type SetStateAction,
-  useState,
-} from 'react'
+import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { AlertCustom } from '../AlertCustom'
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
+import { toast } from 'sonner'
+import { LoadingSpinner } from '../LoadingSpinner'
 import {
   Select,
   SelectContent,
@@ -34,331 +27,195 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select'
-import { Separator } from '../ui/separator'
+import { UserAlertDialogDelete } from './UserAlertDialogDelete'
+import { UserFormError } from './UserFormError'
+import { type UserData, useUsersFilters } from './UsersFiltersProvider'
 
-const userSchema = z.object({
-  name: z.string().min(2, 'O nome deve ter pelo menos 2 caracteres'),
-  email: z.string().email('E-mail inválido'),
-  password: z.string().or(z.literal('')).optional(),
-  role: z.enum(['ADMIN', 'USER']),
-  avatar: z.any().optional(),
-})
+export default function UserForm({
+  selectedUser,
+  setSelectedUser,
+  setOpenNewUser,
+}: {
+  selectedUser?: UserData | null
+  setSelectedUser?: (user: UserData | null) => void
+  setOpenNewUser: (open: boolean) => void
+}) {
+  const [serverError, setServerError] = useState<string | null>(null)
+  const [isPending, startTransition] = useTransition()
 
-export type UserFormValues = z.infer<typeof userSchema>
+  const { refetch } = useUsersFilters()
 
-interface UserFormProps {
-  user?: User
-  setOpen: Dispatch<SetStateAction<boolean>>
-}
-
-export function UserForm({ user, setOpen }: UserFormProps) {
-  const router = useRouter()
-  const { toast } = useToast()
-  const [loading, setLoading] = useState(false)
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
-
-  const form = useForm<UserFormValues>({
+  const form = useForm<UserSchema>({
     resolver: zodResolver(userSchema),
     defaultValues: {
-      name: user ? user.name : '',
-      email: user ? user.email : '',
-      password: user ? user.password : '',
-      avatar: undefined,
-      role: user ? user.role : 'USER',
+      name: selectedUser?.name ?? '',
+      email: selectedUser?.email ?? '',
+      password: '',
+      role: selectedUser?.role ?? 'USER',
     },
   })
 
-  const onAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0]
-    if (selectedFile) {
-      setAvatarPreview(URL.createObjectURL(selectedFile))
-      form.setValue('avatar', e.target.files || undefined)
-    }
-  }
-
-  async function onSubmitHandle(values: UserFormValues) {
-    setLoading(true)
-
-    try {
-      if (values.avatar) {
-        // Faz upload do arquivo para o Supabase Storage
-        const formData = new FormData()
-        formData.append('file', values.avatar[0])
-
-        const responseUpload = await fetch('/api/upload', {
-          method: 'POST',
-          body: formData,
+  const onSubmit = (data: UserSchema) => {
+    if (selectedUser) {
+      startTransition(() => {
+        updateUser(selectedUser.id, data).then(data => {
+          if (data.error) {
+            setServerError(data.error)
+            return
+          }
+          if (data.success) {
+            toast('Sucesso', {
+              description: data.success,
+              duration: 5000,
+              icon: '✅',
+            })
+            setServerError(null)
+            form.reset()
+            refetch()
+            setOpenNewUser(false)
+            setSelectedUser?.(null)
+          }
         })
-
-        const resultUpload = await responseUpload.json()
-
-        if (resultUpload.error) {
-          throw new Error(resultUpload.error)
-        }
-
-        values.avatar = resultUpload.fileUrl
-      }
-
-      if (user) {
-        const data = await updateUser(values, user.id)
-
-        if (!data.error) {
-          toast({
-            title: 'Sucesso',
-            description: 'Usuário atualizado com sucesso',
-            variant: 'success',
-          })
-          router.refresh()
-          setOpen(false)
-        } else {
-          toast({
-            title: 'Erro',
-            description: data.error,
-            variant: 'destructive',
-          })
-        }
-      } else {
-        const data = await createUser(values)
-
-        if (!data.error) {
-          toast({
-            title: 'Sucesso',
-            description: 'Usuário criado com sucesso',
-            variant: 'success',
-          })
-          router.refresh()
-          setOpen(false)
-        } else {
-          toast({
-            title: 'Erro',
-            description: data.error,
-            variant: 'destructive',
-          })
-        }
-      }
-    } catch (err) {
-      if (err instanceof Error) {
-        toast({
-          title: 'Erro',
-          description: err.message,
-          variant: 'destructive',
+      })
+    } else {
+      startTransition(() => {
+        createUser(data).then(data => {
+          if (data.error) {
+            setServerError(data.error)
+            return
+          }
+          if (data.success) {
+            toast('Sucesso', {
+              description: data.success,
+              duration: 5000,
+              icon: '✅',
+            })
+            setServerError(null)
+            form.reset()
+            refetch()
+            setOpenNewUser(false)
+            setSelectedUser?.(null)
+          }
         })
-      } else {
-        toast({
-          title: 'Erro',
-          description: 'Erro não tratado - fale com o desenvolvedor',
-          variant: 'destructive',
-        })
-      }
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  async function handleDeleteUser() {
-    setLoading(true)
-
-    try {
-      const data = await deleteUser(user?.id || '')
-
-      if (!data.error) {
-        toast({
-          title: 'Sucesso',
-          description: 'Usuário deletado com sucesso',
-          variant: 'success',
-        })
-        router.refresh()
-        setOpen(false)
-      }
-    } catch (err) {
-      if (err instanceof Error) {
-        toast({
-          title: 'Erro',
-          description: err.message,
-          variant: 'destructive',
-        })
-      } else {
-        toast({
-          title: 'Erro',
-          description: 'Erro não tratado - fale com o desenvolvedor',
-          variant: 'destructive',
-        })
-      }
-    } finally {
-      setLoading(false)
+      })
     }
   }
 
   return (
-    <div className="flex flex-col gap-6 max-w-6xl">
+    <>
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(onSubmitHandle)}
-          className="space-y-4"
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-full space-y-4"
         >
-          {/* Campo de Nome */}
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
-              <FormItem className="space-y-0">
-                <FormLabel className="font-semibold">Nome</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="text"
-                    placeholder="Seu nome completo"
-                    className="focus-visible:ring-0 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none border-2 border-blue-200"
-                    autoFocus
-                  />
-                </FormControl>
+              <FormItem className="flex flex-col">
+                <FormLabel>Nome</FormLabel>
+                <Input {...field} placeholder="Digite o nome completo" />
+                <FormDescription className="sr-only">
+                  Informe o nome completo do usuário
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          {/* Campo de E-mail */}
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem className="space-y-0">
-                <FormLabel className="font-semibold">E-mail</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="email"
-                    placeholder="seu@email.com"
-                    className="focus-visible:ring-0 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none border-2 border-blue-200"
-                  />
-                </FormControl>
+              <FormItem className="flex flex-col">
+                <FormLabel>E-mail</FormLabel>
+                <Input
+                  {...field}
+                  type="email"
+                  placeholder="email@exemplo.com.br"
+                  onChange={e => {
+                    field.onChange(e.target.value)
+                    setServerError(null)
+                  }}
+                />
+                <FormDescription className="sr-only">
+                  Informe o nome completo do usuário
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          {/* Campo de Senha */}
           <FormField
             control={form.control}
             name="password"
             render={({ field }) => (
-              <FormItem className="space-y-0">
-                <FormLabel className="font-semibold">Senha</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="password"
-                    placeholder="********"
-                    className="focus-visible:ring-0 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none border-2 border-blue-200"
-                  />
-                </FormControl>
+              <FormItem className="flex flex-col">
+                <FormLabel>Senha</FormLabel>
+                <Input type="password" placeholder="******" {...field} />
                 <FormMessage />
+                <FormDescription className="text-xs text-center">
+                  {selectedUser &&
+                    'Informe uma senha para alterar ou deixe em branco para manter a mesma.'}
+                </FormDescription>
               </FormItem>
             )}
           />
 
-          {/* Campo de Role (Select usando shadcn/ui) */}
           <FormField
             control={form.control}
             name="role"
             render={({ field }) => (
-              <FormItem className="space-y-0">
-                <FormLabel className="font-semibold ">Função</FormLabel>
-                <FormControl>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <SelectTrigger className="w-full focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500 border-2 border-blue-200">
+              <FormItem className="flex flex-col">
+                <FormLabel>Função</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger
+                      className={'h-8 rounded-md px-3 text-xs bg-popover'}
+                    >
                       <SelectValue placeholder="Selecione uma função" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="ADMIN">Administrador</SelectItem>
-                      <SelectItem value="EMPLOYEE">Funcionário</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </FormControl>
+                  </FormControl>
+                  <SelectContent>
+                    {Object.values(Role).map(role => (
+                      <SelectItem key={role} value={role} className={'text-xs'}>
+                        {role === 'ADMIN' ? 'Administrador' : 'Usuário'}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormDescription className="sr-only">
+                  Informe a função do usuário
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          {/* Campo de Avatar */}
-          <FormField
-            control={form.control}
-            name="avatar"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Avatar</FormLabel>
-                <FormControl>
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    onChange={e => {
-                      field.onChange(e.target.files)
-                      onAvatarChange(e)
-                    }}
-                    className="focus-visible:ring-0 focus:ring-1 focus:ring-blue-500 focus:outline-none border-2 border-blue-200"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+          <UserFormError
+            errors={form.formState.errors}
+            serverError={serverError}
           />
 
-          {/* Pré-visualização do Avatar */}
-
-          <div className="flex justify-center">
-            <Avatar className="w-40 h-40 border-2 border-blue-200 hover:border-blue-500">
-              <AvatarImage
-                src={avatarPreview || user?.image || ''}
-                alt="User Avatar preview"
+          <div className="flex flex-col gap-2 pt-4">
+            <Button type="submit" className="w-full" size={'sm'}>
+              {isPending ? <LoadingSpinner /> : 'Salvar'}
+            </Button>
+            {selectedUser && (
+              <UserAlertDialogDelete
+                userId={selectedUser.id}
+                name={selectedUser.name}
+                role={selectedUser.role}
+                setOpenNewUser={setOpenNewUser}
+                setSelectedUser={() => setSelectedUser?.(null)}
               />
-              <AvatarFallback>
-                <UserRound className="w-3/4 h-3/4" />
-              </AvatarFallback>
-            </Avatar>
+            )}
           </div>
-
-          <Separator className="my-4" />
-
-          {/* Botão de Envio */}
-          <Button type="submit" className="w-full mt-4" disabled={loading}>
-            {loading
-              ? user
-                ? 'Salvando...'
-                : 'Cadastrando...'
-              : user
-                ? 'Salvar'
-                : 'Criar'}
-          </Button>
-
-          {/* Botão de deletar usuário */}
-          {user && (
-            // <Button
-            //   className="w-full mt-4 bg-red-500 hover:bg-red-400"
-            //   type="button"
-            //   onClick={() => {
-            //     handleDeleteUser()
-            //     setOpen(false)
-            //   }}
-            // >
-            //   Deletar
-            // </Button>
-            <AlertCustom
-              title="Deletar usuário"
-              textButton="Deletar"
-              description="Tem certeza que deseja deletar o usuário?"
-              textButtonCancel="Cancelar"
-              textButtonAction="Deletar"
-              action={() => {
-                handleDeleteUser()
-                setOpen(false)
-              }}
-            />
-          )}
         </form>
       </Form>
-    </div>
+    </>
   )
 }

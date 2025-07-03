@@ -92,7 +92,7 @@ export function BookingActionsSheet({
         </Tooltip>
       </div>
 
-      <SheetContent side="right" className="sm:w-[400px] w-[90%] space-y-6">
+      <SheetContent side="right" className="sm:w-[400px] w-[80%] space-y-6">
         <SheetHeader>
           <SheetTitle>
             {action === 'payment' && 'Lançar pagamento'}

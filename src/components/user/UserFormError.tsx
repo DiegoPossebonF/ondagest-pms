@@ -7,7 +7,7 @@ interface FormErrorProps {
   errors: FieldErrors
 }
 
-export function BookingFormError({ errors, serverError }: FormErrorProps) {
+export function UserFormError({ errors, serverError }: FormErrorProps) {
   const hasErrors = Object.keys(errors).length > 0
 
   if (!hasErrors && !serverError) {

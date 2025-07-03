@@ -9,6 +9,7 @@ import {
 import { useIsMobile } from '@/hooks/use-mobile'
 import { IconFilterEdit, IconFilterX } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
+import { ButtonTooltip } from '../ButtonTooltip'
 import {
   Drawer,
   DrawerContent,
@@ -64,20 +65,27 @@ export default function BookingsFilters() {
   return (
     <div className="flex flex-row gap-2">
       {activeFilters && (
-        <Button
-          variant="destructive"
-          size="icon"
+        <ButtonTooltip
+          icon={<IconFilterX className="w-4 h-4 text-red-500" />}
+          className="self-start"
+          tooltipText="Limpar filtros"
+          tooltipSide="top"
           onClick={() => resetFilters()}
-        >
-          <IconFilterX className="w-4 h-4" />
-        </Button>
+        />
       )}
       <Popover>
-        <PopoverTrigger asChild>
-          <Button variant="outline" size="icon">
-            <IconFilterEdit className="w-4 h-4" />
-          </Button>
-        </PopoverTrigger>
+        <ButtonTooltip
+          className="self-start"
+          tooltipText="Filtros"
+          onClick={() => {}}
+          tooltipSide="top"
+        >
+          <PopoverTrigger asChild>
+            <Button variant="outline" size="icon">
+              <IconFilterEdit className="w-4 h-4" />
+            </Button>
+          </PopoverTrigger>
+        </ButtonTooltip>
         <PopoverContent className="z-50">
           <BookingsFiltersForm
             filters={filters}

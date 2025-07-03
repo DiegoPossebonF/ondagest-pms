@@ -20,8 +20,8 @@ import {
   FormMessage,
 } from '../ui/form'
 import { Input } from '../ui/input'
-import { GuesFormError } from './GuesFormError'
 import { GuestDeleteAlertDialog } from './GuestDeleteAlertDialog'
+import { GuestFormError } from './GuestFormError'
 
 interface GuestFormProps {
   guest?: Guest
@@ -88,7 +88,10 @@ export default function GuestForm({ guest }: GuestFormProps) {
 
   return (
     <>
-      <GuesFormError errors={form.formState.errors} serverError={serverError} />
+      <GuestFormError
+        errors={form.formState.errors}
+        serverError={serverError}
+      />
 
       <Form {...form}>
         <form

@@ -1,7 +1,7 @@
 'use client'
-import { Button } from '@/components/ui/button'
 import { IconCalendarPlus } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
+import { ButtonTooltip } from '../ButtonTooltip'
 import { StatusLegend } from '../StatusLegend'
 import BookingsFilters from './BookingsFilters'
 import { useBookingFilters } from './BookingsFiltersProvider'
@@ -12,18 +12,13 @@ export default function BookingsListHeader() {
 
   return (
     <div className="flex flex-row justify-between gap-2">
-      <Button
-        variant="outline"
-        size="icon"
+      <ButtonTooltip
+        icon={<IconCalendarPlus className="w-4 h-4" />}
+        tooltipText="Nova reserva"
         className="self-start"
-        onClick={e => {
-          e.preventDefault()
-          e.stopPropagation()
-          router.push('/bookings/new')
-        }}
-      >
-        <IconCalendarPlus className="w-4 h-4" />
-      </Button>
+        onClick={() => router.push('/bookings/new')}
+        tooltipSide="top"
+      />
       <div className="flex flex-row gap-2">
         <BookingsFilters />
         <StatusLegend />

@@ -11,6 +11,7 @@ import {
   STATUS_PAYMENT_LABELS,
 } from '@/lib/utils'
 import { IconMessageQuestion } from '@tabler/icons-react'
+import { ButtonTooltip } from './ButtonTooltip'
 import { Button } from './ui/button'
 
 type StatusLegendItem = {
@@ -37,11 +38,13 @@ const paymentItems: StatusLegendItem[] = [
 export function StatusLegend() {
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="outline" size="icon" className="self-start">
-          <IconMessageQuestion className="w-4 h-4" />
-        </Button>
-      </PopoverTrigger>
+      <ButtonTooltip onClick={() => {}} tooltipText="Legenda" tooltipSide="top">
+        <PopoverTrigger asChild>
+          <Button variant="outline" size="icon" className="self-start">
+            <IconMessageQuestion className="w-4 h-4" />
+          </Button>
+        </PopoverTrigger>
+      </ButtonTooltip>
 
       <PopoverContent className="space-y-3 text-xs w-64">
         <div>
