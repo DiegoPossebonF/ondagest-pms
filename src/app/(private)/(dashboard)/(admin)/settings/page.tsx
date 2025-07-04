@@ -4,10 +4,9 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import {
-  IconCurrencyDollar,
+  IconCurrencyReal,
   IconHome,
-  IconList,
-  IconSettings,
+  IconHomeCog,
   IconUsers,
 } from '@tabler/icons-react'
 import { motion } from 'framer-motion'
@@ -18,34 +17,28 @@ export default function SettingsPage() {
     {
       title: 'Usuários',
       description: 'Gerencie seus usuários',
-      icon: <IconUsers size={28} stroke={2} className="text-blue-500" />,
+      icon: <IconUsers size={40} stroke={2} className="text-blue-500" />,
       href: '/settings/users',
     },
     {
       title: 'Unidades',
       description: 'Configure suas acomodações',
-      icon: <IconHome size={28} stroke={2} className="text-rose-500" />,
+      icon: <IconHome size={40} stroke={2} className="text-rose-500" />,
       href: '/settings/units',
+    },
+    {
+      title: 'Tipos de Unidade',
+      description: 'Gerencie tipos de suas acomodações',
+      icon: <IconHomeCog size={40} stroke={2} className="text-orange-500" />,
+      href: '/settings/unit-types',
     },
     {
       title: 'Tarifas',
       description: 'Gerencie tipos de tarifa',
       icon: (
-        <IconCurrencyDollar size={28} stroke={2} className="text-green-500" />
+        <IconCurrencyReal size={40} stroke={2} className="text-green-500" />
       ),
       href: '/settings/rates',
-    },
-    {
-      title: 'Serviços',
-      description: 'Adicione serviços extras',
-      icon: <IconList size={28} stroke={2} className="text-orange-500" />,
-      href: '/settings/services',
-    },
-    {
-      title: 'Configurações avançadas',
-      description: 'Regras de preço e reservas',
-      icon: <IconSettings size={28} stroke={2} className="text-purple-500" />,
-      href: '/settings/advanced',
     },
   ]
 
@@ -54,15 +47,17 @@ export default function SettingsPage() {
       <h1 className="text-3xl font-bold mb-6">Configurações</h1>
       <Separator className="mb-6" />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {settingsOptions.map(option => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+        {settingsOptions.map((option, index) => (
           <motion.div
             key={option.title}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            transition={{ duration: 0.6, ease: 'easeOut', delay: index * 0.2 }}
+            className="h-full" // faz o motion.div ocupar toda a altura
           >
-            <Card className="hover:shadow-md transition">
-              <CardContent className="p-6 flex flex-col gap-4">
+            <Card className="hover:shadow-md transition h-full flex flex-col">
+              <CardContent className="p-4 flex flex-col gap-4 flex-1">
                 <div className="flex items-center gap-4">
                   {option.icon}
                   <div>
@@ -72,11 +67,13 @@ export default function SettingsPage() {
                     </p>
                   </div>
                 </div>
-                <Link href={option.href}>
-                  <Button variant="outline" className="w-full mt-4">
-                    Gerenciar
-                  </Button>
-                </Link>
+                <div className="mt-auto">
+                  <Link href={option.href}>
+                    <Button variant="outline" size="sm" className="w-full">
+                      Gerenciar
+                    </Button>
+                  </Link>
+                </div>
               </CardContent>
             </Card>
           </motion.div>

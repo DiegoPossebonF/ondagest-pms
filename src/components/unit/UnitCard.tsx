@@ -147,9 +147,8 @@ export default function UnitCard({ unit }: UnitCardProps) {
           })
           router.refresh()
         })
-      : toast('Pagamento pendente', {
+      : toast.error('Pagamento pendente', {
           description: `Ainda faltam ${formatCurrency(calculateBookingValues(booking).totalAll - calculateBookingValues(booking).totalPayment)} para finalizar a reserva.`,
-          duration: 15000,
         })
   }
 
