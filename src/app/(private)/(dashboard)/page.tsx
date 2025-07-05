@@ -22,9 +22,9 @@ export default async function Dashboard() {
       <div className="flex flex-row w-full justify-end items-end">
         <StatusLegend />
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2">
-        {units.map(unit => {
-          return <UnitCard key={unit.id} unit={unit} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+        {units.map((unit, index) => {
+          return <UnitCard key={unit.id} unit={unit} index={index} />
         })}
       </div>
     </div>

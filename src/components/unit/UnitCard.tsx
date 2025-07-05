@@ -13,6 +13,7 @@ import {
 import type { BookingAllIncludes } from '@/types/booking'
 import type { UnitWithTypeAndBookings } from '@/types/unit'
 import { IconCalendarPlus, IconEdit } from '@tabler/icons-react'
+import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
@@ -45,6 +46,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
 interface UnitCardProps {
   className?: string
   unit: UnitWithTypeAndBookings
+  index: number
 }
 
 const validStatuses: BookingStatus[] = [
@@ -124,7 +126,7 @@ function getRelevantBooking(
   }
 }
 
-export default function UnitCard({ unit }: UnitCardProps) {
+export default function UnitCard({ unit, index }: UnitCardProps) {
   const router = useRouter()
   const relevantBooking = getRelevantBooking(unit.bookings)
 
@@ -181,53 +183,64 @@ export default function UnitCard({ unit }: UnitCardProps) {
   const isMobile = useIsMobile()
 
   return (
-    <Card
-      className={`relative flex flex-col justify-between overflow-hidden text-ellipsis`}
+    <motion.div
+      key={unit.name}
+      initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
+      animate={{ opacity: 1, scale: 1, rotate: 0 }}
+      transition={{
+        duration: 0.6,
+        ease: 'easeOut',
+        delay: index * 0.2,
+      }}
+      className="h-full" // faz o motion.div ocupar toda a altura
     >
-      <div
-        className={`absolute left-0 top-0 h-full w-3 ${booking ? STATUS_COLORS[booking.status] : 'bg-muted-foreground'} z-10`}
-      />
-      <CardHeader className={`pr-4 pl-6 py-2 border-b justify-between`}>
-        <CardTitle className="flex flex-row gap-2 justify-center items-center">
-          <h1 className="text-base font-bold">{unit.name}</h1>
-          <p className="text-sm"> {unit.type.name}</p>
-        </CardTitle>
-        <CardDescription className="font sr-only">
-          {unit.name} - {unit.type.name} - {unit.type.description}
-        </CardDescription>
-        {/* Tooltip com ícone */}
-        {booking ? (
-          <Badge
-            variant={'outline'}
-            className={`${STATUS_COLORS_TEXT[booking.status]} flex items-center justify-center gap-1 px-2 py-[0.15rem] text-xs sm:text-sm`}
-          >
-            {StatusIcon && <StatusIcon className="w-4 h-4" />}
-            <span className="text-xs">{STATUS_LABELS[booking.status]}</span>
-          </Badge>
-        ) : (
-          <Badge
-            variant={'outline'}
-            className={`flex items-center justify-center gap-1 px-2 py-[0.15rem] text-xs sm:text-sm`}
-          >
-            <span className="text-xs">Livre</span>
-          </Badge>
-        )}
-      </CardHeader>
-      <CardContent className="px-6 py-2">
-        {booking ? (
-          <BookingDescriptions booking={booking} />
-        ) : (
-          <CardDescription className="flex flex-col justify-center items-center gap-2 text-sm font-semibold text-center">
-            <FluentDoor16Filled className="w-12 h-12 text-muted-foreground" />
-          </CardDescription>
-        )}
-      </CardContent>
-      <CardFooter
-        className={`p-2 gap-2 flex flex-row justify-center items-center border-t`}
+      <Card
+        className={`relative flex flex-col h-full justify-between overflow-hidden text-ellipsis`}
       >
-        {booking ? (
-          <>
-            {/*
+        <div
+          className={`absolute left-0 top-0 h-full w-3 ${booking ? STATUS_COLORS[booking.status] : 'bg-muted-foreground'} z-10`}
+        />
+        <CardHeader className={`pr-4 pl-6 py-2 border-b justify-between`}>
+          <CardTitle className="flex flex-row gap-2 justify-center items-center">
+            <h1 className="text-base font-bold">{unit.name}</h1>
+            <p className="text-sm"> {unit.type.name}</p>
+          </CardTitle>
+          <CardDescription className="font sr-only">
+            {unit.name} - {unit.type.name} - {unit.type.description}
+          </CardDescription>
+          {/* Tooltip com ícone */}
+          {booking ? (
+            <Badge
+              variant={'outline'}
+              className={`${STATUS_COLORS_TEXT[booking.status]} flex items-center justify-center gap-1 px-2 py-[0.15rem] text-xs sm:text-sm`}
+            >
+              {StatusIcon && <StatusIcon className="w-4 h-4" />}
+              <span className="text-xs">{STATUS_LABELS[booking.status]}</span>
+            </Badge>
+          ) : (
+            <Badge
+              variant={'outline'}
+              className={`flex items-center justify-center gap-1 px-2 py-[0.15rem] text-xs sm:text-sm`}
+            >
+              <span className="text-xs">Livre</span>
+            </Badge>
+          )}
+        </CardHeader>
+        <CardContent className="px-6 py-2">
+          {booking ? (
+            <BookingDescriptions booking={booking} />
+          ) : (
+            <CardDescription className="flex flex-col justify-center items-center gap-2 text-sm font-semibold text-center">
+              <FluentDoor16Filled className="w-12 h-12 text-muted-foreground" />
+            </CardDescription>
+          )}
+        </CardContent>
+        <CardFooter
+          className={`p-2 gap-2 flex flex-row justify-center items-center border-t`}
+        >
+          {booking ? (
+            <>
+              {/*
               <PaymentSheet booking={booking}>
               <Button
                 size="icon"
@@ -241,123 +254,127 @@ export default function UnitCard({ unit }: UnitCardProps) {
             </PaymentSheet>
              */}
 
-            <BookingActionsSheet booking={booking} />
+              <BookingActionsSheet booking={booking} />
 
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link href={`/bookings/${booking.id}`}>
+                    <Button
+                      size="icon"
+                      className={`size-8 group-data-[collapsible=icon]:opacity-0`}
+                      variant="outline"
+                    >
+                      <IconEdit className="h-4 w-4" />
+                      <span className="sr-only">Editar reserva</span>
+                    </Button>
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Editar reserva</p>
+                </TooltipContent>
+              </Tooltip>
+
+              {managerAction && booking.status === 'PENDING' && (
+                <AlertDialog>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          size="icon"
+                          className={`size-8 group-data-[collapsible=icon]:opacity-0 ${STATUS_COLORS_TEXT[booking.status]}`}
+                          variant="outline"
+                        >
+                          {StatusIcon && <StatusIcon className="h-4 w-4" />}
+                          <span className="sr-only">
+                            Confirmar sem pagamento
+                          </span>
+                        </Button>
+                      </AlertDialogTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Confirmar sem pagamento</p>
+                    </TooltipContent>
+                  </Tooltip>
+
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Tem certeza que deseja confirmar a reserva sem
+                        pagamento?
+                      </AlertDialogTitle>
+                    </AlertDialogHeader>
+                    <AlertDialogDescription className="sr-only">
+                      Fazer check-in sem pagamento
+                    </AlertDialogDescription>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => handleConfirmWithoutPayment(booking.id)}
+                      >
+                        Confirmar
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
+              {managerAction && booking.status === 'CHECKED_IN' && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      onClick={() => handleCheckIn(booking)}
+                      className={`size-8 group-data-[collapsible=icon]:opacity-0 ${STATUS_COLORS_TEXT[booking.status]}`}
+                    >
+                      {StatusIcon && <StatusIcon className="h-4 w-4" />}
+                      <span className="sr-only">Fazer check-in</span>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Fazer check-in</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
+              {managerAction && booking.status === 'CHECKED_OUT' && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      onClick={() => handleFinalizeBooking(booking)}
+                      className={`size-8 group-data-[collapsible=icon]:opacity-0 ${STATUS_COLORS_TEXT[booking.status]}`}
+                    >
+                      {StatusIcon && <StatusIcon className="h-4 w-4" />}
+                      <span className="sr-only">Fazer check-out</span>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Fazer check-out</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
+            </>
+          ) : (
             <Tooltip>
               <TooltipTrigger asChild>
-                <Link href={`/bookings/${booking.id}`}>
+                <Link href={`/bookings/new`}>
                   <Button
                     size="icon"
-                    className={`size-8 group-data-[collapsible=icon]:opacity-0`}
                     variant="outline"
+                    className={`size-8 group-data-[collapsible=icon]:opacity-0`}
                   >
-                    <IconEdit className="h-4 w-4" />
-                    <span className="sr-only">Editar reserva</span>
+                    <IconCalendarPlus className="w-4 h-4" />
+                    <span className="sr-only">Fazer reserva</span>
                   </Button>
                 </Link>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Editar reserva</p>
+                <p>Fazer reserva</p>
               </TooltipContent>
             </Tooltip>
-
-            {managerAction && booking.status === 'PENDING' && (
-              <AlertDialog>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <AlertDialogTrigger asChild>
-                      <Button
-                        size="icon"
-                        className={`size-8 group-data-[collapsible=icon]:opacity-0 ${STATUS_COLORS_TEXT[booking.status]}`}
-                        variant="outline"
-                      >
-                        {StatusIcon && <StatusIcon className="h-4 w-4" />}
-                        <span className="sr-only">Confirmar sem pagamento</span>
-                      </Button>
-                    </AlertDialogTrigger>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Confirmar sem pagamento</p>
-                  </TooltipContent>
-                </Tooltip>
-
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Tem certeza que deseja confirmar a reserva sem pagamento?
-                    </AlertDialogTitle>
-                  </AlertDialogHeader>
-                  <AlertDialogDescription className="sr-only">
-                    Fazer check-in sem pagamento
-                  </AlertDialogDescription>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={() => handleConfirmWithoutPayment(booking.id)}
-                    >
-                      Confirmar
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            )}
-            {managerAction && booking.status === 'CHECKED_IN' && (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    size="icon"
-                    variant="outline"
-                    onClick={() => handleCheckIn(booking)}
-                    className={`size-8 group-data-[collapsible=icon]:opacity-0 ${STATUS_COLORS_TEXT[booking.status]}`}
-                  >
-                    {StatusIcon && <StatusIcon className="h-4 w-4" />}
-                    <span className="sr-only">Fazer check-in</span>
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Fazer check-in</p>
-                </TooltipContent>
-              </Tooltip>
-            )}
-            {managerAction && booking.status === 'CHECKED_OUT' && (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    size="icon"
-                    variant="outline"
-                    onClick={() => handleFinalizeBooking(booking)}
-                    className={`size-8 group-data-[collapsible=icon]:opacity-0 ${STATUS_COLORS_TEXT[booking.status]}`}
-                  >
-                    {StatusIcon && <StatusIcon className="h-4 w-4" />}
-                    <span className="sr-only">Fazer check-out</span>
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Fazer check-out</p>
-                </TooltipContent>
-              </Tooltip>
-            )}
-          </>
-        ) : (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link href={`/bookings/new`}>
-                <Button
-                  size="icon"
-                  variant="outline"
-                  className={`size-8 group-data-[collapsible=icon]:opacity-0`}
-                >
-                  <IconCalendarPlus className="w-4 h-4" />
-                  <span className="sr-only">Fazer reserva</span>
-                </Button>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Fazer reserva</p>
-            </TooltipContent>
-          </Tooltip>
-        )}
-      </CardFooter>
-    </Card>
+          )}
+        </CardFooter>
+      </Card>
+    </motion.div>
   )
 }
