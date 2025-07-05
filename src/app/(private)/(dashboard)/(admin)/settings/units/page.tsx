@@ -1,11 +1,7 @@
 import type { Prisma } from '@/app/generated/prisma'
-import { Button } from '@/components/ui/button'
-import { UnitSheet } from '@/components/unit/UnitSheet'
-import UnitTable from '@/components/unit/UnitTable'
+import { UnitsList } from '@/components/unit/UnitsList'
 
-import { Plus } from 'lucide-react'
-
-type UnitWithTypeAndBookings = Prisma.UnitGetPayload<{
+export type UnitWithTypeAndBookings = Prisma.UnitGetPayload<{
   include: { type: true; bookings: true }
 }>
 
@@ -17,26 +13,18 @@ export default async function UnitsPage() {
     }
   ).then(res => res.json())
 
-  const unitType = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/unit-types`,
-    {
-      method: 'GET',
-    }
-  ).then(res => res.json())
-
   return (
-    <main>
-      <div className="flex items-center justify-between px-8 py-4 border-b border-gray-700 bg-blue-200">
-        <span className={`font-semibold transition-opacity`}>ACOMODAÇÕES</span>
-        <UnitSheet unitsType={unitType}>
-          <Button variant={'default'}>
-            <Plus size={20} />
-          </Button>
-        </UnitSheet>
-      </div>
+    <>
       <div className="p-6">
-        <UnitTable units={units} unitsType={unitType} />
+        <h1 className="text-2xl font-bold mb-4">Acomodações</h1>
+        <p className="text-muted-foreground">
+          Aqui voce pode gerenciar todas as acomodações cadastradas na
+          plataforma.
+        </p>
       </div>
-    </main>
+      <div className="flex flex-col">
+        <UnitsList unitsData={units} />
+      </div>
+    </>
   )
 }
