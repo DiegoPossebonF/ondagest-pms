@@ -1,9 +1,5 @@
 import type { Prisma } from '@/app/generated/prisma'
-import { Button } from '@/components/ui/button'
-import { UnitTypeSheet } from '@/components/unit-type/UnitTypeSheet'
-import UnitTypeTable from '@/components/unit-type/UnitTypeTable'
-
-import { Plus } from 'lucide-react'
+import { UnitTypesList } from '@/components/unit-type/UnitTypesList'
 
 type UnitTypeWithUnitsAndRates = Prisma.UnitTypeGetPayload<{
   include: { units: true; rates: true }
@@ -18,20 +14,17 @@ export default async function UnitTypesPage() {
   ).then(res => res.json())
 
   return (
-    <main>
-      <div className="flex items-center justify-between px-8 py-4 border-b border-gray-700 bg-blue-200">
-        <span className={`font-semibold transition-opacity`}>
-          TIPOS DE ACOMODAÇÃO
-        </span>
-        <UnitTypeSheet>
-          <Button variant={'default'}>
-            <Plus size={20} />
-          </Button>
-        </UnitTypeSheet>
-      </div>
+    <>
       <div className="p-6">
-        <UnitTypeTable unitTypes={unitTypes} />
+        <h1 className="text-2xl font-bold mb-4">Tipos de Unidade</h1>
+        <p className="text-muted-foreground">
+          Aqui voce pode gerenciar todos os tipos de unidades cadastrados na
+          plataforma.
+        </p>
       </div>
-    </main>
+      <div className="flex flex-col">
+        <UnitTypesList unitTypesData={unitTypes} />
+      </div>
+    </>
   )
 }
