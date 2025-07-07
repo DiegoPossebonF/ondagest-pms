@@ -58,8 +58,9 @@ export default function UnitForm({
               duration: 5000,
               icon: '✅',
             })
-            setServerError(null)
             form.reset()
+            setServerError(null)
+            setSelectedUnit(null)
             setOpenNewUnit(false)
           }
         })
@@ -77,8 +78,9 @@ export default function UnitForm({
               duration: 5000,
               icon: '✅',
             })
-            setServerError(null)
             form.reset()
+            setServerError(null)
+            setSelectedUnit(null)
             setOpenNewUnit(false)
           }
         })

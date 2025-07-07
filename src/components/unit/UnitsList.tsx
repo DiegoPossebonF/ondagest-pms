@@ -23,8 +23,9 @@ import {
   SheetTitle,
 } from '../ui/sheet'
 import UnitForm from './UnitForm'
+import { UnitListMobile } from './UnitListMobile'
 
-export type SortKey = 'name' | 'createdAt'
+export type SortKey = 'name' | 'type' | 'createdAt'
 
 export function UnitsList({
   unitsData,
@@ -90,11 +91,11 @@ export function UnitsList({
             onClick={() => setOpenNewUnit(true)}
           />
         </div>
-        {/*<UnitListMobile
-          unitTypes={units}
+        <UnitListMobile
+          units={units}
           SortHeader={SortHeader}
-          setSelectedUnitType={setSelectedUnit}
-        /> */}
+          setSelectedUnit={setSelectedUnit}
+        />
 
         <Sheet
           open={!!selectedUnit || openNewUnit}
@@ -143,7 +144,7 @@ export function UnitsList({
                 { key: 'name', label: 'Nome' },
                 { key: 'type', label: 'Tipo' },
                 { key: 'description', label: 'Descrição' },
-                { key: 'numberOfPeople', label: 'Pessoas' },
+                { key: 'numberOfPeople', label: 'Nº de Pessoas' },
                 { key: 'createdAt', label: 'Criado em' },
               ].map(col => (
                 <TableHead
