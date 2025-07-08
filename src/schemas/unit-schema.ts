@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 /**
- * Validação de cadastro de tipos de unidades
+ * Validação de cadastro unidades
  * 
  * model Unit {
     id         String      @id @default(uuid())

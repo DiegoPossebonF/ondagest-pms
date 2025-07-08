@@ -1,37 +1,28 @@
-import { RateSheet } from '@/components/rate/RateSheet'
-import RateTable from '@/components/rate/RateTable'
-import { Button } from '@/components/ui/button'
-import type { Rate } from '@/types/rate'
-import { Plus } from 'lucide-react'
+import { getRates } from '@/app/actions/rate/actions'
+import { RatesList } from '@/components/rate/RatesList'
 
-export default async function UsersPage() {
-  const rates: Rate[] = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/rates`,
-    {
-      method: 'GET',
-    }
-  ).then(res => res.json())
+export default async function RatesPage() {
+  const ratesData = await getRates()
 
-  const unitTypes = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/unit-types`,
-    {
-      method: 'GET',
-    }
-  ).then(res => res.json())
+  if (ratesData.error || !ratesData.rates)
+    return (
+      <div className="p-6">
+        <h1 className="text-2xl font-bold mb-4">Tarifas</h1>
+        <p className="text-muted-foreground">{ratesData.error}</p>
+      </div>
+    )
 
   return (
-    <main>
-      <div className="flex items-center justify-between px-8 py-4 border-b border-gray-700 bg-blue-200">
-        <span className={`font-semibold transition-opacity`}>TARIFAS</span>
-        <RateSheet unitTypes={unitTypes}>
-          <Button variant={'default'}>
-            <Plus size={20} />
-          </Button>
-        </RateSheet>
-      </div>
+    <>
       <div className="p-6">
-        <RateTable rates={rates} unitTypes={unitTypes} />
+        <h1 className="text-2xl font-bold mb-4">Tarifas</h1>
+        <p className="text-muted-foreground">
+          Aqui voce pode gerenciar todas as tarifas cadastradas na plataforma.
+        </p>
       </div>
-    </main>
+      <div className="flex flex-col">
+        <RatesList ratesData={ratesData.rates} />
+      </div>
+    </>
   )
 }

@@ -1,233 +1,183 @@
 'use client'
-import { createRate } from '@/actions/rate/createRate'
-import { updateRate } from '@/actions/rate/updateRate'
-import type { UnitType } from '@/app/generated/prisma'
+import type { RateWithUnitType } from '@/app/actions/rate/actions'
+import { createRate } from '@/app/actions/rate/createRate'
+import { updateRate } from '@/app/actions/rate/updateRate'
 import { Button } from '@/components/ui/button'
 import {
   Form,
-  FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import type { Rate } from '@/types/rate'
+import { type RateSchema, rateSchema } from '@/schemas/rate-schema'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useRouter } from 'next/navigation'
-import { type Dispatch, type SetStateAction, useState } from 'react'
+import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import { z } from 'zod'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../ui/select'
-import { Separator } from '../ui/separator'
-
-const rateSchema = z.object({
-  name: z.string().min(2, 'O nome deve ter pelo menos 2 caracteres'),
-  numberOfPeople: z.coerce
-    .number()
-    .min(1, 'O numero de pessoas deve ser maior que 0'),
-  value: z.coerce
-    .number({
-      invalid_type_error: 'Por favor, insira um número válido.',
-    })
-    .min(1, 'O valor deve ser maior que 0'),
-  unitType: z.string(),
-})
-
-export type RateFormValues = z.infer<typeof rateSchema>
+import { CurrencyInput } from '../CurrencyInput'
+import { FormError } from '../FormError'
+import { LoadingSpinner } from '../LoadingSpinner'
+import { UnitTypesCombobox } from '../unit-type/UnitTypesCombobox'
+import { RateAlertDialogDelete } from './RateAlertDialogDelete'
 
 interface RateFormProps {
-  rate?: Rate
-  unitTypes: UnitType[]
-  setOpen: Dispatch<SetStateAction<boolean>>
+  selectedRate: RateWithUnitType | null
+  setSelectedRate: (rate: RateWithUnitType | null) => void
+  setOpenNewRate: (open: boolean) => void
 }
 
-export function RateForm({ rate, unitTypes, setOpen }: RateFormProps) {
-  const router = useRouter()
-  const [loading, setLoading] = useState(false)
+export default function RateForm({
+  selectedRate,
+  setSelectedRate,
+  setOpenNewRate,
+}: RateFormProps) {
+  const [serverError, setServerError] = useState<string | null>(null)
+  const [isPending, startTransition] = useTransition()
 
-  const form = useForm<RateFormValues>({
+  const form = useForm<RateSchema>({
     resolver: zodResolver(rateSchema),
     defaultValues: {
-      name: rate ? rate.name : '',
-      numberOfPeople: rate?.numberOfPeople ? rate.numberOfPeople : 0,
-      value: rate ? rate.value : 0,
-      unitType: rate ? rate.type.name : '',
+      name: selectedRate?.name ?? '',
+      typeId: selectedRate?.typeId ?? '',
+      value: selectedRate?.value ?? 0,
+      numberOfPeople: selectedRate?.numberOfPeople ?? 1,
     },
   })
 
-  async function onSubmitHandle(values: RateFormValues) {
-    setLoading(true)
-
-    try {
-      values.unitType =
-        unitTypes.find(type => type.name === values.unitType)?.id || ''
-      if (rate) {
-        const data = await updateRate(values, rate.id)
-
-        if (!data.error) {
-          toast('Sucesso', {
-            description: 'Tarifa atualizada com sucesso',
-          })
-          setOpen(false)
-          router.refresh()
-        } else {
-          toast('Erro', {
-            description: data.error,
-          })
-        }
-      } else {
-        const data = await createRate(values)
-
-        if (!data.error) {
-          toast('Sucesso', {
-            description: 'Tarifa criada com sucesso',
-          })
-          setOpen(false)
-          router.refresh()
-        } else {
-          toast('Erro', {
-            description: data.error,
-          })
-        }
-      }
-    } catch (err) {
-      if (err instanceof Error) {
-        toast('Erro', {
-          description: err.message,
+  const onSubmit = (data: RateSchema) => {
+    if (selectedRate) {
+      startTransition(() => {
+        updateRate(selectedRate.id, data).then(data => {
+          if (data.error) {
+            setServerError(data.error)
+            return
+          }
+          if (data.success) {
+            toast('Sucesso', {
+              description: data.success,
+              duration: 5000,
+              icon: '✅',
+            })
+            form.reset()
+            setServerError(null)
+            setSelectedRate(null)
+            setOpenNewRate(false)
+          }
         })
-      } else {
-        toast('Erro', {
-          description: 'Erro não tratado - fale com o desenvolvedor',
+      })
+    } else {
+      startTransition(() => {
+        createRate(data).then(data => {
+          if (data.error) {
+            setServerError(data.error)
+            return
+          }
+          if (data.success) {
+            toast('Sucesso', {
+              description: data.success,
+              duration: 5000,
+              icon: '✅',
+            })
+            form.reset()
+            setServerError(null)
+            setSelectedRate(null)
+            setOpenNewRate(false)
+          }
         })
-      }
-    } finally {
-      setLoading(false)
+      })
     }
   }
 
   return (
-    <div className="flex flex-col gap-6 max-w-6xl">
+    <>
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(onSubmitHandle)}
-          className="space-y-4"
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-full space-y-4"
         >
-          {/* Campo de Nome */}
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
-              <FormItem className="space-y-0">
-                <FormLabel className="font-semibold">Nome</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="text"
-                    placeholder="Seu nome completo"
-                    className="focus-visible:ring-0 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none border-2 border-blue-200"
-                    autoFocus
-                  />
-                </FormControl>
-                <FormMessage />
+              <FormItem className="flex flex-col">
+                <FormLabel>Nome</FormLabel>
+                <Input {...field} placeholder="Informe um nome para a Tarifa" />
+                <FormDescription className="sr-only">
+                  Informe um nome para a Tarifa
+                </FormDescription>
               </FormItem>
             )}
           />
 
-          {/* Campo de Número de Pessoas */}
           <FormField
             control={form.control}
-            name="numberOfPeople"
+            name="typeId"
             render={({ field }) => (
-              <FormItem className="space-y-0">
-                <FormLabel className="font-semibold">
-                  Quantidade de pessoas
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="number"
-                    placeholder="Informe a quantidade de pessoas para o valor da tarifa"
-                    className="focus-visible:ring-0 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none border-2 border-blue-200"
-                  />
-                </FormControl>
-                <FormMessage />
+              <FormItem className="flex flex-col">
+                <FormLabel>Tipo de acomodação</FormLabel>
+                <UnitTypesCombobox
+                  unitTypeId={field.value}
+                  onChange={(value: string) => field.onChange(value)}
+                />
+                <FormDescription className="sr-only">
+                  Selecione um tipo de acomodação para a Tarifa
+                </FormDescription>
               </FormItem>
             )}
           />
 
-          {/* Campo de Valor */}
           <FormField
             control={form.control}
             name="value"
             render={({ field }) => (
-              <FormItem className="space-y-0">
-                <FormLabel className="font-semibold">Valor</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="number"
-                    placeholder="Valor da tarifa diária"
-                    className="focus-visible:ring-0 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none border-2 border-blue-200"
-                  />
-                </FormControl>
-                <FormMessage />
+              <FormItem className="flex flex-col">
+                <FormLabel>Valor da Tarifa</FormLabel>
+                <CurrencyInput form={form} name="value" placeholder="R$ 0,00" />
+                <FormDescription className="sr-only">
+                  Informe o valor da Tarifa
+                </FormDescription>
               </FormItem>
             )}
           />
 
-          {/* Campo de Role (Select usando shadcn/ui) */}
           <FormField
             control={form.control}
-            name="unitType"
+            name="numberOfPeople"
             render={({ field }) => (
-              <FormItem className="space-y-0">
-                <FormLabel className="font-semibold ">
-                  Tipo de Acomodação
-                </FormLabel>
-                <FormControl>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <SelectTrigger className="w-full focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500 border-2 border-blue-200">
-                      <SelectValue placeholder="Selecione uma função" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {unitTypes?.map(unitType => (
-                        <SelectItem key={unitType.id} value={unitType.name}>
-                          {unitType.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
+              <FormItem className="flex flex-col">
+                <FormLabel>Nº de Pessoas da Tarifa</FormLabel>
+                <Input
+                  type="number"
+                  {...field}
+                  placeholder="Informe o número de pessoas da Tarifa"
+                  className={'h-8 rounded-md px-3 text-xs bg-popover'}
+                />
+                <FormDescription className="sr-only">
+                  Informe o número de pessoas da Tarifa
+                </FormDescription>
               </FormItem>
             )}
           />
 
-          <Separator className="my-4" />
+          <FormError errors={form.formState.errors} serverError={serverError} />
 
-          {/* Botão de Envio */}
-          <Button type="submit" className="w-full mt-4" disabled={loading}>
-            {loading
-              ? rate
-                ? 'Salvando...'
-                : 'Cadastrando...'
-              : rate
-                ? 'Salvar'
-                : 'Criar'}
-          </Button>
+          <div className="flex flex-col gap-2 pt-4">
+            <Button type="submit" className="w-full" size={'sm'}>
+              {isPending ? <LoadingSpinner /> : 'Salvar'}
+            </Button>
+            {selectedRate && (
+              <RateAlertDialogDelete
+                name={selectedRate.name}
+                rateId={selectedRate.id}
+                setOpenNewRate={setOpenNewRate}
+                setSelectedRate={setSelectedRate}
+              />
+            )}
+          </div>
         </form>
       </Form>
-    </div>
+    </>
   )
 }
