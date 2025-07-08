@@ -89,12 +89,13 @@ enum PricingMode {
 
 model Rate {
   id             String    @id @default(uuid())
-  type           UnitType  @relation(fields: [typeId], references: [id])
-  typeId         String
   name           String
   value          Float
   numberOfPeople Int
-  bookings       Booking[] // 🔥 Adiciona relação inversa (opcional, mas recomendado)
+  type           UnitType  @relation(fields: [typeId], references: [id])
+  typeId         String
+  bookings       Booking[]
+  active         Boolean   @default(true)
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 }

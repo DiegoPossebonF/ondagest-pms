@@ -176,10 +176,11 @@ exports.Prisma.BookingScalarFieldEnum = {
 
 exports.Prisma.RateScalarFieldEnum = {
   id: 'id',
-  typeId: 'typeId',
   name: 'name',
   value: 'value',
   numberOfPeople: 'numberOfPeople',
+  typeId: 'typeId',
+  active: 'active',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

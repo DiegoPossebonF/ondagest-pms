@@ -7598,30 +7598,33 @@ export namespace Prisma {
 
   export type RateMinAggregateOutputType = {
     id: string | null
-    typeId: string | null
     name: string | null
     value: number | null
     numberOfPeople: number | null
+    typeId: string | null
+    active: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
 
   export type RateMaxAggregateOutputType = {
     id: string | null
-    typeId: string | null
     name: string | null
     value: number | null
     numberOfPeople: number | null
+    typeId: string | null
+    active: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
 
   export type RateCountAggregateOutputType = {
     id: number
-    typeId: number
     name: number
     value: number
     numberOfPeople: number
+    typeId: number
+    active: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -7640,30 +7643,33 @@ export namespace Prisma {
 
   export type RateMinAggregateInputType = {
     id?: true
-    typeId?: true
     name?: true
     value?: true
     numberOfPeople?: true
+    typeId?: true
+    active?: true
     createdAt?: true
     updatedAt?: true
   }
 
   export type RateMaxAggregateInputType = {
     id?: true
-    typeId?: true
     name?: true
     value?: true
     numberOfPeople?: true
+    typeId?: true
+    active?: true
     createdAt?: true
     updatedAt?: true
   }
 
   export type RateCountAggregateInputType = {
     id?: true
-    typeId?: true
     name?: true
     value?: true
     numberOfPeople?: true
+    typeId?: true
+    active?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -7757,10 +7763,11 @@ export namespace Prisma {
 
   export type RateGroupByOutputType = {
     id: string
-    typeId: string
     name: string
     value: number
     numberOfPeople: number
+    typeId: string
+    active: boolean
     createdAt: Date
     updatedAt: Date
     _count: RateCountAggregateOutputType | null
@@ -7786,10 +7793,11 @@ export namespace Prisma {
 
   export type RateSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    typeId?: boolean
     name?: boolean
     value?: boolean
     numberOfPeople?: boolean
+    typeId?: boolean
+    active?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     type?: boolean | UnitTypeDefaultArgs<ExtArgs>
@@ -7799,10 +7807,11 @@ export namespace Prisma {
 
   export type RateSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    typeId?: boolean
     name?: boolean
     value?: boolean
     numberOfPeople?: boolean
+    typeId?: boolean
+    active?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     type?: boolean | UnitTypeDefaultArgs<ExtArgs>
@@ -7810,10 +7819,11 @@ export namespace Prisma {
 
   export type RateSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    typeId?: boolean
     name?: boolean
     value?: boolean
     numberOfPeople?: boolean
+    typeId?: boolean
+    active?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     type?: boolean | UnitTypeDefaultArgs<ExtArgs>
@@ -7821,15 +7831,16 @@ export namespace Prisma {
 
   export type RateSelectScalar = {
     id?: boolean
-    typeId?: boolean
     name?: boolean
     value?: boolean
     numberOfPeople?: boolean
+    typeId?: boolean
+    active?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type RateOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "typeId" | "name" | "value" | "numberOfPeople" | "createdAt" | "updatedAt", ExtArgs["result"]["rate"]>
+  export type RateOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "value" | "numberOfPeople" | "typeId" | "active" | "createdAt" | "updatedAt", ExtArgs["result"]["rate"]>
   export type RateInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     type?: boolean | UnitTypeDefaultArgs<ExtArgs>
     bookings?: boolean | Rate$bookingsArgs<ExtArgs>
@@ -7850,10 +7861,11 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      typeId: string
       name: string
       value: number
       numberOfPeople: number
+      typeId: string
+      active: boolean
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["rate"]>
@@ -8282,10 +8294,11 @@ export namespace Prisma {
    */
   interface RateFieldRefs {
     readonly id: FieldRef<"Rate", 'String'>
-    readonly typeId: FieldRef<"Rate", 'String'>
     readonly name: FieldRef<"Rate", 'String'>
     readonly value: FieldRef<"Rate", 'Float'>
     readonly numberOfPeople: FieldRef<"Rate", 'Int'>
+    readonly typeId: FieldRef<"Rate", 'String'>
+    readonly active: FieldRef<"Rate", 'Boolean'>
     readonly createdAt: FieldRef<"Rate", 'DateTime'>
     readonly updatedAt: FieldRef<"Rate", 'DateTime'>
   }
@@ -12117,10 +12130,11 @@ export namespace Prisma {
 
   export const RateScalarFieldEnum: {
     id: 'id',
-    typeId: 'typeId',
     name: 'name',
     value: 'value',
     numberOfPeople: 'numberOfPeople',
+    typeId: 'typeId',
+    active: 'active',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -12237,6 +12251,13 @@ export namespace Prisma {
    * Reference to a field of type 'PaymentStatus'
    */
   export type EnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -12637,10 +12658,11 @@ export namespace Prisma {
     OR?: RateWhereInput[]
     NOT?: RateWhereInput | RateWhereInput[]
     id?: StringFilter<"Rate"> | string
-    typeId?: StringFilter<"Rate"> | string
     name?: StringFilter<"Rate"> | string
     value?: FloatFilter<"Rate"> | number
     numberOfPeople?: IntFilter<"Rate"> | number
+    typeId?: StringFilter<"Rate"> | string
+    active?: BoolFilter<"Rate"> | boolean
     createdAt?: DateTimeFilter<"Rate"> | Date | string
     updatedAt?: DateTimeFilter<"Rate"> | Date | string
     type?: XOR<UnitTypeScalarRelationFilter, UnitTypeWhereInput>
@@ -12649,10 +12671,11 @@ export namespace Prisma {
 
   export type RateOrderByWithRelationInput = {
     id?: SortOrder
-    typeId?: SortOrder
     name?: SortOrder
     value?: SortOrder
     numberOfPeople?: SortOrder
+    typeId?: SortOrder
+    active?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     type?: UnitTypeOrderByWithRelationInput
@@ -12664,10 +12687,11 @@ export namespace Prisma {
     AND?: RateWhereInput | RateWhereInput[]
     OR?: RateWhereInput[]
     NOT?: RateWhereInput | RateWhereInput[]
-    typeId?: StringFilter<"Rate"> | string
     name?: StringFilter<"Rate"> | string
     value?: FloatFilter<"Rate"> | number
     numberOfPeople?: IntFilter<"Rate"> | number
+    typeId?: StringFilter<"Rate"> | string
+    active?: BoolFilter<"Rate"> | boolean
     createdAt?: DateTimeFilter<"Rate"> | Date | string
     updatedAt?: DateTimeFilter<"Rate"> | Date | string
     type?: XOR<UnitTypeScalarRelationFilter, UnitTypeWhereInput>
@@ -12676,10 +12700,11 @@ export namespace Prisma {
 
   export type RateOrderByWithAggregationInput = {
     id?: SortOrder
-    typeId?: SortOrder
     name?: SortOrder
     value?: SortOrder
     numberOfPeople?: SortOrder
+    typeId?: SortOrder
+    active?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: RateCountOrderByAggregateInput
@@ -12694,10 +12719,11 @@ export namespace Prisma {
     OR?: RateScalarWhereWithAggregatesInput[]
     NOT?: RateScalarWhereWithAggregatesInput | RateScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Rate"> | string
-    typeId?: StringWithAggregatesFilter<"Rate"> | string
     name?: StringWithAggregatesFilter<"Rate"> | string
     value?: FloatWithAggregatesFilter<"Rate"> | number
     numberOfPeople?: IntWithAggregatesFilter<"Rate"> | number
+    typeId?: StringWithAggregatesFilter<"Rate"> | string
+    active?: BoolWithAggregatesFilter<"Rate"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Rate"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Rate"> | Date | string
   }
@@ -13308,6 +13334,7 @@ export namespace Prisma {
     name: string
     value: number
     numberOfPeople: number
+    active?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     type: UnitTypeCreateNestedOneWithoutRatesInput
@@ -13316,10 +13343,11 @@ export namespace Prisma {
 
   export type RateUncheckedCreateInput = {
     id?: string
-    typeId: string
     name: string
     value: number
     numberOfPeople: number
+    typeId: string
+    active?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     bookings?: BookingUncheckedCreateNestedManyWithoutRateInput
@@ -13330,6 +13358,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     value?: FloatFieldUpdateOperationsInput | number
     numberOfPeople?: IntFieldUpdateOperationsInput | number
+    active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: UnitTypeUpdateOneRequiredWithoutRatesNestedInput
@@ -13338,10 +13367,11 @@ export namespace Prisma {
 
   export type RateUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    typeId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     value?: FloatFieldUpdateOperationsInput | number
     numberOfPeople?: IntFieldUpdateOperationsInput | number
+    typeId?: StringFieldUpdateOperationsInput | string
+    active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     bookings?: BookingUncheckedUpdateManyWithoutRateNestedInput
@@ -13349,10 +13379,11 @@ export namespace Prisma {
 
   export type RateCreateManyInput = {
     id?: string
-    typeId: string
     name: string
     value: number
     numberOfPeople: number
+    typeId: string
+    active?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -13362,16 +13393,18 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     value?: FloatFieldUpdateOperationsInput | number
     numberOfPeople?: IntFieldUpdateOperationsInput | number
+    active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RateUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    typeId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     value?: FloatFieldUpdateOperationsInput | number
     numberOfPeople?: IntFieldUpdateOperationsInput | number
+    typeId?: StringFieldUpdateOperationsInput | string
+    active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14069,12 +14102,18 @@ export namespace Prisma {
     _max?: NestedEnumPaymentStatusFilter<$PrismaModel>
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type RateCountOrderByAggregateInput = {
     id?: SortOrder
-    typeId?: SortOrder
     name?: SortOrder
     value?: SortOrder
     numberOfPeople?: SortOrder
+    typeId?: SortOrder
+    active?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -14086,20 +14125,22 @@ export namespace Prisma {
 
   export type RateMaxOrderByAggregateInput = {
     id?: SortOrder
-    typeId?: SortOrder
     name?: SortOrder
     value?: SortOrder
     numberOfPeople?: SortOrder
+    typeId?: SortOrder
+    active?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type RateMinOrderByAggregateInput = {
     id?: SortOrder
-    typeId?: SortOrder
     name?: SortOrder
     value?: SortOrder
     numberOfPeople?: SortOrder
+    typeId?: SortOrder
+    active?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -14107,6 +14148,14 @@ export namespace Prisma {
   export type RateSumOrderByAggregateInput = {
     value?: SortOrder
     numberOfPeople?: SortOrder
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type BookingScalarRelationFilter = {
@@ -14663,6 +14712,10 @@ export namespace Prisma {
     connect?: BookingWhereUniqueInput | BookingWhereUniqueInput[]
   }
 
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
   export type UnitTypeUpdateOneRequiredWithoutRatesNestedInput = {
     create?: XOR<UnitTypeCreateWithoutRatesInput, UnitTypeUncheckedCreateWithoutRatesInput>
     connectOrCreate?: UnitTypeCreateOrConnectWithoutRatesInput
@@ -14992,6 +15045,19 @@ export namespace Prisma {
     _max?: NestedEnumPaymentStatusFilter<$PrismaModel>
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type NestedEnumPaymentTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.PaymentType | EnumPaymentTypeFieldRefInput<$PrismaModel>
     in?: $Enums.PaymentType[]
@@ -15121,6 +15187,7 @@ export namespace Prisma {
     name: string
     value: number
     numberOfPeople: number
+    active?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     bookings?: BookingCreateNestedManyWithoutRateInput
@@ -15131,6 +15198,7 @@ export namespace Prisma {
     name: string
     value: number
     numberOfPeople: number
+    active?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     bookings?: BookingUncheckedCreateNestedManyWithoutRateInput
@@ -15193,10 +15261,11 @@ export namespace Prisma {
     OR?: RateScalarWhereInput[]
     NOT?: RateScalarWhereInput | RateScalarWhereInput[]
     id?: StringFilter<"Rate"> | string
-    typeId?: StringFilter<"Rate"> | string
     name?: StringFilter<"Rate"> | string
     value?: FloatFilter<"Rate"> | number
     numberOfPeople?: IntFilter<"Rate"> | number
+    typeId?: StringFilter<"Rate"> | string
+    active?: BoolFilter<"Rate"> | boolean
     createdAt?: DateTimeFilter<"Rate"> | Date | string
     updatedAt?: DateTimeFilter<"Rate"> | Date | string
   }
@@ -15374,6 +15443,7 @@ export namespace Prisma {
     name: string
     value: number
     numberOfPeople: number
+    active?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     type: UnitTypeCreateNestedOneWithoutRatesInput
@@ -15381,10 +15451,11 @@ export namespace Prisma {
 
   export type RateUncheckedCreateWithoutBookingsInput = {
     id?: string
-    typeId: string
     name: string
     value: number
     numberOfPeople: number
+    typeId: string
+    active?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -15545,6 +15616,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     value?: FloatFieldUpdateOperationsInput | number
     numberOfPeople?: IntFieldUpdateOperationsInput | number
+    active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     type?: UnitTypeUpdateOneRequiredWithoutRatesNestedInput
@@ -15552,10 +15624,11 @@ export namespace Prisma {
 
   export type RateUncheckedUpdateWithoutBookingsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    typeId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     value?: FloatFieldUpdateOperationsInput | number
     numberOfPeople?: IntFieldUpdateOperationsInput | number
+    typeId?: StringFieldUpdateOperationsInput | string
+    active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -16112,6 +16185,7 @@ export namespace Prisma {
     name: string
     value: number
     numberOfPeople: number
+    active?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -16144,6 +16218,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     value?: FloatFieldUpdateOperationsInput | number
     numberOfPeople?: IntFieldUpdateOperationsInput | number
+    active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     bookings?: BookingUpdateManyWithoutRateNestedInput
@@ -16154,6 +16229,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     value?: FloatFieldUpdateOperationsInput | number
     numberOfPeople?: IntFieldUpdateOperationsInput | number
+    active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     bookings?: BookingUncheckedUpdateManyWithoutRateNestedInput
@@ -16164,6 +16240,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     value?: FloatFieldUpdateOperationsInput | number
     numberOfPeople?: IntFieldUpdateOperationsInput | number
+    active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
