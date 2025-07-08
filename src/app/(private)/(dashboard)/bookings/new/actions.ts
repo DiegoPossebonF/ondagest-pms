@@ -51,6 +51,7 @@ export async function groupedByRateNamePerUnit(unit: string) {
     const rates = await db.rate.findMany({
       where: {
         name: { in: rateNames.map(n => n.name) },
+        active: true,
         typeId: unitType.typeId,
       },
       orderBy: [{ name: 'asc' }, { numberOfPeople: 'asc' }],

@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/table'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { formatCurrency } from '@/lib/utils'
-import { IconHome } from '@tabler/icons-react'
+import { IconEye, IconEyeOff, IconHome } from '@tabler/icons-react'
 import dayjs from 'dayjs'
 import { ArrowDown, ArrowUp } from 'lucide-react'
 import { useEffect, useState } from 'react'
@@ -152,6 +152,7 @@ export function RatesList({ ratesData }: { ratesData: RateWithUnitType[] }) {
                 { key: 'type', label: 'Tipo' },
                 { key: 'value', label: 'Valor' },
                 { key: 'numberOfPeople', label: 'Nº de Pessoas' },
+                { key: 'active', label: 'Ativo' },
                 { key: 'createdAt', label: 'Criado em' },
               ].map(col => (
                 <TableHead
@@ -187,6 +188,13 @@ export function RatesList({ ratesData }: { ratesData: RateWithUnitType[] }) {
                   <TableCell className="px-4 py-2 whitespace-nowrap">
                     {rate.numberOfPeople}
                   </TableCell>
+                  <TableCell className="px-4 py-2 whitespace-nowrap">
+                    {rate.active ? (
+                      <IconEye className="w-4 h-4 text-green-600" />
+                    ) : (
+                      <IconEyeOff className="w-4 h-4 text-red-400" />
+                    )}
+                  </TableCell>
                   <TableCell className="px-4 py-2 text-right whitespace-nowrap">
                     {dayjs(rate.createdAt).format('DD/MM/YYYY')}
                   </TableCell>
@@ -195,7 +203,7 @@ export function RatesList({ ratesData }: { ratesData: RateWithUnitType[] }) {
             ) : (
               <TableRow>
                 <TableCell colSpan={5} className="text-center py-6">
-                  Nenhuma unidade a.
+                  Nenhuma tarifa localizada
                 </TableCell>
               </TableRow>
             )}

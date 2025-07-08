@@ -20,7 +20,7 @@ import { CurrencyInput } from '../CurrencyInput'
 import { FormError } from '../FormError'
 import { LoadingSpinner } from '../LoadingSpinner'
 import { UnitTypesCombobox } from '../unit-type/UnitTypesCombobox'
-import { RateAlertDialogDelete } from './RateAlertDialogDelete'
+import { ToggleActiveRateButton } from './ToggleActiveRateButton'
 
 interface RateFormProps {
   selectedRate: RateWithUnitType | null
@@ -167,14 +167,10 @@ export default function RateForm({
             <Button type="submit" className="w-full" size={'sm'}>
               {isPending ? <LoadingSpinner /> : 'Salvar'}
             </Button>
-            {selectedRate && (
-              <RateAlertDialogDelete
-                name={selectedRate.name}
-                rateId={selectedRate.id}
-                setOpenNewRate={setOpenNewRate}
-                setSelectedRate={setSelectedRate}
-              />
-            )}
+            <ToggleActiveRateButton
+              rateId={selectedRate?.id ?? ''}
+              isActive={selectedRate?.active ?? false}
+            />
           </div>
         </form>
       </Form>
