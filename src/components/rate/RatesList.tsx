@@ -10,12 +10,9 @@ import {
 } from '@/components/ui/table'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { formatCurrency } from '@/lib/utils'
-import { IconEye, IconEyeOff, IconHome } from '@tabler/icons-react'
+import { IconEye, IconEyeOff } from '@tabler/icons-react'
 import dayjs from 'dayjs'
-import { ArrowDown, ArrowUp } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { ButtonTooltip } from '../ButtonTooltip'
-import { Button } from '../ui/button'
+import { useState } from 'react'
 import {
   Sheet,
   SheetContent,
@@ -24,88 +21,33 @@ import {
   SheetTitle,
 } from '../ui/sheet'
 import RateForm from './RateForm'
+import { type SortKey, useRatesFilters } from './RatesFiltersProvider'
+import RatesListFooter from './RatesListFooter'
+import RatesListHeader from './RatesListHeader'
+import { RatesListMobile } from './RatesListMobile'
 
-export type SortKey = 'name' | 'type' | 'value' | 'numberOfPeople' | 'createdAt'
-
-export function RatesList({ ratesData }: { ratesData: RateWithUnitType[] }) {
-  const [rates, setRates] = useState<RateWithUnitType[]>(ratesData)
+export function RatesList() {
+  const [openNewRate, setOpenNewRate] = useState(false)
   const [selectedRate, setSelectedRate] = useState<RateWithUnitType | null>(
     null
   )
-  const [openNewRAte, setOpenNewRate] = useState(false)
-
-  const [sortKey, setSortKey] = useState<SortKey>('createdAt')
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc')
-
-  useEffect(() => {
-    const sorted = ratesData.sort((a, b) => {
-      if (sortKey === 'type') {
-        if (a[sortKey].name < b[sortKey].name)
-          return sortDirection === 'asc' ? -1 : 1
-        if (a[sortKey].name > b[sortKey].name)
-          return sortDirection === 'asc' ? 1 : -1
-        return 0
-      }
-
-      if (a[sortKey] < b[sortKey]) return sortDirection === 'asc' ? -1 : 1
-      if (a[sortKey] > b[sortKey]) return sortDirection === 'asc' ? 1 : -1
-      return 0
-    })
-
-    setRates(sorted)
-  }, [sortKey, sortDirection, ratesData])
-
-  const handleSort = (key: SortKey) => {
-    if (key === sortKey) {
-      setSortDirection(prev => (prev === 'asc' ? 'desc' : 'asc'))
-    } else {
-      setSortKey(key)
-      setSortDirection('asc')
-    }
-  }
-
-  const SortHeader = ({
-    label,
-    column,
-  }: { label: string; column: SortKey }) => (
-    <Button
-      variant="ghost"
-      size="sm"
-      className="flex items-center gap-1 text-foreground"
-      onClick={() => handleSort(column)}
-    >
-      {label}
-      {sortKey === column &&
-        (sortDirection === 'asc' ? (
-          <ArrowUp className="w-4 h-4" />
-        ) : (
-          <ArrowDown className="w-4 h-4" />
-        ))}
-    </Button>
-  )
+  const { rates, SortHeader } = useRatesFilters()
 
   const isMobile = useIsMobile()
 
   if (isMobile) {
     return (
       <div className="space-y-4 mb-4">
-        <div className="flex flex-row justify-between gap-2 px-6">
-          <ButtonTooltip
-            icon={<IconHome className="w-4 h-4" />}
-            tooltipText="Nova Tarifa"
-            tooltipSide="top"
-            className="self-start"
-            onClick={() => setOpenNewRate(true)}
-          />
+        <div className="px-6">
+          <RatesListHeader setOpenNewRate={setOpenNewRate} />
         </div>
-        {/*<UnitListMobile
-          units={units}
-          SortHeader={SortHeader}
-          setSelectedUnit={setSelectedUnit}
-        /> */}
+        <RatesListMobile setSelectedRate={setSelectedRate} />
+        <div className="px-6">
+          <RatesListFooter />
+        </div>
 
         <Sheet
-          open={!!selectedRate || openNewRAte}
+          open={!!selectedRate || openNewRate}
           onOpenChange={() => {
             setSelectedRate(null)
             setOpenNewRate(false)
@@ -114,10 +56,10 @@ export function RatesList({ ratesData }: { ratesData: RateWithUnitType[] }) {
           <SheetContent side="right" className="sm:w-[450px] w-[80%]">
             <SheetHeader>
               <SheetTitle className="text-xl font-semibold mb-4">
-                {'Editar tipo de unidade'}
+                {'Editar tarifa'}
               </SheetTitle>
               <SheetDescription className="text-muted-foreground sr-only">
-                {'Edite o tipo de unidade'}
+                {'Edite os dados da tarifa'}
               </SheetDescription>
             </SheetHeader>
             <RateForm
@@ -133,16 +75,7 @@ export function RatesList({ ratesData }: { ratesData: RateWithUnitType[] }) {
 
   return (
     <div className="p-6 space-y-4">
-      <div className="flex flex-row justify-between gap-2">
-        <ButtonTooltip
-          icon={<IconHome className="w-4 h-4" />}
-          tooltipText="Nova Tarifa"
-          tooltipSide="top"
-          className="self-start"
-          onClick={() => setOpenNewRate(true)}
-        />
-      </div>
-      {/* <UsersListHeader setOpenNewUser={setOpenNewUser} /> */}
+      <RatesListHeader setOpenNewRate={setOpenNewRate} />
       <div className="rounded-md border overflow-x-auto">
         <Table className="w-full text-sm">
           <TableHeader className="bg-sidebar text-left h-12 p-2">
@@ -152,7 +85,7 @@ export function RatesList({ ratesData }: { ratesData: RateWithUnitType[] }) {
                 { key: 'type', label: 'Tipo' },
                 { key: 'value', label: 'Valor' },
                 { key: 'numberOfPeople', label: 'Nº de Pessoas' },
-                { key: 'active', label: 'Ativo' },
+                { key: 'active', label: 'Ativa' },
                 { key: 'createdAt', label: 'Criado em' },
               ].map(col => (
                 <TableHead
@@ -210,9 +143,10 @@ export function RatesList({ ratesData }: { ratesData: RateWithUnitType[] }) {
           </TableBody>
         </Table>
       </div>
+      <RatesListFooter />
 
       <Sheet
-        open={!!selectedRate || openNewRAte}
+        open={!!selectedRate || openNewRate}
         onOpenChange={() => {
           setSelectedRate(null)
           setOpenNewRate(false)

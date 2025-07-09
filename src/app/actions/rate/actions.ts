@@ -7,6 +7,78 @@ export type RateWithUnitType = Prisma.RateGetPayload<{
   include: { type: true }
 }>
 
+interface GetRatesParams {
+  page: number
+  perPage: number
+  orderBy?: keyof RateWithUnitType
+  direction?: 'asc' | 'desc'
+  filters?: {
+    name?: string
+    value?: number | null
+    numberOfPeople?: number | null
+    typeId?: string | null
+    active?: boolean | null
+    createdAt?: Date | null
+  }
+}
+
+export async function getRatesFilters({
+  page,
+  perPage,
+  orderBy = 'createdAt',
+  direction = 'desc',
+  filters = {},
+}: GetRatesParams) {
+  console.log('filters', filters)
+  const where = {
+    name: filters.name ? { contains: filters.name } : undefined,
+    value: filters.value ? { equals: filters.value } : undefined,
+    numberOfPeople: filters.numberOfPeople
+      ? { equals: filters.numberOfPeople }
+      : undefined,
+    typeId: filters.typeId ? { equals: filters.typeId } : undefined,
+    active: filters.active ? { equals: filters.active } : undefined,
+    createdAt: filters.createdAt ? { gte: filters.createdAt } : undefined,
+  }
+
+  const orderByWithType = () => {
+    if (orderBy === 'type') {
+      return {
+        [orderBy]: {
+          name: direction,
+        },
+      }
+    }
+
+    return {
+      [orderBy]: direction,
+    }
+  }
+
+  const [rates, total] = await Promise.all([
+    db.rate.findMany({
+      where,
+      orderBy: orderByWithType(),
+      include: {
+        type: true,
+      },
+      skip: (page - 1) * perPage,
+      take: perPage,
+    }),
+    db.rate.count({ where }),
+  ])
+
+  console.log('rates', rates)
+
+  return {
+    data: rates,
+    total,
+    page,
+    perPage,
+    totalPages: Math.ceil(total / perPage),
+  }
+}
+
 export async function getRates() {
   try {
     const rates: RateWithUnitType[] = await db.rate.findMany({
