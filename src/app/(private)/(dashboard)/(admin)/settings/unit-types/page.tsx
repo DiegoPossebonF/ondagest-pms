@@ -1,17 +1,12 @@
-import type { Prisma } from '@/app/generated/prisma'
+import { getUnitTypes } from '@/app/actions/unitType/actions'
 import { UnitTypesList } from '@/components/unit-type/UnitTypesList'
 
-type UnitTypeWithUnitsAndRates = Prisma.UnitTypeGetPayload<{
-  include: { units: true; rates: true }
-}>
-
 export default async function UnitTypesPage() {
-  const unitTypes: UnitTypeWithUnitsAndRates[] = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/unit-types`,
-    {
-      method: 'GET',
-    }
-  ).then(res => res.json())
+  const res = await getUnitTypes()
+
+  if (res.error || !res.data) {
+    throw new Error(res.error)
+  }
 
   return (
     <>
@@ -23,7 +18,7 @@ export default async function UnitTypesPage() {
         </p>
       </div>
       <div className="flex flex-col">
-        <UnitTypesList unitTypesData={unitTypes} />
+        <UnitTypesList unitTypesData={res.data} />
       </div>
     </>
   )

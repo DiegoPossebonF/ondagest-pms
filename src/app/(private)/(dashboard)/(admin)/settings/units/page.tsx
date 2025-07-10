@@ -1,3 +1,4 @@
+import { getUnits } from '@/app/actions/unit/actions'
 import type { Prisma } from '@/app/generated/prisma'
 import { UnitsList } from '@/components/unit/UnitsList'
 
@@ -6,12 +7,11 @@ export type UnitWithTypeAndBookings = Prisma.UnitGetPayload<{
 }>
 
 export default async function UnitsPage() {
-  const units: UnitWithTypeAndBookings[] = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/units`,
-    {
-      method: 'GET',
-    }
-  ).then(res => res.json())
+  const res = await getUnits()
+
+  if (res.error || !res.data) {
+    throw new Error(res.error)
+  }
 
   return (
     <>
@@ -23,7 +23,7 @@ export default async function UnitsPage() {
         </p>
       </div>
       <div className="flex flex-col">
-        <UnitsList unitsData={units} />
+        <UnitsList unitsData={res.data} />
       </div>
     </>
   )

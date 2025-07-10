@@ -2,7 +2,7 @@
 import type { Role, User } from '@/app/generated/prisma'
 import db from '@/lib/db'
 
-interface GetUsersParams {
+export interface GetUsersParams {
   page: number
   perPage: number
   orderBy?: keyof User
@@ -21,41 +21,48 @@ export async function getUsers({
   direction = 'desc',
   filters = {},
 }: GetUsersParams) {
-  console.log('filters', filters)
-  const where = {
-    name: filters.name ? { contains: filters.name } : undefined,
-    email: filters.email ? { contains: filters.email } : undefined,
-    role: { in: filters.role ? filters.role : undefined },
-    createdAt: filters.createdAt ? { gte: filters.createdAt } : undefined,
-  }
+  try {
+    const where = {
+      name: filters.name ? { contains: filters.name } : undefined,
+      email: filters.email ? { contains: filters.email } : undefined,
+      role: { in: filters.role ? filters.role : undefined },
+      createdAt: filters.createdAt ? { gte: filters.createdAt } : undefined,
+    }
 
-  const [users, total] = await Promise.all([
-    db.user.findMany({
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        image: true,
-        createdAt: true,
+    const [users, total] = await Promise.all([
+      db.user.findMany({
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+          image: true,
+          createdAt: true,
+        },
+        where,
+        orderBy: {
+          [orderBy]: direction,
+        },
+        skip: (page - 1) * perPage,
+        take: perPage,
+      }),
+      db.user.count({ where }),
+    ])
+
+    return {
+      data: {
+        users,
+        total,
+        page,
+        perPage,
+        totalPages: Math.ceil(total / perPage),
       },
-      where,
-      orderBy: {
-        [orderBy]: direction,
-      },
-      skip: (page - 1) * perPage,
-      take: perPage,
-    }),
-    db.user.count({ where }),
-  ])
-
-  console.log('users', users)
-
-  return {
-    data: users,
-    total,
-    page,
-    perPage,
-    totalPages: Math.ceil(total / perPage),
+    }
+  } catch (error) {
+    console.error('Erro ao buscar usuários (getUsers)', error)
+    return {
+      data: null,
+      error: 'Erro ao buscar usuários - tente novamente ou contate o suporte!',
+    }
   }
 }

@@ -1,0 +1,35 @@
+import { IconExclamationCircle } from '@tabler/icons-react'
+import { motion } from 'framer-motion'
+import Link from 'next/link'
+import { Alert, AlertDescription, AlertTitle } from './ui/alert'
+import { Button } from './ui/button'
+
+export default function AlertErrorGlobal({ message }: { message: string }) {
+  return (
+    <div className="flex min-h-full w-full items-center justify-center p-4">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3 }}
+        className="max-w-md w-full"
+      >
+        <Alert className="text-center">
+          <div className="flex flex-col items-center justify-center p-4 gap-4">
+            <IconExclamationCircle className="h-12 w-12 text-destructive" />
+            <AlertTitle className="text-2xl font-bold">
+              Algo deu errado
+            </AlertTitle>
+            <AlertDescription className="text-muted-foreground">
+              {message}
+            </AlertDescription>
+            <Link href={'/'}>
+              <Button variant={'secondary'} size={'sm'}>
+                Voltar para a página inicial
+              </Button>
+            </Link>
+          </div>
+        </Alert>
+      </motion.div>
+    </div>
+  )
+}

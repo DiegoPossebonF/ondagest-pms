@@ -42,7 +42,7 @@ export function UnitTypesList({
   const [openNewUnitType, setOpenNewUnitType] = useState(false)
 
   const [sortKey, setSortKey] = useState<SortKey>('createdAt')
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc')
 
   useEffect(() => {
     const sorted = unitTypesData.sort((a, b) => {

@@ -10,6 +10,7 @@ import {
 import { useIsMobile } from '@/hooks/use-mobile'
 import dayjs from 'dayjs'
 import { useState } from 'react'
+import AlertErrorGlobal from '../AlertErrorGlobal'
 import {
   Sheet,
   SheetContent,
@@ -30,11 +31,15 @@ import UsersListHeader from './UsersListHeader'
 export function UsersList() {
   const [selectedUser, setSelectedUser] = useState<UserData | null>(null)
   const [openNewUser, setOpenNewUser] = useState(false)
-  const { users, SortHeader } = useUsersFilters()
+  const { users, error, SortHeader } = useUsersFilters()
+
+  console.log('USERS error', error)
 
   const isMobile = useIsMobile()
 
-  if (isMobile) {
+  if (error) return <AlertErrorGlobal message={error} />
+
+  if (isMobile)
     return (
       <div className="space-y-4 mb-4">
         <div className="px-6">
@@ -70,7 +75,6 @@ export function UsersList() {
         </Sheet>
       </div>
     )
-  }
 
   return (
     <div className="p-6 space-y-4">

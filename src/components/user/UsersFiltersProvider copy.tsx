@@ -91,8 +91,8 @@ export function UsersFiltersProvider({
 
       if (res.error || !res.data) throw new Error(res.error)
 
-      setUsers(res.data?.users)
-      setTotalPages(res.data?.totalPages)
+      setUsers(res.data.users)
+      setTotalPages(res.data.totalPages)
       setError(null)
     } catch (error) {
       setUsers([])

@@ -36,10 +36,14 @@ export async function getUnits() {
       orderBy: { name: 'asc' },
     })
 
-    return { units }
+    return { data: units }
   } catch (error) {
-    console.log(error)
-    return null
+    console.log('Erro ao buscar acomodações (getUnits)', error)
+    return {
+      data: null,
+      error:
+        'Erro ao buscar acomodações - tente novamente ou contate o suporte!',
+    }
   }
 }
 
