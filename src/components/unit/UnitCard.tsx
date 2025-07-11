@@ -239,20 +239,6 @@ export default function UnitCard({ unit, index }: UnitCardProps) {
         >
           {booking ? (
             <>
-              {/*
-              <PaymentSheet booking={booking}>
-              <Button
-                size="icon"
-                className={`size-8 group-data-[collapsible=icon]:opacity-0 ${STATUS_PAYMENT_COLORS_TEXT[booking.paymentStatus]}`}
-                variant="outline"
-                title="Lançar pagamento"
-              >
-                <MaterialSymbolsRealEstateAgent className="h-4 w-4" />
-                <span className="sr-only">Lançar pagamento</span>
-              </Button>
-            </PaymentSheet>
-             */}
-
               <BookingActionsSheet
                 booking={booking}
                 openSheet={openSheet}

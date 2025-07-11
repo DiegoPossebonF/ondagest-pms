@@ -18,7 +18,9 @@ import {
   IconTool,
 } from '@tabler/icons-react'
 import { useEffect, useState } from 'react'
+import { DiscountForm } from '../discount/DiscountForm'
 import { PaymentForm } from '../payment/PaymentForm'
+import { ServiceForm } from '../service/ServiceForm'
 import { Card } from '../ui/card'
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
 
@@ -172,8 +174,20 @@ export function BookingActionsSheet({
             closeDialog={() => setOpenSheet(false)}
           />
         )}
-        {action === 'discount' && '<DiscountForm bookingId={bookingId} />'}
-        {action === 'service' && '<ServiceForm bookingId={bookingId} />'}
+        {action === 'discount' && (
+          <DiscountForm
+            bookingId={booking.id}
+            discount={editObject as Discount}
+            closeDialog={() => setOpenSheet(false)}
+          />
+        )}
+        {action === 'service' && (
+          <ServiceForm
+            bookingId={booking.id}
+            service={editObject as Service}
+            closeDialog={() => setOpenSheet(false)}
+          />
+        )}
       </SheetContent>
     </Sheet>
   )

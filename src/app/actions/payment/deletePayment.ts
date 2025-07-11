@@ -1,5 +1,6 @@
 'use server'
 import db from '@/lib/db'
+import { updateBookingPaymentStatus } from '@/lib/db/actions/updateBookingPaymentStatus'
 
 export async function deletePayment(paymentId: string) {
   try {
@@ -21,6 +22,8 @@ export async function deletePayment(paymentId: string) {
         msg: 'Erro ao deletar pagamento - DB',
       }
     }
+
+    await updateBookingPaymentStatus(deletedPayment.bookingId)
 
     return {
       success: true,

@@ -1,12 +1,17 @@
 'use client'
 import { deletePayment } from '@/app/actions/payment/deletePayment'
 import type { Payment } from '@/app/generated/prisma'
+import {
+  PAYMENT_TYPE_ICONS,
+  PAYMENT_TYPE_LABELS,
+  formatCurrency,
+} from '@/lib/utils'
+import { IconCalendarCheck } from '@tabler/icons-react'
+import dayjs from 'dayjs'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -14,13 +19,14 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '../ui/alert-dialog'
-import { PaymentItemList } from './PaymentItemList'
+import { Button } from '../ui/button'
 
 interface PaymentAlertDialogDeleteProps {
   children?: React.ReactNode
   payment: Payment
   open: boolean
   setOpen: (open: boolean) => void
+  closeSheet?: (open: boolean) => void
 }
 
 export function PaymentAlertDialogDelete({
@@ -28,6 +34,7 @@ export function PaymentAlertDialogDelete({
   payment,
   open,
   setOpen,
+  closeSheet,
 }: PaymentAlertDialogDeleteProps) {
   const router = useRouter()
 
@@ -44,7 +51,13 @@ export function PaymentAlertDialogDelete({
       })
       router.refresh()
     }
+    setOpen(false)
+    if (closeSheet) {
+      closeSheet(false)
+    }
   }
+
+  const Icon = PAYMENT_TYPE_ICONS[payment.paymentType]
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -58,12 +71,37 @@ export function PaymentAlertDialogDelete({
             Deletar
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <PaymentItemList payment={payment} />
+        <Button
+          key={payment.id}
+          variant="outline"
+          size={'sm'}
+          className="w-full justify-between"
+        >
+          <div className="flex gap-4">
+            <div className="flex items-center gap-2">
+              <IconCalendarCheck className="w-4 h-4" />
+              {dayjs(payment.paidAt).format('DD/MM/YYYY')}
+            </div>
+            <div className="flex items-center gap-2">
+              <Icon className="w-4 h-4" />
+              {PAYMENT_TYPE_LABELS[payment.paymentType]}
+            </div>
+          </div>
+          <span className="font-semibold">
+            {formatCurrency(payment.amount)}
+          </span>
+        </Button>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction onClick={() => handleDelete(payment)}>
-            Deletar
-          </AlertDialogAction>
+          <Button variant="outline" size={'sm'} onClick={() => setOpen(false)}>
+            Cancelar
+          </Button>
+          <Button
+            variant="destructive"
+            size={'sm'}
+            onClick={() => handleDelete(payment)}
+          >
+            Confirmar exclusão
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

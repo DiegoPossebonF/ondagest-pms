@@ -35,6 +35,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select'
+import { PaymentAlertDialogDelete } from './PaymentAlertDialogDelete'
 
 interface PaymentFormProps {
   bookingId: number
@@ -51,6 +52,7 @@ export function PaymentForm({
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [serverError, setServerError] = useState<string | null>(null)
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
 
   const form = useForm<PaymentSchema>({
     resolver: zodResolver(paymentSchema),
@@ -235,15 +237,29 @@ export function PaymentForm({
             )}
           />
 
-          <Button type="submit" className="w-full mt-4" disabled={isPending}>
-            {isPending
-              ? payment
-                ? 'Salvando...'
-                : 'Lançando...'
-              : payment
-                ? 'Salvar alterações'
-                : 'Lançar pagamento'}
-          </Button>
+          <div className="flex flex-col gap-2">
+            <Button type="submit" className="w-full mt-4" disabled={isPending}>
+              {isPending
+                ? payment
+                  ? 'Salvando...'
+                  : 'Lançando...'
+                : payment
+                  ? 'Salvar alterações'
+                  : 'Lançar pagamento'}
+            </Button>
+            {payment && (
+              <PaymentAlertDialogDelete
+                payment={payment}
+                open={openDeleteDialog}
+                setOpen={setOpenDeleteDialog}
+                closeSheet={closeDialog}
+              >
+                <Button className="bg-red-500 hover:bg-red-400" size={'sm'}>
+                  Excluir
+                </Button>
+              </PaymentAlertDialogDelete>
+            )}
+          </div>
         </form>
       </Form>
     </div>

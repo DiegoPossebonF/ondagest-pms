@@ -1,42 +1,43 @@
+// src/actions/booking.ts
+
 'use server'
-import type { Discount } from '@/app/generated/prisma'
 import db from '@/lib/db'
+import { updateBookingPaymentStatus } from '@/lib/db/actions/updateBookingPaymentStatus'
+import { type DiscountSchema, discountSchema } from '@/schemas/discount-schema'
+import { revalidatePath } from 'next/cache'
 
-type DiscountPayload = Omit<Discount, 'createdAt'>
+export async function updateDiscount(discountId: string, data: DiscountSchema) {
+  const parsed = discountSchema.safeParse(data)
 
-export async function updateDiscount(discount: DiscountPayload) {
-  try {
-    if (!discount) {
-      return {
-        success: false,
-        msg: 'Erro ao atualizar desconto - dados inválidos',
-      }
+  if (!parsed.success) {
+    return {
+      error: 'Dados inválidos',
+      issues: parsed.error.flatten().fieldErrors,
     }
+  }
 
-    const discountUpdated = await db.discount.update({
-      where: { id: discount.id },
+  const { reason, amount, bookingId } = parsed.data
+
+  try {
+    await db.discount.update({
+      where: { id: discountId },
       data: {
-        ...discount,
+        reason,
+        amount,
       },
     })
 
-    if (!discountUpdated) {
-      return {
-        success: false,
-        msg: 'Erro ao atualizar desconto - DB',
-      }
-    }
+    await updateBookingPaymentStatus(Number(bookingId))
 
+    revalidatePath(`/bookings/${bookingId}`)
     return {
-      success: true,
-      payment: discountUpdated,
-      msg: 'Desconto atualizado com sucesso',
+      success: 'Desconto atualizado com sucesso!',
     }
-  } catch (err) {
-    console.error('Erro ao atualizar desconto', err)
+  } catch (error) {
+    console.error('#### Erro ao atualizar desconto', error)
     return {
-      success: false,
-      msg: 'Erro interno ao atualizar desconto - entre em contato com o suporte',
+      error:
+        'Erro ao atualizar desconto. Por favor, tente novamente mais tarde ou contate o suporte.',
     }
   }
 }

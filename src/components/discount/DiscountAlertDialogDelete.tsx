@@ -5,8 +5,6 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -14,13 +12,14 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '../ui/alert-dialog'
-import { DiscountItemList } from './DiscountItemList'
+import { Button } from '../ui/button'
 
 interface DiscountAlertDialogDeleteProps {
   children?: React.ReactNode
   discount: Discount
   open: boolean
   setOpen: (open: boolean) => void
+  closeSheet?: (open: boolean) => void
 }
 
 export function DiscountAlertDialogDelete({
@@ -28,6 +27,7 @@ export function DiscountAlertDialogDelete({
   discount,
   open,
   setOpen,
+  closeSheet,
 }: DiscountAlertDialogDeleteProps) {
   const router = useRouter()
 
@@ -40,9 +40,13 @@ export function DiscountAlertDialogDelete({
       })
     } else {
       toast('Excluído', {
-        description: result.msg,
+        description: 'Desconto removido com sucesso',
       })
       router.refresh()
+    }
+    setOpen(false)
+    if (closeSheet) {
+      closeSheet(false)
     }
   }
 
@@ -58,12 +62,26 @@ export function DiscountAlertDialogDelete({
             Deletar
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <DiscountItemList discount={discount} />
+        <Button
+          key={discount.id}
+          variant="outline"
+          size={'sm'}
+          className="w-full justify-between"
+        >
+          <span>{discount.reason}</span>
+          <span>- R$ {discount.amount.toFixed(2)}</span>
+        </Button>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction onClick={() => handleDelete(discount)}>
-            Deletar
-          </AlertDialogAction>
+          <Button variant="outline" size={'sm'} onClick={() => setOpen(false)}>
+            Cancelar
+          </Button>
+          <Button
+            variant="destructive"
+            size={'sm'}
+            onClick={() => handleDelete(discount)}
+          >
+            Confirmar exclusão
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

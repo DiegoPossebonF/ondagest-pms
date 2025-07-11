@@ -37,7 +37,7 @@ export async function updateBooking(id: number, data: BookingSchema) {
 
   if (!booking) {
     return {
-      error: 'Reserva nao encontrada!',
+      error: 'Reserva não encontrada!',
     }
   }
 

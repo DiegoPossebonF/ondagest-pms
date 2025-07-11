@@ -1,41 +1,44 @@
 'use server'
-import type { Discount } from '@/app/generated/prisma'
 import db from '@/lib/db'
+import { updateBookingPaymentStatus } from '@/lib/db/actions/updateBookingPaymentStatus'
+import { type DiscountSchema, discountSchema } from '@/schemas/discount-schema'
 
-type DiscountPayload = Omit<Discount, 'id' | 'createdAt'>
+export async function createDiscount(data: DiscountSchema) {
+  const parsed = discountSchema.safeParse(data)
 
-export async function createDiscount(discount: DiscountPayload) {
-  try {
-    if (!discount) {
-      return {
-        success: false,
-        msg: 'Erro ao criar desconto - dados inválidos',
-      }
+  if (!parsed.success) {
+    return {
+      error: 'Dados inválidos',
+      issues: parsed.error.flatten().fieldErrors,
     }
+  }
 
+  const discount = parsed.data
+
+  try {
     const discountCreated = await db.discount.create({
       data: {
-        ...discount,
+        bookingId: Number(discount.bookingId),
+        reason: discount.reason,
+        amount: discount.amount,
       },
     })
 
     if (!discountCreated) {
       return {
-        success: false,
-        msg: 'Erro ao criar desconto - DB',
+        error: 'Erro DB ao criar desconto - entre em contato com o suporte!',
       }
     }
 
+    await updateBookingPaymentStatus(Number(discount.bookingId))
+
     return {
-      success: true,
-      discount: discountCreated,
-      msg: 'Desconto lançado com sucesso',
+      success: 'Desconto lançado com sucesso',
     }
   } catch (err) {
     console.error('Erro ao criar desconto', err)
     return {
-      success: false,
-      msg: 'Erro interno ao criar desconto - entre em contato com o suporte',
+      error: 'Erro interno ao criar desconto - entre em contato com o suporte',
     }
   }
 }

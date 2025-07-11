@@ -1,42 +1,43 @@
+// src/actions/booking.ts
+
 'use server'
-import type { Service } from '@/app/generated/prisma'
 import db from '@/lib/db'
+import { updateBookingPaymentStatus } from '@/lib/db/actions/updateBookingPaymentStatus'
+import { type ServiceSchema, serviceSchema } from '@/schemas/service-schema'
+import { revalidatePath } from 'next/cache'
 
-type ServicePayload = Omit<Service, 'createdAt'>
+export async function updateService(serviceId: string, data: ServiceSchema) {
+  const parsed = serviceSchema.safeParse(data)
 
-export async function updateService(service: ServicePayload) {
-  try {
-    if (!service) {
-      return {
-        success: false,
-        msg: 'Erro ao atualizar serviço - dados inválidos',
-      }
+  if (!parsed.success) {
+    return {
+      error: 'Dados inválidos',
+      issues: parsed.error.flatten().fieldErrors,
     }
+  }
 
-    const serviceUpdated = await db.service.update({
-      where: { id: service.id },
+  const { name, amount, bookingId } = parsed.data
+
+  try {
+    await db.service.update({
+      where: { id: serviceId },
       data: {
-        ...service,
+        name,
+        amount,
       },
     })
 
-    if (!serviceUpdated) {
-      return {
-        success: false,
-        msg: 'Erro ao atualizar serviço - DB',
-      }
-    }
+    await updateBookingPaymentStatus(Number(bookingId))
 
+    revalidatePath(`/bookings/${bookingId}`)
     return {
-      success: true,
-      payment: serviceUpdated,
-      msg: 'Serviço atualizado com sucesso',
+      success: 'Serviço atualizado com sucesso!',
     }
-  } catch (err) {
-    console.error('Erro ao atualizar serviço', err)
+  } catch (error) {
+    console.error('#### Erro ao atualizar Serviço', error)
     return {
-      success: false,
-      msg: 'Erro interno ao atualizar serviço - entre em contato com o suporte',
+      error:
+        'Erro ao atualizar Serviço. Por favor, tente novamente mais tarde ou contate o suporte.',
     }
   }
 }

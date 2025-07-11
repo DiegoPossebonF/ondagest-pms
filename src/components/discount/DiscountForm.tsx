@@ -12,85 +12,85 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { updateBookingPaymentStatus } from '@/lib/db/actions/updateBookingPaymentStatus'
-import { formatCurrency, parseCurrencyToNumber } from '@/lib/utils'
-import type { BookingAllIncludes } from '@/types/booking'
+import { formatCurrency } from '@/lib/utils'
+import { type DiscountSchema, discountSchema } from '@/schemas/discount-schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
-import { type Dispatch, type SetStateAction, useEffect } from 'react'
+import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import { z } from 'zod'
-
-const DiscountSchema = z.object({
-  bookingId: z.number().min(1, { message: 'Reserva não informada!' }),
-  reason: z.string().min(1, { message: 'Informe a razão do desconto' }),
-  amount: z.string().min(1, 'Valor é obrigatório'),
-})
-
-export type DiscountFormValues = z.infer<typeof DiscountSchema>
+import { DiscountAlertDialogDelete } from './DiscountAlertDialogDelete'
 
 interface DiscountFormProps {
-  booking: BookingAllIncludes
+  bookingId: number
   discount?: Discount
-  openDialog?: Dispatch<SetStateAction<boolean>>
+  closeDialog?: () => void
 }
 
 export function DiscountForm({
-  booking,
+  bookingId,
   discount,
-  openDialog,
+  closeDialog,
 }: DiscountFormProps) {
+  const [openPopover, setOpenPopover] = useState(false)
   const router = useRouter()
+  const [isPending, startTransition] = useTransition()
+  const [serverError, setServerError] = useState<string | null>(null)
 
-  const form = useForm<DiscountFormValues>({
-    resolver: zodResolver(DiscountSchema),
+  const form = useForm<DiscountSchema>({
+    resolver: zodResolver(discountSchema),
     defaultValues: {
-      bookingId: discount?.bookingId || booking.id,
+      bookingId: bookingId.toString(),
       reason: discount?.reason || '',
-      amount: discount ? formatCurrency(discount.amount) : '',
+      amount: discount?.amount || 0,
     },
   })
 
-  useEffect(() => {
-    form.reset({
-      bookingId: discount?.bookingId || booking.id,
-      reason: discount?.reason || '',
-      amount: discount ? formatCurrency(discount.amount) : '',
-    })
-  }, [discount, booking, form])
-
-  async function onSubmitHandle(values: DiscountFormValues) {
-    try {
-      const action = discount
-        ? await updateDiscount({
-            id: discount.id,
-            ...values,
-            amount: parseCurrencyToNumber(values.amount),
-          })
-        : await createDiscount({
-            ...values,
-            amount: parseCurrencyToNumber(values.amount),
-          })
-
-      if (action.success) {
-        toast('Sucesso', {
-          description: action.msg,
+  async function onSubmitHandle(values: DiscountSchema) {
+    if (discount) {
+      startTransition(() => {
+        updateDiscount(discount.id, values).then(data => {
+          if (data.error) {
+            setServerError(data.error)
+            return
+          }
+          if (data.success) {
+            toast('Sucesso', {
+              description: data.success,
+              duration: 5000,
+              icon: '✅',
+            })
+            setServerError(null)
+            form.reset()
+            router.refresh()
+            if (closeDialog) {
+              closeDialog()
+            }
+          }
         })
-        await updateBookingPaymentStatus(booking.id)
-        router.refresh()
-        openDialog?.(false)
-      } else {
-        toast('Erro', {
-          description: action.msg,
+      })
+    } else {
+      startTransition(() => {
+        //alert(JSON.stringify(values))
+        createDiscount(values).then(data => {
+          if (data.error) {
+            setServerError(data.error)
+            return
+          }
+          if (data.success) {
+            toast('Sucesso', {
+              description: data.success,
+              duration: 5000,
+              icon: '✅',
+            })
+            setServerError(null)
+            form.reset()
+            router.refresh()
+            if (closeDialog) {
+              closeDialog()
+            }
+          }
         })
-      }
-    } catch (err) {
-      toast('Erro', {
-        description:
-          err instanceof Error
-            ? err.message
-            : 'Erro interno - fale com o desenvolvedor',
       })
     }
   }
@@ -107,14 +107,12 @@ export function DiscountForm({
             name="reason"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>Razão</FormLabel>
+                <FormLabel>Motivo do desconto</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
-                    value={field.value}
-                    placeholder="Informe a razão do desconto"
-                    className="focus-visible:ring-0 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none border-2 border-blue-200"
-                    autoFocus
+                    placeholder="Informe o motivo"
+                    className="h-8 rounded-md px-3 text-xs md:text-xs bg-popover"
                   />
                 </FormControl>
                 <FormMessage />
@@ -136,13 +134,13 @@ export function DiscountForm({
                       const rawValue = e.target.value
                       const onlyDigits = rawValue.replace(/\D/g, '')
                       const numberValue = Number(onlyDigits) / 100
-                      const formatted = formatCurrency(numberValue)
-                      field.onChange(formatted)
+                      field.onChange(formatCurrency(numberValue))
                     }}
-                    value={field.value}
-                    placeholder="Valor do desconto"
-                    className="focus-visible:ring-0 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none border-2 border-blue-200"
-                    autoFocus
+                    value={formatCurrency(field.value)}
+                    placeholder="Informe o valor"
+                    className={
+                      'h-8 rounded-md px-3 text-xs md:text-xs bg-popover'
+                    }
                   />
                 </FormControl>
                 <FormMessage />
@@ -150,29 +148,29 @@ export function DiscountForm({
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="bookingId"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormMessage />
-              </FormItem>
+          <div className="flex flex-col gap-2">
+            <Button type="submit" className="w-full mt-4" disabled={isPending}>
+              {isPending
+                ? discount
+                  ? 'Salvando...'
+                  : 'Lançando...'
+                : discount
+                  ? 'Salvar alterações'
+                  : 'Lançar Desconto'}
+            </Button>
+            {discount && (
+              <DiscountAlertDialogDelete
+                discount={discount}
+                setOpen={setOpenPopover}
+                open={openPopover}
+                closeSheet={closeDialog}
+              >
+                <Button className="bg-red-500 hover:bg-red-400" size={'sm'}>
+                  Excluir
+                </Button>
+              </DiscountAlertDialogDelete>
             )}
-          />
-
-          <Button
-            type="submit"
-            className="w-full mt-4"
-            disabled={form.formState.isSubmitting}
-          >
-            {form.formState.isSubmitting
-              ? discount
-                ? 'Salvando...'
-                : 'Lançando...'
-              : discount
-                ? 'Salvar alterações'
-                : 'Lançar desconto'}
-          </Button>
+          </div>
         </form>
       </Form>
     </div>

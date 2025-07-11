@@ -1,39 +1,44 @@
 'use server'
-import type { Discount, Service } from '@/app/generated/prisma'
 import db from '@/lib/db'
-import { revalidatePath } from 'next/cache'
+import { updateBookingPaymentStatus } from '@/lib/db/actions/updateBookingPaymentStatus'
+import { type ServiceSchema, serviceSchema } from '@/schemas/service-schema'
 
-export type ServiceWithoutId = Omit<Service, 'id' | 'createdAt'>
-export type DiscountWithoutId = Omit<Discount, 'id' | 'createdAt'>
+export async function createService(data: ServiceSchema) {
+  const parsed = serviceSchema.safeParse(data)
 
-export async function createService(service: ServiceWithoutId) {
+  if (!parsed.success) {
+    return {
+      error: 'Dados inválidos',
+      issues: parsed.error.flatten().fieldErrors,
+    }
+  }
+
+  const service = parsed.data
+
   try {
-    const newService = await db.service.create({
+    const serviceCreated = await db.service.create({
       data: {
-        ...service,
+        bookingId: Number(service.bookingId),
+        name: service.name,
+        amount: service.amount,
       },
     })
 
-    if (!newService) {
+    if (!serviceCreated) {
       return {
-        success: false,
-        service: null,
-        msg: 'Erro ao criar servico',
+        error: 'Erro DB ao criar serviço - entre em contato com o suporte!',
       }
     }
 
-    revalidatePath(`/booking/${service.bookingId}`)
+    await updateBookingPaymentStatus(Number(service.bookingId))
+
     return {
-      success: true,
-      service: newService,
-      msg: 'Serviço lançado com sucesso',
+      success: 'Serviço lançado com sucesso',
     }
-  } catch (error) {
-    console.error('Erro ao criar serviço', error)
+  } catch (err) {
+    console.error('Erro ao criar serviço', err)
     return {
-      success: false,
-      service: null,
-      msg: 'Erro ao criar serviço',
+      error: 'Erro interno ao criar serviço - entre em contato com o suporte',
     }
   }
 }

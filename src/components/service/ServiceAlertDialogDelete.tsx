@@ -1,12 +1,11 @@
 'use client'
-import { deleteService } from '@/app/actions/service/deleteService'
+import { deleteDiscount } from '@/app/actions/discount/deleteDiscount'
 import type { Service } from '@/app/generated/prisma'
+import { formatCurrency } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -14,13 +13,14 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '../ui/alert-dialog'
-import { ServiceItemList } from './ServiceItemList'
+import { Button } from '../ui/button'
 
 interface ServiceAlertDialogDeleteProps {
   children?: React.ReactNode
   service: Service
   open: boolean
   setOpen: (open: boolean) => void
+  closeSheet?: (open: boolean) => void
 }
 
 export function ServiceAlertDialogDelete({
@@ -28,11 +28,12 @@ export function ServiceAlertDialogDelete({
   service,
   open,
   setOpen,
+  closeSheet,
 }: ServiceAlertDialogDeleteProps) {
   const router = useRouter()
 
   const handleDelete = async (service: Service) => {
-    const result = await deleteService(service.id)
+    const result = await deleteDiscount(service.id)
 
     if (!result.success) {
       toast('Erro ao excluir', {
@@ -40,9 +41,13 @@ export function ServiceAlertDialogDelete({
       })
     } else {
       toast('Excluído', {
-        description: 'Pagamento removido com sucesso',
+        description: 'Serviço removido com sucesso',
       })
       router.refresh()
+    }
+    setOpen(false)
+    if (closeSheet) {
+      closeSheet(false)
     }
   }
 
@@ -58,12 +63,26 @@ export function ServiceAlertDialogDelete({
             Deletar
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <ServiceItemList service={service} />
+        <Button
+          key={service.id}
+          variant="outline"
+          size={'sm'}
+          className="w-full justify-between"
+        >
+          <span>{service.name}</span>
+          <span>{formatCurrency(service.amount)}</span>
+        </Button>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction onClick={() => handleDelete(service)}>
-            Deletar
-          </AlertDialogAction>
+          <Button variant="outline" size={'sm'} onClick={() => setOpen(false)}>
+            Cancelar
+          </Button>
+          <Button
+            variant="destructive"
+            size={'sm'}
+            onClick={() => handleDelete(service)}
+          >
+            Confirmar exclusão
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

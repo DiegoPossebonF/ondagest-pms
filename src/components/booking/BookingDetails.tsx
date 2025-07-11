@@ -260,16 +260,23 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
               )}
               <div className="space-y-2">
                 {services.map(s => (
-                  <div
+                  <Button
                     key={s.id}
-                    className="border rounded-lg p-2 flex justify-between"
+                    variant="outline"
+                    size={'sm'}
+                    className="w-full justify-between"
+                    onClick={() => {
+                      setEditAction('service')
+                      setEditObject(s)
+                      setOpenSheet(true)
+                    }}
                   >
                     <span>{s.name}</span>
-                    <span>R$ {s.amount.toFixed(2)}</span>
-                  </div>
+                    <span>R$ {formatCurrency(s.amount)}</span>
+                  </Button>
                 ))}
                 <div className="text-right font-bold mt-2">
-                  Total serviços: R$ {totalServices.toFixed(2)}
+                  Total serviços: {totalServices.toFixed(2)}
                 </div>
               </div>
             </AccordionContent>
@@ -286,13 +293,20 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
               )}
               <div className="space-y-2">
                 {discounts.map(d => (
-                  <div
+                  <Button
                     key={d.id}
-                    className="border rounded-lg p-2 flex justify-between"
+                    variant="outline"
+                    size={'sm'}
+                    className="w-full justify-between"
+                    onClick={() => {
+                      setEditAction('discount')
+                      setEditObject(d)
+                      setOpenSheet(true)
+                    }}
                   >
                     <span>{d.reason}</span>
                     <span>- R$ {d.amount.toFixed(2)}</span>
-                  </div>
+                  </Button>
                 ))}
                 <div className="text-right font-bold mt-2">
                   Total descontos: - R$ {totalDiscounts.toFixed(2)}
