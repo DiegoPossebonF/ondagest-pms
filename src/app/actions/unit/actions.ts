@@ -1,6 +1,7 @@
 'use server'
-import { updateBookingStatusIfNeeded } from '@/lib/actions/updateBookingStatusIfNeeded'
+
 import db from '@/lib/db'
+import { updateBookingStatusIfNeeded } from '@/lib/db/actions/updateBookingStatusIfNeeded'
 import { activeBookingStatuses } from '@/lib/db/scopes'
 
 export async function getUnits() {

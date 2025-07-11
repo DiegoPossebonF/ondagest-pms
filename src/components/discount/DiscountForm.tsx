@@ -12,7 +12,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { updateBookingPaymentStatus } from '@/lib/actions/updateBookingPaymentStatus'
+import { updateBookingPaymentStatus } from '@/lib/db/actions/updateBookingPaymentStatus'
 import { formatCurrency, parseCurrencyToNumber } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import { zodResolver } from '@hookform/resolvers/zod'

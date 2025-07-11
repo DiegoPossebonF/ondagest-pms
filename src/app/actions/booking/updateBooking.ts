@@ -3,8 +3,8 @@
 'use server'
 
 import { BookingStatus, PricingMode } from '@/app/generated/prisma'
-import { updateBookingStatusIfNeeded } from '@/lib/actions/updateBookingStatusIfNeeded'
 import db from '@/lib/db'
+import { updateBookingStatusIfNeeded } from '@/lib/db/actions/updateBookingStatusIfNeeded'
 import { type BookingSchema, bookingSchema } from '@/schemas/booking-schema'
 import { revalidatePath } from 'next/cache'
 import validateBookingStatusChange from './validateBookingStatusChange'

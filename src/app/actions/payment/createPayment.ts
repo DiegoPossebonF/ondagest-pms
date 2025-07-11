@@ -1,7 +1,7 @@
 'use server'
 import type { Payment, PaymentType } from '@/app/generated/prisma'
-import { updateBookingPaymentStatus } from '@/lib/actions/updateBookingPaymentStatus'
 import db from '@/lib/db'
+import { updateBookingPaymentStatus } from '@/lib/db/actions/updateBookingPaymentStatus'
 import { type PaymentSchema, paymentSchema } from '@/schemas/payment-schema'
 
 type PaymentPayload = Omit<Payment, 'id' | 'createdAt' | 'updatedAt'>

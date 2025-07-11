@@ -1,5 +1,6 @@
 'use server'
-import db from '../db'
+
+import db from '@/lib/db'
 
 // 🔄 Atualiza o status da reserva com base nos pagamentos realizados
 export async function updateBookingPaymentStatus(
