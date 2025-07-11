@@ -2,7 +2,6 @@
 import calculateBookingValues from '@/app/actions/booking/calculateBookingValues'
 import { updateBookingStatus } from '@/app/actions/booking/updateBookingStatus'
 import { BookingStatus } from '@/app/generated/prisma'
-import { useIsMobile } from '@/hooks/use-mobile'
 import {
   STATUS_COLORS,
   STATUS_COLORS_TEXT,
@@ -179,8 +178,6 @@ export default function UnitCard({ unit, index }: UnitCardProps) {
       })
     }
   }
-
-  const isMobile = useIsMobile()
 
   return (
     <motion.div

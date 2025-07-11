@@ -31,6 +31,7 @@ export interface Filters {
 
 type GuestFilters = {
   guests: Guest[]
+  error: string | null
   filters: Filters
   sortDirection: SortDirection
   activeFilters: boolean
@@ -68,6 +69,7 @@ export function GuestsFiltersProvider({
   const [totalPages, setTotalPages] = useState(1)
   const [page, setPage] = useState(1)
   const [sortKey, setSortKey] = useState<SortKey>('createdAt')
+  const [error, setError] = useState<string | null>(null)
 
   const perPage = 10
 
@@ -83,16 +85,25 @@ export function GuestsFiltersProvider({
   })
 
   const fetchData = async () => {
-    const result = await getGuests({
-      page,
-      perPage,
-      orderBy: sortKey,
-      direction: sortDirection,
-      filters,
-    })
+    try {
+      const res = await getGuests({
+        page,
+        perPage,
+        orderBy: sortKey,
+        direction: sortDirection,
+        filters,
+      })
 
-    setGuests(result.data)
-    setTotalPages(result.totalPages)
+      if (res.error || !res.data) throw new Error(res.error)
+
+      setGuests(res.data.guests)
+      setTotalPages(res.data.totalPages)
+      setError(null)
+    } catch (error) {
+      setGuests([])
+      setTotalPages(1)
+      setError((error as Error).message)
+    }
   }
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -156,6 +167,7 @@ export function GuestsFiltersProvider({
       value={
         {
           guests,
+          error,
           filters,
           sortDirection,
           activeFilters,

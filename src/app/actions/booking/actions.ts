@@ -32,67 +32,76 @@ export async function getBookings({
   sortDirection = 'desc',
   filters = {},
 }: GetBookingsParams) {
-  const where: Prisma.BookingWhereInput = {
-    id: {
-      equals: filters.id ? Number(filters.id) : undefined,
-    },
-    guest: {
-      name: filters.guestName ? { contains: filters.guestName } : undefined,
-    },
-    unit: {
-      name: filters.unitName ? { contains: filters.unitName } : undefined,
-    },
-    status: {
-      in: filters.status ? filters.status : undefined,
-      //notIn: ['CANCELLED', 'NO_SHOW'] as BookingStatus[],
-    },
-    paymentStatus: filters.paymentStatus || undefined,
-    startDate: filters.startDate
-      ? { gte: new Date(filters.startDate) }
-      : undefined,
-    endDate: filters.endDate ? { lte: new Date(filters.endDate) } : undefined,
-  }
-
-  const orderBy = (() => {
-    if (sortKey === 'guest') {
-      return { guest: { name: sortDirection } }
-    }
-    if (sortKey === 'unit') {
-      return { unit: { name: sortDirection } }
-    }
-    return { [sortKey]: sortDirection }
-  })()
-
-  const [bookings, totalCount] = await Promise.all([
-    db.booking.findMany({
-      where,
-      orderBy,
-      skip: (page - 1) * perPage,
-      take: perPage,
-      include: {
-        guest: true,
-        unit: {
-          include: {
-            type: { include: { rates: { include: { type: true } } } },
-          },
-        },
-        payments: true,
-        services: true,
-        discounts: true,
-        rate: { include: { type: true } },
+  try {
+    const where: Prisma.BookingWhereInput = {
+      id: {
+        equals: filters.id ? Number(filters.id) : undefined,
       },
-    }),
-    db.booking.count({ where }),
-  ])
+      guest: {
+        name: filters.guestName ? { contains: filters.guestName } : undefined,
+      },
+      unit: {
+        name: filters.unitName ? { contains: filters.unitName } : undefined,
+      },
+      status: {
+        in: filters.status ? filters.status : undefined,
+        //notIn: ['CANCELLED', 'NO_SHOW'] as BookingStatus[],
+      },
+      paymentStatus: filters.paymentStatus || undefined,
+      startDate: filters.startDate
+        ? { gte: new Date(filters.startDate) }
+        : undefined,
+      endDate: filters.endDate ? { lte: new Date(filters.endDate) } : undefined,
+    }
 
-  const totalPages = Math.ceil(totalCount / perPage)
+    const orderBy = (() => {
+      if (sortKey === 'guest') {
+        return { guest: { name: sortDirection } }
+      }
+      if (sortKey === 'unit') {
+        return { unit: { name: sortDirection } }
+      }
+      return { [sortKey]: sortDirection }
+    })()
 
-  return {
-    data: bookings,
-    totalCount,
-    totalPages,
-    page,
-    perPage,
+    const [bookings, totalCount] = await Promise.all([
+      db.booking.findMany({
+        where,
+        orderBy,
+        skip: (page - 1) * perPage,
+        take: perPage,
+        include: {
+          guest: true,
+          unit: {
+            include: {
+              type: { include: { rates: { include: { type: true } } } },
+            },
+          },
+          payments: true,
+          services: true,
+          discounts: true,
+          rate: { include: { type: true } },
+        },
+      }),
+      db.booking.count({ where }),
+    ])
+
+    const totalPages = Math.ceil(totalCount / perPage)
+
+    return {
+      data: {
+        bookings,
+        totalCount,
+        totalPages,
+        page,
+        perPage,
+      },
+    }
+  } catch (error) {
+    return {
+      error: 'Erro ao buscar reservas. Por favor, tente novamente mais tarde.',
+      data: null,
+    }
   }
 }
 
@@ -135,10 +144,14 @@ export async function getBookingsPerPeriod(period: { from: Date; to: Date }) {
       },
     })
 
-    return { bookings }
+    return { data: bookings }
   } catch (error) {
-    console.log(error)
-    return null
+    console.error('Erro ao buscar reservas por período', error)
+    return {
+      error:
+        'Erro ao buscar reservas por período. Por favor, tente novamente mais tarde ou contate o suporte.',
+      data: null,
+    }
   }
 }
 
@@ -156,9 +169,20 @@ export async function getBookingById(id: number) {
       },
     })
 
-    return booking
+    if (!booking) {
+      return {
+        data: null,
+        error: 'A reserva que você procura não existe ou foi removida.',
+      }
+    }
+
+    return { data: booking }
   } catch (error) {
-    console.error('Erro ao buscar reserva:', error)
-    return null
+    console.error('Erro ao buscar reserva por ID', error)
+    return {
+      error:
+        'Erro ao buscar reserva por ID. Por favor, tente novamente mais tarde ou contate o suporte.',
+      data: null,
+    }
   }
 }

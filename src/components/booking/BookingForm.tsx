@@ -16,6 +16,7 @@ import type { Dictionary } from 'lodash'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState, useTransition } from 'react'
 import { toast } from 'sonner'
+import AlertErrorGlobal from '../AlertErrorGlobal'
 import { GuestCombobox } from '../guest/GuestCombobox'
 import { RatesCombobox } from '../rate/RatesCombobox'
 import {
@@ -35,7 +36,7 @@ import { BookingStatusCombobox } from './BookingStatusCombobox'
 import { useBookingFilters } from './BookingsFiltersProvider'
 
 interface BookingFormProps {
-  bookingData: BookingAllIncludes
+  bookingData?: BookingAllIncludes
 }
 
 interface UnitWithType extends Unit {
@@ -43,7 +44,9 @@ interface UnitWithType extends Unit {
 }
 
 export default function BookingForm({ bookingData }: BookingFormProps) {
-  const [booking, setBooking] = useState<BookingAllIncludes>(bookingData)
+  const [booking, setBooking] = useState<BookingAllIncludes | null>(
+    bookingData || null
+  )
   const { refetch } = useBookingFilters()
   const searchParams = useSearchParams()
   const unitIdParam = searchParams.get('unitId')
@@ -52,7 +55,7 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
     : null
 
   const router = useRouter()
-  const [serverError, setServerError] = useState<string | null>(null)
+
   const [rates, setRates] = useState<Dictionary<Rate[]> | null>(null)
 
   const [selectedUnit, setSelectedUnit] = useState<UnitWithType | null>(
@@ -68,6 +71,8 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
 
   const [isDisabled, setIsDisabled] = useState(!!booking || false)
   const [isPending, startTransition] = useTransition()
+  const [serverError, setServerError] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   const form = useForm<BookingSchema>({
     resolver: zodResolver(bookingSchema),
@@ -123,8 +128,17 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
   useEffect(() => {
     if (!unitIdParam) return
     async function getUnit(id: string) {
-      const data = await getUnitById(id)
-      setSelectedUnit(data)
+      try {
+        const res = await getUnitById(id)
+
+        if (res.error || !res.data) throw new Error(res.error)
+
+        setSelectedUnit(res.data)
+        setError(null)
+      } catch (error) {
+        setSelectedUnit(null)
+        setError((error as Error).message)
+      }
     }
 
     getUnit(unitIdParam)
@@ -133,8 +147,16 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
   useEffect(() => {
     if (!watchUnit) return
     async function getRates() {
-      const dataRates = await groupedByRateNamePerUnit(watchUnit)
-      setRates(dataRates)
+      try {
+        const res = await groupedByRateNamePerUnit(watchUnit)
+
+        if (res.error || !res.data) throw new Error(res.error)
+        setRates(res.data)
+        setError(null)
+      } catch (error) {
+        setRates(null)
+        setError((error as Error).message)
+      }
     }
     getRates()
   }, [watchUnit])
@@ -223,6 +245,8 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
       })
     }
   }
+
+  if (error) return <AlertErrorGlobal message={error} />
 
   return (
     <>

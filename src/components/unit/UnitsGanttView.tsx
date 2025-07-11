@@ -17,6 +17,7 @@ import {
 import isBetween from 'dayjs/plugin/isBetween'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import AlertErrorGlobal from '../AlertErrorGlobal'
 import { Button } from '../ui/button'
 import { Calendar } from '../ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
@@ -36,6 +37,8 @@ export function UnitsGanttView() {
     dayjs().startOf('day').toDate()
   )
 
+  const [error, setError] = useState<string | null>(null)
+
   useEffect(() => {
     const period = {
       from: startDate,
@@ -44,13 +47,22 @@ export function UnitsGanttView() {
         .toDate(),
     }
     const fetchData = async () => {
-      const dataBookings = await getBookingsPerPeriod(period)
-      const dataUnits = await getUnits()
+      try {
+        const resBookings = await getBookingsPerPeriod(period)
+        const resUnit = await getUnits()
 
-      if (!dataBookings || !dataUnits) return
+        if (resBookings.error || !resBookings.data)
+          throw new Error(resBookings.error)
+        if (resUnit.error || !resUnit.data) throw new Error(resUnit.error)
 
-      setUnits(dataUnits?.units)
-      setBookings(dataBookings?.bookings)
+        setBookings(resBookings?.data)
+        setUnits(resUnit.data)
+        setError(null)
+      } catch (error) {
+        setBookings([])
+        setUnits([])
+        setError((error as Error).message)
+      }
     }
 
     fetchData()
@@ -61,6 +73,8 @@ export function UnitsGanttView() {
     day: dayjs(startDate).add(index, 'day').format('DD/MM'),
     fullDate: dayjs(startDate).add(index, 'day'),
   }))
+
+  if (error) return <AlertErrorGlobal message={error} />
 
   return (
     <div className="flex flex-col">

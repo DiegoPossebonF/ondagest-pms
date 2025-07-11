@@ -13,6 +13,7 @@ import { formatCurrency } from '@/lib/utils'
 import { IconEye, IconEyeOff } from '@tabler/icons-react'
 import dayjs from 'dayjs'
 import { useState } from 'react'
+import AlertErrorGlobal from '../AlertErrorGlobal'
 import {
   Sheet,
   SheetContent,
@@ -31,9 +32,11 @@ export function RatesList() {
   const [selectedRate, setSelectedRate] = useState<RateWithUnitType | null>(
     null
   )
-  const { rates, SortHeader } = useRatesFilters()
+  const { rates, error, SortHeader } = useRatesFilters()
 
   const isMobile = useIsMobile()
+
+  if (error) return <AlertErrorGlobal message={error} />
 
   if (isMobile) {
     return (

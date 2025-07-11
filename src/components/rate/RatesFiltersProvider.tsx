@@ -44,6 +44,7 @@ export interface Filters {
 
 type RateFilters = {
   rates: RateWithUnitType[]
+  error: string | null
   filters: Filters
   sortDirection: SortDirection
   activeFilters: boolean
@@ -81,6 +82,7 @@ export function RatesFiltersProvider({
   const [totalPages, setTotalPages] = useState(1)
   const [page, setPage] = useState(1)
   const [sortKey, setSortKey] = useState<SortKey>('createdAt')
+  const [error, setError] = useState<string | null>(null)
 
   const perPage = 10
 
@@ -94,16 +96,25 @@ export function RatesFiltersProvider({
   })
 
   const fetchData = async () => {
-    const result = await getRatesFilters({
-      page,
-      perPage,
-      orderBy: sortKey,
-      direction: sortDirection,
-      filters,
-    })
+    try {
+      const result = await getRatesFilters({
+        page,
+        perPage,
+        orderBy: sortKey,
+        direction: sortDirection,
+        filters,
+      })
 
-    setRates(result.data)
-    setTotalPages(result.totalPages)
+      if (result.error || !result.data) throw new Error(result.error)
+
+      setRates(result.data.rates)
+      setTotalPages(result.data.totalPages)
+      setError(null)
+    } catch (error) {
+      setRates([])
+      setTotalPages(1)
+      setError((error as Error).message)
+    }
   }
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -165,6 +176,7 @@ export function RatesFiltersProvider({
       value={
         {
           rates,
+          error,
           filters,
           sortDirection,
           activeFilters,

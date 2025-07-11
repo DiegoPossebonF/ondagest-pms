@@ -15,6 +15,7 @@ import {
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import { useRouter } from 'next/navigation'
+import AlertErrorGlobal from '../AlertErrorGlobal'
 import {
   Table,
   TableBody,
@@ -33,9 +34,11 @@ dayjs.locale('pt-br')
 
 export function BookingsList() {
   const router = useRouter()
-  const { bookings, SortHeader } = useBookingFilters()
+  const { bookings, error, SortHeader } = useBookingFilters()
 
   const isMobile = useIsMobile()
+
+  if (error) return <AlertErrorGlobal message={error} />
 
   if (isMobile) {
     return (

@@ -29,53 +29,61 @@ export async function getRatesFilters({
   direction = 'desc',
   filters = {},
 }: GetRatesParams) {
-  console.log('filters', filters)
-  const where = {
-    name: filters.name ? { contains: filters.name } : undefined,
-    value: filters.value ? { equals: filters.value } : undefined,
-    numberOfPeople: filters.numberOfPeople
-      ? { equals: filters.numberOfPeople }
-      : undefined,
-    typeId: filters.typeId ? { equals: filters.typeId } : undefined,
-    active: filters.active ? { equals: filters.active } : undefined,
-    createdAt: filters.createdAt ? { gte: filters.createdAt } : undefined,
-  }
+  try {
+    const where = {
+      name: filters.name ? { contains: filters.name } : undefined,
+      value: filters.value ? { equals: filters.value } : undefined,
+      numberOfPeople: filters.numberOfPeople
+        ? { equals: filters.numberOfPeople }
+        : undefined,
+      typeId: filters.typeId ? { equals: filters.typeId } : undefined,
+      active: filters.active ? { equals: filters.active } : undefined,
+      createdAt: filters.createdAt ? { gte: filters.createdAt } : undefined,
+    }
 
-  const orderByWithType = () => {
-    if (orderBy === 'type') {
+    const orderByWithType = () => {
+      if (orderBy === 'type') {
+        return {
+          [orderBy]: {
+            name: direction,
+          },
+        }
+      }
+
       return {
-        [orderBy]: {
-          name: direction,
-        },
+        [orderBy]: direction,
       }
     }
 
+    const [rates, total] = await Promise.all([
+      db.rate.findMany({
+        where,
+        orderBy: orderByWithType(),
+        include: {
+          type: true,
+        },
+        skip: (page - 1) * perPage,
+        take: perPage,
+      }),
+      db.rate.count({ where }),
+    ])
+
     return {
-      [orderBy]: direction,
-    }
-  }
-
-  const [rates, total] = await Promise.all([
-    db.rate.findMany({
-      where,
-      orderBy: orderByWithType(),
-      include: {
-        type: true,
+      data: {
+        rates,
+        total,
+        page,
+        perPage,
+        totalPages: Math.ceil(total / perPage),
       },
-      skip: (page - 1) * perPage,
-      take: perPage,
-    }),
-    db.rate.count({ where }),
-  ])
-
-  console.log('rates', rates)
-
-  return {
-    data: rates,
-    total,
-    page,
-    perPage,
-    totalPages: Math.ceil(total / perPage),
+    }
+  } catch (error) {
+    console.error('Erro ao buscar tarifas:', error)
+    return {
+      error:
+        'Erro ao buscar tarifas. Por favor, tente novamente mais tarde ou contate o suporte.',
+      data: null,
+    }
   }
 }
 

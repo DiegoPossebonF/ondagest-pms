@@ -7,14 +7,10 @@ import isBetween from 'dayjs/plugin/isBetween'
 dayjs.extend(isBetween)
 
 export default async function Dashboard() {
-  const units = await getUnitsWithUpdatedBookings()
+  const res = await getUnitsWithUpdatedBookings()
 
-  if (!units) {
-    return (
-      <div className="p-6 overflow-auto flex flex-col items-center justify-center gap-4">
-        Erro ao buscar unidades - Entre em contato com o suporte...
-      </div>
-    )
+  if (res.error || !res.data) {
+    throw new Error(res.error)
   }
 
   return (
@@ -23,7 +19,7 @@ export default async function Dashboard() {
         <StatusLegend />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-        {units.map((unit, index) => {
+        {res.data.map((unit, index) => {
           return <UnitCard key={unit.id} unit={unit} index={index} />
         })}
       </div>

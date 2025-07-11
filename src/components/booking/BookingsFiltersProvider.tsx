@@ -32,6 +32,7 @@ export type Filters = {
 
 type BookingFilters = {
   bookings: BookingAllIncludes[]
+  error: string | null
   filters: Filters
   page: number
   perPage: number
@@ -71,6 +72,7 @@ export function BookingsFiltersProvider({
   const [totalPages, setTotalPages] = useState(1)
   const [page, setPage] = useState(1)
   const [sortKey, setSortKey] = useState<SortKey>('startDate')
+  const [error, setError] = useState<string | null>(null)
 
   const perPage = 10
 
@@ -91,16 +93,25 @@ export function BookingsFiltersProvider({
   })
 
   const fetchData = async () => {
-    const result = await getBookings({
-      page,
-      perPage,
-      sortKey,
-      sortDirection,
-      filters,
-    })
+    try {
+      const result = await getBookings({
+        page,
+        perPage,
+        sortKey,
+        sortDirection,
+        filters,
+      })
 
-    setBookings(result.data)
-    setTotalPages(result.totalPages)
+      if (result.error || !result.data) throw new Error(result.error)
+
+      setBookings(result.data.bookings)
+      setTotalPages(result.data.totalPages)
+      setError(null)
+    } catch (error) {
+      setBookings([])
+      setTotalPages(1)
+      setError((error as Error).message)
+    }
   }
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -169,6 +180,7 @@ export function BookingsFiltersProvider({
       value={
         {
           bookings,
+          error,
           filters,
           page,
           perPage,

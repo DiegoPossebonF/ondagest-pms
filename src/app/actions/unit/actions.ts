@@ -80,10 +80,14 @@ export async function getUnitById(id: string) {
       },
     })
 
-    return unit
+    return { data: unit }
   } catch (error) {
-    console.log(error)
-    return null
+    console.error('Erro ao buscar acomodações por ID (getUnitById)', error)
+    return {
+      data: null,
+      error:
+        'Erro ao buscar acomodações por ID - tente novamente ou contate o suporte!',
+    }
   }
 }
 
@@ -179,9 +183,16 @@ export async function getUnitsWithUpdatedBookings() {
       })
     )
 
-    return updatedUnits
+    return {
+      data: updatedUnits,
+      error: null,
+    }
   } catch (error) {
-    console.log(error)
-    return null
+    console.error('Erro ao buscar acomodações atualizadas!', error)
+    return {
+      data: null,
+      error:
+        'Erro ao buscar acomodações atualizadas - tente novamente ou contate o suporte!',
+    }
   }
 }

@@ -37,10 +37,12 @@ export async function groupedByRateNamePerUnit(unit: string) {
     })
 
     if (!unitType) {
-      return null
+      return {
+        error:
+          'Erro ao buscar o tipo da acomodação. Por favor, tente novamente mais tarde ou contate o suporte.',
+        data: null,
+      }
     }
-
-    console.log('UNIT TYPE', unitType)
 
     const rateNames = await db.rate.groupBy({
       where: { typeId: unitType.typeId },
@@ -57,14 +59,18 @@ export async function groupedByRateNamePerUnit(unit: string) {
       orderBy: [{ name: 'asc' }, { numberOfPeople: 'asc' }],
     })
 
-    console.log('RATES', rates)
-
     const grouped = groupBy(rates, 'name')
 
     //console.log('GROUP', grouped)
-    return grouped
+    return {
+      data: grouped,
+    }
   } catch (error) {
-    console.log(error)
-    return null
+    console.error('Erro ao buscar tarifas (groupedByRateNamePerUnit)', error)
+    return {
+      error:
+        'Erro ao buscar tarifas por nome e acomodação. Por favor, tente novamente mais tarde ou contate o suporte.',
+      data: null,
+    }
   }
 }

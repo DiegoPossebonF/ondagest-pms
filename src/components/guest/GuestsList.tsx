@@ -10,6 +10,7 @@ import {
 import { useIsMobile } from '@/hooks/use-mobile'
 import dayjs from 'dayjs'
 import { useRouter } from 'next/navigation'
+import AlertErrorGlobal from '../AlertErrorGlobal'
 import { GuestsListMobile } from './GuestListMobile'
 import { type SortKey, useGuestsFilters } from './GuestsFiltersProvider'
 import GuestsListFooter from './GuestsListFooter'
@@ -17,9 +18,11 @@ import GuestsListHeader from './GuestsListHeader'
 
 export function GuestsList() {
   const router = useRouter()
-  const { guests, SortHeader } = useGuestsFilters()
+  const { guests, error, SortHeader } = useGuestsFilters()
 
   const isMobile = useIsMobile()
+
+  if (error) return <AlertErrorGlobal message={error} />
 
   if (isMobile) {
     return (

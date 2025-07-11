@@ -27,41 +27,51 @@ export async function getGuests({
   direction = 'desc',
   filters = {},
 }: GetGuestsParams) {
-  console.log('filters', filters)
-  const where = {
-    name: filters.name ? { contains: filters.name } : undefined,
-    email: filters.email ? { contains: filters.email } : undefined,
-    phone: filters.phone ? { contains: filters.phone } : undefined,
-    cpf: filters.cpf ? { contains: filters.cpf } : undefined,
-    city: filters.city ? { contains: filters.city } : undefined,
-    carPlate: filters.carPlate ? { contains: filters.carPlate } : undefined,
-    createdAt:
-      filters.startDate || filters.endDate
-        ? {
-            gte: filters.startDate ?? undefined,
-            lte: filters.endDate ?? undefined,
-          }
-        : undefined,
-  }
+  try {
+    const where = {
+      name: filters.name ? { contains: filters.name } : undefined,
+      email: filters.email ? { contains: filters.email } : undefined,
+      phone: filters.phone ? { contains: filters.phone } : undefined,
+      cpf: filters.cpf ? { contains: filters.cpf } : undefined,
+      city: filters.city ? { contains: filters.city } : undefined,
+      carPlate: filters.carPlate ? { contains: filters.carPlate } : undefined,
+      createdAt:
+        filters.startDate || filters.endDate
+          ? {
+              gte: filters.startDate ?? undefined,
+              lte: filters.endDate ?? undefined,
+            }
+          : undefined,
+    }
 
-  const [guests, total] = await Promise.all([
-    db.guest.findMany({
-      where,
-      orderBy: {
-        [orderBy]: direction,
+    const [guests, total] = await Promise.all([
+      db.guest.findMany({
+        where,
+        orderBy: {
+          [orderBy]: direction,
+        },
+        skip: (page - 1) * perPage,
+        take: perPage,
+      }),
+      db.guest.count({ where }),
+    ])
+
+    return {
+      data: {
+        guests,
+        total,
+        page,
+        perPage,
+        totalPages: Math.ceil(total / perPage),
       },
-      skip: (page - 1) * perPage,
-      take: perPage,
-    }),
-    db.guest.count({ where }),
-  ])
-
-  return {
-    data: guests,
-    total,
-    page,
-    perPage,
-    totalPages: Math.ceil(total / perPage),
+    }
+  } catch (error) {
+    console.error('Erro ao buscar hóspedes!', error)
+    return {
+      data: null,
+      error:
+        'Erro ao buscar hóspedes - tente novamente mais tarde ou contate o suporte!',
+    }
   }
 }
 
@@ -95,12 +105,22 @@ export async function getGuestById(id: string) {
     })
 
     if (!guest) {
-      return null
+      return {
+        data: null,
+        error: 'Hóspede nao encontrado!',
+      }
     }
 
-    return guest
+    return {
+      data: guest,
+      error: null,
+    }
   } catch (error) {
     console.error('Erro ao buscar hóspede por ID!', error)
-    return null
+    return {
+      data: null,
+      error:
+        'Erro ao buscar hóspede por ID - tente novamente mais tarde ou contate o suporte!',
+    }
   }
 }
