@@ -1,5 +1,6 @@
 'use client'
 import { createPayment } from '@/app/actions/payment/createPayment'
+import { updatePayment } from '@/app/actions/payment/updatePayment'
 import { type Payment, PaymentType } from '@/app/generated/prisma'
 import { Button } from '@/components/ui/button'
 import {
@@ -22,12 +23,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import dayjs from 'dayjs'
 import { CalendarIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import {
-  type Dispatch,
-  type SetStateAction,
-  useState,
-  useTransition,
-} from 'react'
+import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { Calendar } from '../ui/calendar'
@@ -43,13 +39,13 @@ import {
 interface PaymentFormProps {
   bookingId: number
   payment?: Payment
-  openDialog?: Dispatch<SetStateAction<boolean>>
+  closeDialog?: () => void
 }
 
 export function PaymentForm({
   bookingId,
   payment,
-  openDialog,
+  closeDialog,
 }: PaymentFormProps) {
   const [openPopover, setOpenPopover] = useState(false)
   const router = useRouter()
@@ -68,7 +64,27 @@ export function PaymentForm({
 
   async function onSubmitHandle(values: PaymentSchema) {
     if (payment) {
-      //await updatePayment(values)
+      startTransition(() => {
+        updatePayment(payment.id, values).then(data => {
+          if (data.error) {
+            setServerError(data.error)
+            return
+          }
+          if (data.success) {
+            toast('Sucesso', {
+              description: data.success,
+              duration: 5000,
+              icon: '✅',
+            })
+            setServerError(null)
+            form.reset()
+            router.refresh()
+            if (closeDialog) {
+              closeDialog()
+            }
+          }
+        })
+      })
     } else {
       startTransition(() => {
         createPayment(values).then(data => {
@@ -85,6 +101,9 @@ export function PaymentForm({
             setServerError(null)
             form.reset()
             router.refresh()
+            if (closeDialog) {
+              closeDialog()
+            }
           }
         })
       })

@@ -1,6 +1,6 @@
 import { getBookingById } from '@/app/actions/booking/actions'
+import { BookingDetails } from '@/components/booking/BookingDetails'
 import BookingForm from '@/components/booking/BookingForm'
-import { BookingSummaryCard } from '@/components/booking/BookingSummaryCard'
 
 export default async function BookingId({
   params,
@@ -16,11 +16,11 @@ export default async function BookingId({
   return (
     <div className="p-6 overflow-auto">
       <div className="flex flex-col lg:flex-row gap-6">
-        <div className="md:basis-3/5">
+        <div className="md:basis-1/2">
           <BookingForm bookingData={res.data} />
         </div>
-        <div className="flex flex-col md:basis-2/5 gap-4">
-          <BookingSummaryCard booking={res.data} />
+        <div className="flex flex-col md:basis-1/2 gap-4">
+          <BookingDetails booking={res.data} />
         </div>
       </div>
     </div>

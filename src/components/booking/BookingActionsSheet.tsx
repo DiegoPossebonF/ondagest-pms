@@ -1,5 +1,6 @@
 'use client'
 
+import type { Discount, Payment, Service } from '@/app/generated/prisma'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -16,20 +17,39 @@ import {
   IconMoneybagMinus,
   IconTool,
 } from '@tabler/icons-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { PaymentForm } from '../payment/PaymentForm'
 import { Card } from '../ui/card'
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
 
+interface BookingActionsSheetProps {
+  openSheet: boolean
+  setOpenSheet: (open: boolean) => void
+  editAction?: 'payment' | 'discount' | 'service'
+  editObject?: Payment | Discount | Service
+  booking: BookingAllIncludes
+}
+
 export function BookingActionsSheet({
+  openSheet,
+  setOpenSheet,
+  editAction,
+  editObject,
   booking,
-}: { booking: BookingAllIncludes }) {
+}: BookingActionsSheetProps) {
   const [action, setAction] = useState<'payment' | 'discount' | 'service'>(
-    'payment'
+    editAction || 'payment'
   )
 
+  // atualizar a aba ao abrir o modal
+  useEffect(() => {
+    if (openSheet && editAction) {
+      setAction(editAction)
+    }
+  }, [openSheet, editAction])
+
   return (
-    <Sheet>
+    <Sheet open={openSheet} onOpenChange={setOpenSheet}>
       <div className="flex gap-2">
         <Tooltip>
           <TooltipTrigger asChild>
@@ -37,7 +57,7 @@ export function BookingActionsSheet({
               <Button
                 size="icon"
                 className={`size-8 group-data-[collapsible=icon]:opacity-0`}
-                variant="outline"
+                variant="default"
                 title="Lançar pagamento"
                 onClick={() => setAction('payment')}
               >
@@ -57,7 +77,7 @@ export function BookingActionsSheet({
               <Button
                 size="icon"
                 className={`size-8 group-data-[collapsible=icon]:opacity-0`}
-                variant="outline"
+                variant="default"
                 title="Adicionar Desconto"
                 onClick={() => setAction('discount')}
               >
@@ -77,7 +97,7 @@ export function BookingActionsSheet({
               <Button
                 size="icon"
                 className={`size-8 group-data-[collapsible=icon]:opacity-0`}
-                variant="outline"
+                variant="default"
                 title="Adicionar Serviço"
                 onClick={() => setAction('service')}
               >
@@ -95,17 +115,39 @@ export function BookingActionsSheet({
       <SheetContent side="right" className="sm:w-[400px] w-[80%] space-y-6">
         <SheetHeader>
           <SheetTitle>
-            {action === 'payment' && 'Lançar pagamento'}
-            {action === 'discount' && 'Adicionar Desconto'}
-            {action === 'service' && 'Adicionar Serviço'}
+            {action === 'payment'
+              ? editObject
+                ? 'Editar Pagamento'
+                : 'Lançar Pagamento'
+              : ''}
+            {action === 'discount'
+              ? editObject
+                ? 'Editar Desconto'
+                : 'Adicionar Desconto'
+              : ''}
+            {action === 'service'
+              ? editObject
+                ? 'Editar Serviço'
+                : 'Adicionar Serviço'
+              : ''}
           </SheetTitle>
           <SheetDescription>
-            {action === 'payment' &&
-              'Preencha os dados abaixo para lançar um novo pagamento nesta reserva.'}
-            {action === 'discount' &&
-              'Preencha os dados abaixo para registrar um novo desconto nesta reserva.'}
-            {action === 'service' &&
-              'Preencha os dados abaixo para registrar um novo serviço nesta reserva.'}
+            {action === 'payment'
+              ? editObject
+                ? 'Altere os dados abaixo para editar o pagamento desta reserva.'
+                : 'Preencha os dados abaixo para lançar um novo pagamento nesta reserva.'
+              : ''}
+
+            {action === 'discount'
+              ? editObject
+                ? 'Altere os dados abaixo para editar o desconto desta reserva.'
+                : 'Preencha os dados abaixo para registrar um novo desconto nesta reserva.'
+              : ''}
+            {action === 'service'
+              ? editObject
+                ? 'Altere os dados abaixo para editar o serviço desta reserva.'
+                : 'Preencha os dados abaixo para registrar um novo serviço nesta reserva.'
+              : ''}
           </SheetDescription>
         </SheetHeader>
         <Card className="p-4 text-sm">
@@ -123,7 +165,13 @@ export function BookingActionsSheet({
           </div>
         </Card>
 
-        {action === 'payment' && <PaymentForm bookingId={booking.id} />}
+        {action === 'payment' && (
+          <PaymentForm
+            bookingId={booking.id}
+            payment={editObject as Payment}
+            closeDialog={() => setOpenSheet(false)}
+          />
+        )}
         {action === 'discount' && '<DiscountForm bookingId={bookingId} />'}
         {action === 'service' && '<ServiceForm bookingId={bookingId} />'}
       </SheetContent>

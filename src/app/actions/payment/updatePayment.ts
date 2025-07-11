@@ -1,42 +1,42 @@
+// src/actions/booking.ts
+
 'use server'
-import type { Payment } from '@/app/generated/prisma'
+import type { PaymentType } from '@/app/generated/prisma'
 import db from '@/lib/db'
+import { type PaymentSchema, paymentSchema } from '@/schemas/payment-schema'
+import { revalidatePath } from 'next/cache'
 
-type PaymentPayload = Omit<Payment, 'createdAt' | 'updatedAt'>
+export async function updatePayment(paymentId: string, data: PaymentSchema) {
+  const parsed = paymentSchema.safeParse(data)
 
-export async function updatePayment(payment: PaymentPayload) {
-  try {
-    if (!payment) {
-      return {
-        success: false,
-        msg: 'Erro ao atualizar pagamento - dados inválidos',
-      }
+  if (!parsed.success) {
+    return {
+      error: 'Dados inválidos',
+      issues: parsed.error.flatten().fieldErrors,
     }
+  }
 
-    const paymentUpdated = await db.payment.update({
-      where: { id: payment.id },
+  const { paymentType, amount, paidAt } = parsed.data
+
+  try {
+    await db.payment.update({
+      where: { id: paymentId },
       data: {
-        ...payment,
+        paymentType: paymentType as PaymentType,
+        amount,
+        paidAt,
       },
     })
 
-    if (!paymentUpdated) {
-      return {
-        success: false,
-        msg: 'Erro ao atualizar pagamento - DB',
-      }
-    }
-
+    revalidatePath(`/bookings/${paymentId}`)
     return {
-      success: true,
-      payment: paymentUpdated,
-      msg: 'Pagamento atualizado com sucesso',
+      success: 'Pagamento atualizado com sucesso!',
     }
-  } catch (err) {
-    console.error('Erro ao atualizar pagamento', err)
+  } catch (error) {
+    console.error('#### Erro ao atualizar pagamento', error)
     return {
-      success: false,
-      msg: 'Erro interno ao atualizar pagamento - entre em contato com o suporte',
+      error:
+        'Erro ao atualizar pagamento. Por favor, tente novamente mais tarde ou contate o suporte.',
     }
   }
 }
