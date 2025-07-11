@@ -15,6 +15,7 @@ import { IconCalendarPlus, IconEdit } from '@tabler/icons-react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { toast } from 'sonner'
 import { BookingActionsSheet } from '../booking/BookingActionsSheet'
 import { BookingDescriptions } from '../booking/BookingDescriptions'
@@ -126,6 +127,7 @@ function getRelevantBooking(
 }
 
 export default function UnitCard({ unit, index }: UnitCardProps) {
+  const [openSheet, setOpenSheet] = useState(false)
   const router = useRouter()
   const relevantBooking = getRelevantBooking(unit.bookings)
 
@@ -251,7 +253,11 @@ export default function UnitCard({ unit, index }: UnitCardProps) {
             </PaymentSheet>
              */}
 
-              <BookingActionsSheet booking={booking} />
+              <BookingActionsSheet
+                booking={booking}
+                openSheet={openSheet}
+                setOpenSheet={setOpenSheet}
+              />
 
               <Tooltip>
                 <TooltipTrigger asChild>

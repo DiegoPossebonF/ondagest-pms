@@ -77,7 +77,7 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
   const form = useForm<BookingSchema>({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
-      status: booking?.status || '',
+      status: booking?.status || 'PENDING',
       guestId: booking?.guestId || '',
       period: {
         from: booking?.startDate || startDateParam || dayjs().toDate(),
@@ -99,7 +99,7 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     form.reset({
-      status: booking?.status || '',
+      status: booking?.status || 'PENDING',
       guestId: booking?.guestId || '',
       period: {
         from: booking?.startDate || startDateParam || dayjs().toDate(),
