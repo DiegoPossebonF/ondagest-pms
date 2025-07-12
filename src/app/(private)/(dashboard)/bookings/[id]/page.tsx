@@ -14,15 +14,40 @@ export default async function BookingId({
   }
 
   return (
+    <div className="md:h-[calc(100vh-4rem)] p-6 flex md:flex-row flex-col gap-6">
+      <div className="md:basis-1/2">
+        <BookingForm bookingData={res.data} />
+      </div>
+      <div className="md:basis-1/2">
+        <BookingDetails booking={res.data} />
+      </div>
+    </div>
+  )
+
+  /*
+  return (
     <div className="p-6 overflow-auto">
       <div className="flex flex-col lg:flex-row gap-6">
         <div className="md:basis-1/2">
-          <BookingForm bookingData={res.data} />
+          <Card className="w-full">
+            <CardHeader className="space-y-2 pb-2">
+              <CardTitle className="flex flex-row items-center">
+                Formulário da Reserva #{Number(id)}
+              </CardTitle>
+            </CardHeader>
+            <Separator />
+
+            <CardContent className="space-y-4">
+              <BookingForm bookingData={res.data} />
+            </CardContent>
+            <CardFooter className="flex justify-end">TESTE</CardFooter>
+          </Card>
         </div>
-        <div className="flex flex-col md:basis-1/2 gap-4">
+        <div className="md:basis-1/2">
           <BookingDetails booking={res.data} />
         </div>
       </div>
     </div>
   )
+    */
 }
