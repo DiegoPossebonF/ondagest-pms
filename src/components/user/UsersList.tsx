@@ -33,8 +33,6 @@ export function UsersList() {
   const [openNewUser, setOpenNewUser] = useState(false)
   const { users, error, SortHeader } = useUsersFilters()
 
-  console.log('USERS error', error)
-
   const isMobile = useIsMobile()
 
   if (error) return <AlertErrorGlobal message={error} />

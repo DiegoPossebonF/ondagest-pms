@@ -1,5 +1,5 @@
 'use client'
-import { deleteDiscount } from '@/app/actions/discount/deleteDiscount'
+import { deleteService } from '@/app/actions/service/deleteService'
 import type { Service } from '@/app/generated/prisma'
 import { formatCurrency } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
@@ -33,7 +33,7 @@ export function ServiceAlertDialogDelete({
   const router = useRouter()
 
   const handleDelete = async (service: Service) => {
-    const result = await deleteDiscount(service.id)
+    const result = await deleteService(service.id)
 
     if (!result.success) {
       toast('Erro ao excluir', {
@@ -41,7 +41,7 @@ export function ServiceAlertDialogDelete({
       })
     } else {
       toast('Excluído', {
-        description: 'Serviço removido com sucesso',
+        description: result.msg,
       })
       router.refresh()
     }

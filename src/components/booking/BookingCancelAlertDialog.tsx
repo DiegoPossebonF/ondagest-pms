@@ -45,7 +45,7 @@ export function BookingCancelAlertDialog({
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
         <Button variant="destructive" size="sm">
-          Cancelar reserva
+          Cancelar
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>

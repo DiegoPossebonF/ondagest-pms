@@ -150,7 +150,12 @@ export function ServiceForm({
           />
 
           <div className="flex flex-col gap-2">
-            <Button type="submit" className="w-full mt-4" disabled={isPending}>
+            <Button
+              type="submit"
+              className="w-full mt-4"
+              size={'sm'}
+              disabled={isPending}
+            >
               {isPending ? (
                 service ? (
                   <LoadingSpinner />

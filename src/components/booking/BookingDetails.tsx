@@ -24,6 +24,7 @@ import {
   STATUS_COLORS,
   STATUS_LABELS,
   STATUS_PAYMENT_COLORS,
+  STATUS_PAYMENT_COLORS_TEXT,
   STATUS_PAYMENT_LABELS,
   cn,
   formatCurrency,
@@ -39,7 +40,7 @@ import {
   IconUser,
 } from '@tabler/icons-react'
 import { useEffect, useState } from 'react'
-import { Button } from '../ui/button'
+import { Table, TableBody, TableCell, TableRow } from '../ui/table'
 import { BookingActionsSheet } from './BookingActionsSheet'
 
 dayjs.locale('pt-br')
@@ -126,8 +127,8 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
 
       <Separator />
 
-      <CardContent className="flex flex-col justify-around h-full overflow-auto space-y-4">
-        <div className="flex gap-2 flex-wrap pt-6">
+      <CardContent className="flex flex-col h-full overflow-auto space-y-4">
+        <Card className="flex flex-row justify-between gap-4 text-sm p-4 mt-4">
           <Badge
             variant="default"
             className={cn('capitalize', STATUS_COLORS[status])}
@@ -140,7 +141,7 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
           >
             Pagamento: {STATUS_PAYMENT_LABELS[paymentStatus]}
           </Badge>
-        </div>
+        </Card>
 
         <Accordion
           type="single"
@@ -159,27 +160,49 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
               </div>
             </AccordionTrigger>
             <AccordionContent className="pb-0 bg-background" asChild>
-              <div key="guest" className="overflow-hidden p-4">
-                <div className="grid gap-2">
-                  <span>
-                    <strong>Nome:</strong> {guest.name}
-                  </span>
-                  <span>
-                    <strong>Email:</strong> {guest.email}
-                  </span>
-                  <span>
-                    <strong>CPF:</strong> {guest.cpf}
-                  </span>
-                  <span>
-                    <strong>Telefone:</strong> {guest.phone ?? '-'}
-                  </span>
-                  <span>
-                    <strong>Cidade:</strong> {guest.city ?? '-'}
-                  </span>
-                  <span>
-                    <strong>Placa do carro:</strong> {guest.carPlate ?? '-'}
-                  </span>
-                </div>
+              <div key="guest" className="overflow-hidden">
+                <Table className="w-full text-xs">
+                  <TableBody>
+                    <TableRow>
+                      <TableCell className="font-bold pl-4">Nome</TableCell>
+                      <TableCell className="text-right pr-4">
+                        {guest.name}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-bold pl-4">Email</TableCell>
+                      <TableCell className="text-right pr-4">
+                        {guest.email}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-bold pl-4">CPF</TableCell>
+                      <TableCell className="text-right pr-4">
+                        {guest.cpf}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-bold pl-4">Telefone</TableCell>
+                      <TableCell className="text-right pr-4">
+                        {guest.phone ?? '-'}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-bold pl-4">Cidade</TableCell>
+                      <TableCell className="text-right pr-4">
+                        {guest.city ?? '-'}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-bold pl-4">
+                        Placa do carro
+                      </TableCell>
+                      <TableCell className="text-right pr-4">
+                        {guest.carPlate ?? '-'}
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
               </div>
             </AccordionContent>
           </AccordionItem>
@@ -195,40 +218,75 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
               </div>
             </AccordionTrigger>
             <AccordionContent className="pb-0 bg-background" asChild>
-              <div key="unit" className="overflow-hidden p-4">
-                <div className="grid gap-2">
-                  <span>
-                    <strong>Nome:</strong> {unit.name}
-                  </span>
-                  <span>
-                    <strong>Tipo:</strong> {unit.type.name}
-                  </span>
-                  <span>
-                    <strong>Nº pessoas permitido:</strong>{' '}
-                    {unit.type.numberOfPeople}
-                  </span>
-                  <span>
-                    <strong>Data de Entrada:</strong>{' '}
-                    {dayjs(startDate).format('DD/MM/YYYY')}
-                  </span>
-                  <span>
-                    <strong>Data de Saída:</strong>{' '}
-                    {dayjs(endDate).format('DD/MM/YYYY')}
-                  </span>
-                  <span>
-                    <strong>Qtd. Diárias:</strong> {days}
-                  </span>
-                  <span>
-                    <strong>Qtd. Pessoas:</strong> {numberOfPeople}
-                  </span>
-                  <span>
-                    <strong>Modo de Preço:</strong>{' '}
-                    {pricingMode === 'MANUAL' ? 'Manual' : 'Tarifa'}
-                  </span>
-                  <span>
-                    <strong>Valor da diária:</strong> R$ {formatCurrency(daily)}
-                  </span>
-                </div>
+              <div key="unit" className="overflow-hidden">
+                <Table className="w-full text-xs">
+                  <TableBody>
+                    <TableRow>
+                      <TableCell className="font-bold pl-4">Nome</TableCell>
+                      <TableCell className="text-right pr-4">
+                        {unit.name}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-bold pl-4">Tipo</TableCell>
+                      <TableCell className="text-right pr-4">
+                        {unit.type.name}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-bold pl-4">
+                        Acomoda até
+                      </TableCell>
+                      <TableCell className="text-right pr-4">
+                        {unit.type.numberOfPeople} pessoas
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-bold pl-4">
+                        Data de Entrada
+                      </TableCell>
+                      <TableCell className="text-right pr-4">
+                        {dayjs(startDate).format('DD/MM/YYYY')}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-bold pl-4">
+                        Data de Saída
+                      </TableCell>
+                      <TableCell className="text-right pr-4">
+                        {dayjs(endDate).format('DD/MM/YYYY')}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-bold pl-4">Diárias</TableCell>
+                      <TableCell className="text-right pr-4">{days}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-bold pl-4">
+                        Nº Pessoas
+                      </TableCell>
+                      <TableCell className="text-right pr-4">
+                        {numberOfPeople}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-bold pl-4">
+                        Modo de Preço
+                      </TableCell>
+                      <TableCell className="text-right pr-4">
+                        {pricingMode === 'MANUAL' ? 'Manual' : 'Tarifa'}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-bold pl-4">
+                        Valor da diária
+                      </TableCell>
+                      <TableCell className="text-right pr-4">
+                        {formatCurrency(daily)}
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
               </div>
             </AccordionContent>
           </AccordionItem>
@@ -245,46 +303,55 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
               </div>
             </AccordionTrigger>
             <AccordionContent className="pb-0 bg-background" asChild>
-              <div key="payments" className="overflow-hidden p-4">
+              <div key="payments" className="overflow-hidden">
                 {payments.length === 0 && (
                   <span className="text-sm text-muted-foreground">
                     Nenhum pagamento registrado.
                   </span>
                 )}
                 <div className="space-y-2">
-                  {payments.map(p => {
-                    const Icon = PAYMENT_TYPE_ICONS[p.paymentType]
-                    return (
-                      <Button
-                        key={p.id}
-                        variant="outline"
-                        size="sm"
-                        className="w-full justify-between"
-                        onClick={() => {
-                          setEditAction('payment')
-                          setEditObject(p)
-                          setOpenSheet(true)
-                        }}
-                      >
-                        <div className="flex gap-4">
-                          <div className="flex items-center gap-2">
-                            <IconCalendarCheck className="w-4 h-4" />
-                            {dayjs(p.paidAt).format('DD/MM/YYYY')}
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Icon className="w-4 h-4" />
-                            {PAYMENT_TYPE_LABELS[p.paymentType]}
-                          </div>
-                        </div>
-                        <span className="font-semibold">
-                          {formatCurrency(p.amount)}
-                        </span>
-                      </Button>
-                    )
-                  })}
-                  <div className="text-right font-bold mt-2">
-                    Total pago: R$ {totalPaid.toFixed(2)}
-                  </div>
+                  <Table className="w-full text-xs">
+                    <TableBody>
+                      {payments.map(p => {
+                        const Icon = PAYMENT_TYPE_ICONS[p.paymentType]
+                        return (
+                          <TableRow
+                            key={p.id}
+                            className="cursor-pointer"
+                            onClick={() => {
+                              setEditAction('payment')
+                              setEditObject(p)
+                              setOpenSheet(true)
+                            }}
+                          >
+                            <TableCell className=" pl-4">
+                              <div className="flex gap-4">
+                                <div className="flex items-center gap-2">
+                                  <IconCalendarCheck className="w-4 h-4" />
+                                  {dayjs(p.paidAt).format('DD/MM/YYYY')}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Icon className="w-4 h-4" />
+                                  {PAYMENT_TYPE_LABELS[p.paymentType]}
+                                </div>
+                              </div>
+                            </TableCell>
+                            <TableCell className="text-right pr-4">
+                              {formatCurrency(p.amount)}
+                            </TableCell>
+                          </TableRow>
+                        )
+                      })}
+                      <TableRow>
+                        <TableCell className="font-bold pl-4">
+                          Total pago
+                        </TableCell>
+                        <TableCell className="text-right pr-4">
+                          {formatCurrency(totalPaid)}
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
                 </div>
               </div>
             </AccordionContent>
@@ -302,32 +369,45 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
               </div>
             </AccordionTrigger>
             <AccordionContent className="pb-0 bg-background" asChild>
-              <div key="discounts" className="overflow-hidden p-4">
+              <div key="discounts" className="overflow-hidden">
                 {discounts.length === 0 && (
                   <span className="text-sm text-muted-foreground">
                     Nenhum desconto aplicado.
                   </span>
                 )}
                 <div className="space-y-2">
-                  {discounts.map(d => (
-                    <Button
-                      key={d.id}
-                      variant="outline"
-                      size="sm"
-                      className="w-full justify-between"
-                      onClick={() => {
-                        setEditAction('discount')
-                        setEditObject(d)
-                        setOpenSheet(true)
-                      }}
-                    >
-                      <span>{d.reason}</span>
-                      <span>- R$ {d.amount.toFixed(2)}</span>
-                    </Button>
-                  ))}
-                  <div className="text-right font-bold mt-2">
-                    Total descontos: - R$ {totalDiscounts.toFixed(2)}
-                  </div>
+                  <Table className="w-full text-xs">
+                    <TableBody>
+                      {discounts.map(d => {
+                        return (
+                          <TableRow
+                            key={d.id}
+                            className="cursor-pointer"
+                            onClick={() => {
+                              setEditAction('discount')
+                              setEditObject(d)
+                              setOpenSheet(true)
+                            }}
+                          >
+                            <TableCell className="pl-4">
+                              <span>{d.reason}</span>
+                            </TableCell>
+                            <TableCell className="text-right pr-4">
+                              - {formatCurrency(d.amount)}
+                            </TableCell>
+                          </TableRow>
+                        )
+                      })}
+                      <TableRow>
+                        <TableCell className="font-bold pl-4">
+                          Total descontos
+                        </TableCell>
+                        <TableCell className="text-right pr-4">
+                          - {formatCurrency(totalDiscounts)}
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
                 </div>
               </div>
             </AccordionContent>
@@ -344,32 +424,45 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
               </div>
             </AccordionTrigger>
             <AccordionContent className="pb-0 bg-background" asChild>
-              <div key="services" className="overflow-hidden p-4">
+              <div key="services" className="overflow-hidden">
                 {services.length === 0 && (
                   <span className="text-sm text-muted-foreground">
                     Nenhum serviço lançado.
                   </span>
                 )}
                 <div className="space-y-2">
-                  {services.map(s => (
-                    <Button
-                      key={s.id}
-                      variant="outline"
-                      size="sm"
-                      className="w-full justify-between"
-                      onClick={() => {
-                        setEditAction('service')
-                        setEditObject(s)
-                        setOpenSheet(true)
-                      }}
-                    >
-                      <span>{s.name}</span>
-                      <span>R$ {formatCurrency(s.amount)}</span>
-                    </Button>
-                  ))}
-                  <div className="text-right font-bold mt-2">
-                    Total serviços: {totalServices.toFixed(2)}
-                  </div>
+                  <Table className="w-full text-xs">
+                    <TableBody>
+                      {services.map(s => {
+                        return (
+                          <TableRow
+                            key={s.id}
+                            className="cursor-pointer"
+                            onClick={() => {
+                              setEditAction('service')
+                              setEditObject(s)
+                              setOpenSheet(true)
+                            }}
+                          >
+                            <TableCell className="pl-4">
+                              <span>{s.name}</span>
+                            </TableCell>
+                            <TableCell className="text-right pr-4">
+                              {formatCurrency(s.amount)}
+                            </TableCell>
+                          </TableRow>
+                        )
+                      })}
+                      <TableRow>
+                        <TableCell className="font-bold pl-4">
+                          Total descontos
+                        </TableCell>
+                        <TableCell className="text-right pr-4">
+                          {formatCurrency(totalServices)}
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
                 </div>
               </div>
             </AccordionContent>
@@ -386,20 +479,69 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
               </div>
             </AccordionTrigger>
             <AccordionContent className="pb-0 bg-background" asChild>
-              <div key="summary" className="overflow-hidden p-4">
-                <div className="grid gap-2">
-                  <span>
-                    <strong>Total da reserva:</strong> R${' '}
-                    {totalExpected.toFixed(2)}
-                  </span>
-                  <span>
-                    <strong>Total pago:</strong> R$ {totalPaid.toFixed(2)}
-                  </span>
-                  <span>
-                    <strong>Saldo restante:</strong> R${' '}
-                    {(totalExpected - totalPaid).toFixed(2)}
-                  </span>
-                </div>
+              <div key="summary" className="overflow-hidden">
+                <Table className="w-full text-xs">
+                  <TableBody>
+                    <TableRow>
+                      <TableCell className="font-bold pl-4">
+                        Hospedagem
+                      </TableCell>
+                      <TableCell className="text-right pr-4">
+                        {`${days} dia(s) x ${formatCurrency(daily)} = ${formatCurrency(days * daily)}`}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-bold pl-4">
+                        Serviços extras
+                      </TableCell>
+                      <TableCell className="text-right pr-4">
+                        {`+ ${formatCurrency(totalServices)}`}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-bold pl-4">
+                        Descontos
+                      </TableCell>
+                      <TableCell className="text-right pr-4">
+                        {`- ${formatCurrency(totalDiscounts)}`}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-bold pl-4">
+                        Total da reserva
+                      </TableCell>
+                      <TableCell className="text-right pr-4">
+                        {formatCurrency(totalExpected)}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-bold pl-4">
+                        Total pago
+                      </TableCell>
+                      <TableCell className="text-right pr-4">
+                        {formatCurrency(totalPaid)}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-bold pl-4">
+                        Saldo restante
+                      </TableCell>
+                      <TableCell className="text-right pr-4">
+                        {formatCurrency(totalExpected - totalPaid)}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-bold pl-4">Status</TableCell>
+                      <TableCell
+                        className={`font-bold text-right pr-4 ${STATUS_PAYMENT_COLORS_TEXT[booking.paymentStatus]}`}
+                      >
+                        {booking.paymentStatus === 'COMPLETED'
+                          ? 'Pago'
+                          : 'Pendente'}
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
               </div>
             </AccordionContent>
           </AccordionItem>

@@ -17,6 +17,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState, useTransition } from 'react'
 import { toast } from 'sonner'
 import AlertErrorGlobal from '../AlertErrorGlobal'
+import { LoadingSpinner } from '../LoadingSpinner'
 import { GuestCombobox } from '../guest/GuestCombobox'
 import { RatesCombobox } from '../rate/RatesCombobox'
 import {
@@ -493,7 +494,7 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
           ) : (
             <div className="flex gap-2">
               <Button type="submit" className="w-full" size={'sm'}>
-                {isPending ? 'Atualizando...' : 'Atualizar'}
+                {isPending ? <LoadingSpinner size="sm" /> : 'Atualizar'}
               </Button>
               <Button
                 type="button"
@@ -505,13 +506,13 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
                   setServerError(null)
                 }}
               >
-                {isPending ? 'Cancelando...' : 'Cancelar Atualização'}
+                {isPending ? <LoadingSpinner size="sm" /> : 'Cancelar'}
               </Button>
             </div>
           )
         ) : (
           <Button type="submit" className="w-full" size={'sm'}>
-            {isPending ? 'Criando...' : 'Nova reserva'}
+            {isPending ? <LoadingSpinner size="sm" /> : 'Nova reserva'}
           </Button>
         )}
       </CardFooter>
