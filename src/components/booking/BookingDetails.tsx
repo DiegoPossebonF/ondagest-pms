@@ -40,6 +40,7 @@ import {
   IconUser,
 } from '@tabler/icons-react'
 import { useEffect, useState } from 'react'
+import VoucherViewer from '../pdf/VoucherViewer'
 import { Table, TableBody, TableCell, TableRow } from '../ui/table'
 import { BookingActionsSheet } from './BookingActionsSheet'
 
@@ -550,7 +551,7 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
 
       <Separator />
 
-      <CardFooter className="flex justify-end px-6 py-4">
+      <CardFooter className="flex justify-center px-6 py-4 gap-2">
         <BookingActionsSheet
           openSheet={openSheet}
           setOpenSheet={setOpenSheet}
@@ -558,6 +559,7 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
           editAction={editAction ? editAction : undefined}
           editObject={editObject ? editObject : undefined}
         />
+        <VoucherViewer booking={booking} />
       </CardFooter>
     </Card>
   )
