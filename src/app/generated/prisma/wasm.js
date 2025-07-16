@@ -117,6 +117,29 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.OrganizationScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  logoUrl: 'logoUrl',
+  email: 'email',
+  phone: 'phone',
+  website: 'website',
+  facebook: 'facebook',
+  instagram: 'instagram',
+  address: 'address',
+  city: 'city',
+  state: 'state',
+  zipCode: 'zipCode',
+  country: 'country',
+  cpf: 'cpf',
+  cnpj: 'cnpj',
+  rules: 'rules',
+  invoiceMessageVoucher: 'invoiceMessageVoucher',
+  invoiceMessageReceipt: 'invoiceMessageReceipt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -256,6 +279,7 @@ exports.PaymentType = exports.$Enums.PaymentType = {
 };
 
 exports.Prisma.ModelName = {
+  Organization: 'Organization',
   User: 'User',
   Guest: 'Guest',
   UnitType: 'UnitType',

@@ -4,9 +4,10 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import {
+  IconBuilding,
   IconCurrencyReal,
   IconHome,
-  IconHomeCog,
+  IconHomeRibbon,
   IconUsers,
 } from '@tabler/icons-react'
 import { motion } from 'framer-motion'
@@ -14,6 +15,12 @@ import Link from 'next/link'
 
 export default function SettingsPage() {
   const settingsOptions = [
+    {
+      title: 'Organização',
+      description: 'Configure os dados da sua organização (Empresa)',
+      icon: <IconBuilding size={40} stroke={2} className="text-gray-500" />,
+      href: '/settings/organization',
+    },
     {
       title: 'Usuários',
       description: 'Gerencie seus usuários',
@@ -29,7 +36,7 @@ export default function SettingsPage() {
     {
       title: 'Tipos de Unidade',
       description: 'Gerencie tipos de suas acomodações',
-      icon: <IconHomeCog size={40} stroke={2} className="text-orange-500" />,
+      icon: <IconHomeRibbon size={40} stroke={2} className="text-orange-500" />,
       href: '/settings/unit-types',
     },
     {

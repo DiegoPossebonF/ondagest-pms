@@ -26,3 +26,26 @@ export const phoneMask = (value: string) => {
     .replace(/(\d{2})(\d)/, '($1) $2')
     .replace(/(\d{5})(\d)/, '$1-$2')
 }
+
+export const cnpjMask = (value: string) => {
+  const numbers = value.replace(/\D/g, '')
+
+  if (!numbers) return ''
+
+  return numbers
+    .slice(0, 14) // limita a 14 dígitos
+    .replace(/(\d{2})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1/$2')
+    .replace(/(\d{4})(\d{1,2})$/, '$1-$2')
+}
+
+export const cepMask = (value: string) => {
+  const numbers = value.replace(/\D/g, '')
+
+  if (!numbers) return ''
+
+  return numbers
+    .slice(0, 8) // limita a 8 dígitos
+    .replace(/(\d{5})(\d)/, '$1-$2')
+}
