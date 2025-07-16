@@ -1,5 +1,6 @@
 'use client'
 
+import type { Organization } from '@/app/generated/prisma'
 import { STATUS_LABELS, formatCurrency } from '@/lib/utils'
 import LogoPMS from '@/public/images/LogoOndaGest.png'
 import type { BookingAllIncludes } from '@/types/booking'
@@ -60,6 +61,7 @@ const styles = StyleSheet.create({
   label: {
     fontWeight: 'bold',
     color: '#1e3a8a',
+    marginBottom: 4,
   },
   row: {
     flexDirection: 'row',
@@ -82,20 +84,12 @@ const styles = StyleSheet.create({
 
 type VoucherDocumentProps = {
   booking: BookingAllIncludes
-  hotelName: string
-  hotelLogo: string
-  hotelContact: {
-    phone?: string
-    email?: string
-    website?: string
-  }
+  organization: Organization
 }
 
 const VoucherDocument: React.FC<VoucherDocumentProps> = ({
   booking,
-  hotelName,
-  hotelLogo,
-  hotelContact,
+  organization,
 }) => {
   const totalServices = booking.services.reduce((acc, s) => acc + s.amount, 0)
   const totalDiscounts = booking.discounts.reduce((acc, d) => acc + d.amount, 0)
@@ -112,8 +106,10 @@ const VoucherDocument: React.FC<VoucherDocumentProps> = ({
             <View
               style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}
             >
-              <Image style={styles.logo} src={hotelLogo} />
-              <Text style={styles.appName}>{hotelName}</Text>
+              {organization.logoUrl && (
+                <Image style={styles.logo} src={organization.logoUrl} />
+              )}
+              <Text style={styles.appName}>{organization.name}</Text>
             </View>
             <View>
               <Text style={styles.title}>Voucher de Reserva</Text>
@@ -121,6 +117,35 @@ const VoucherDocument: React.FC<VoucherDocumentProps> = ({
                 Reserva #{padStart(booking.id.toString(), 5, '0')}
               </Text>
             </View>
+          </View>
+
+          {/* Organização */}
+          <View style={styles.section}>
+            <Text style={styles.label}>Informações do Estabelecimento:</Text>
+            {organization.address && (
+              <Text>
+                Endereço: {organization.address}, {organization.city} -{' '}
+                {organization.state}, {organization.zipCode}
+              </Text>
+            )}
+            <Text>
+              {organization.cnpj
+                ? `CNPJ: ${organization.cnpj}`
+                : organization.cpf
+                  ? `CPF: ${organization.cpf}`
+                  : 'Documento não informado'}
+            </Text>
+            {organization.phone && <Text>Telefone: {organization.phone}</Text>}
+            {organization.email && <Text>Email: {organization.email}</Text>}
+            {organization.website && (
+              <Text>Website: {organization.website}</Text>
+            )}
+            {organization.instagram && (
+              <Text>Instagram: @{organization.instagram}</Text>
+            )}
+            {organization.facebook && (
+              <Text>Facebook: {organization.facebook}</Text>
+            )}
           </View>
 
           {/* Hóspede */}
@@ -150,10 +175,13 @@ const VoucherDocument: React.FC<VoucherDocumentProps> = ({
             <Text style={styles.label}>Período:</Text>
             <Text>
               {dayjs(booking.startDate).format('DD/MM/YYYY')} até{' '}
-              {dayjs(booking.endDate).format('DD/MM/YYYY')}.
+              {dayjs(booking.endDate).format('DD/MM/YYYY')}
             </Text>
             <Text>
-              {`Total de ${dayjs(booking.endDate).diff(booking.startDate, 'days')} diária(s).`}
+              {`Total de ${dayjs(booking.endDate).diff(
+                booking.startDate,
+                'days'
+              )} diária(s).`}
             </Text>
             <Text>Status: {STATUS_LABELS[booking.status]}</Text>
           </View>
@@ -163,15 +191,20 @@ const VoucherDocument: React.FC<VoucherDocumentProps> = ({
             <Text style={styles.label}>Resumo Financeiro:</Text>
             <View style={styles.row}>
               <Text>Hospedagem:</Text>
-              <Text>{`${dayjs(booking.endDate).diff(booking.startDate, 'days')} diária(s) x ${formatCurrency(booking.daily || 0)} = ${formatCurrency(booking.totalAmount)}`}</Text>
+              <Text>{`${dayjs(booking.endDate).diff(
+                booking.startDate,
+                'days'
+              )} diária(s) x ${formatCurrency(booking.daily || 0)} = ${formatCurrency(
+                booking.totalAmount
+              )}`}</Text>
             </View>
             <View style={styles.row}>
               <Text>Serviços:</Text>
-              <Text>R$ {totalServices.toFixed(2)}</Text>
+              <Text>{formatCurrency(totalServices)}</Text>
             </View>
             <View style={styles.row}>
               <Text>Descontos:</Text>
-              <Text>- R$ {totalDiscounts.toFixed(2)}</Text>
+              <Text>- {formatCurrency(totalDiscounts)}</Text>
             </View>
             <View style={[styles.row, { alignItems: 'center' }]}>
               <Text />
@@ -181,15 +214,15 @@ const VoucherDocument: React.FC<VoucherDocumentProps> = ({
             </View>
             <View style={styles.row}>
               <Text>Valor total:</Text>
-              <Text>R$ {subtotal.toFixed(2)}</Text>
+              <Text>{formatCurrency(subtotal)}</Text>
             </View>
             <View style={styles.row}>
               <Text>Total Pago:</Text>
-              <Text>R$ {totalPaid.toFixed(2)}</Text>
+              <Text>{formatCurrency(totalPaid)}</Text>
             </View>
             <View style={styles.row}>
               <Text>Saldo Restante:</Text>
-              <Text>R$ {remaining.toFixed(2)}</Text>
+              <Text>{formatCurrency(remaining)}</Text>
             </View>
           </View>
         </View>
@@ -203,16 +236,18 @@ const VoucherDocument: React.FC<VoucherDocumentProps> = ({
               gap: 6,
             }}
           >
-            <Image style={styles.logo} src={hotelLogo} />
+            {organization.logoUrl && (
+              <Image style={styles.logo} src={organization.logoUrl} />
+            )}
             <View>
-              {hotelContact.phone && (
-                <Text style={styles.small}>Tel: {hotelContact.phone}</Text>
+              {organization.phone && (
+                <Text style={styles.small}>Tel: {organization.phone}</Text>
               )}
-              {hotelContact.email && (
-                <Text style={styles.small}>Email: {hotelContact.email}</Text>
+              {organization.email && (
+                <Text style={styles.small}>Email: {organization.email}</Text>
               )}
-              {hotelContact.website && (
-                <Text style={styles.small}>Site: {hotelContact.website}</Text>
+              {organization.website && (
+                <Text style={styles.small}>Site: {organization.website}</Text>
               )}
             </View>
           </View>

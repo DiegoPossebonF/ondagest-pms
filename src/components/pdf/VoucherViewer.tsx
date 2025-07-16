@@ -1,10 +1,10 @@
 'use client'
-import Logo from '@/public/images/mpc-logo.png'
 import type { BookingAllIncludes } from '@/types/booking'
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer'
 import { IconFileLike } from '@tabler/icons-react'
 import { padStart } from 'lodash'
 import { LoadingSpinner } from '../LoadingSpinner'
+import { useOrganization } from '../organization/OrganizationProvider'
 import { Button } from '../ui/button'
 import {
   Dialog,
@@ -21,6 +21,8 @@ import VoucherDocument from './VoucherDocument'
 export default function VoucherViewer({
   booking,
 }: { booking: BookingAllIncludes }) {
+  const organization = useOrganization()
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -54,17 +56,8 @@ export default function VoucherViewer({
         </DialogHeader>
         <div className="space-y-4">
           <div className="border rounded shadow">
-            <PDFViewer width="100%" className="h-96">
-              <VoucherDocument
-                booking={booking}
-                hotelName="Morada da Praia Centro"
-                hotelLogo={Logo.src}
-                hotelContact={{
-                  phone: '(51) 99313-3209',
-                  email: 'moradadapraiacentro@gmail.com',
-                  website: 'www.moradadapraiacentro.com.br',
-                }}
-              />
+            <PDFViewer width="100%" className="h-100">
+              <VoucherDocument booking={booking} organization={organization} />
             </PDFViewer>
           </div>
 
@@ -73,13 +66,7 @@ export default function VoucherViewer({
               document={
                 <VoucherDocument
                   booking={booking}
-                  hotelName="Morada da Praia Centro"
-                  hotelLogo={Logo.src}
-                  hotelContact={{
-                    phone: '(51) 99313-3209',
-                    email: 'moradadapraiacentro@gmail.com',
-                    website: 'www.moradadapraiacentro.com.br',
-                  }}
+                  organization={organization}
                 />
               }
               fileName={`voucher-reserva-nr-${padStart(booking.id.toString(), 5, '0')}.pdf`}
