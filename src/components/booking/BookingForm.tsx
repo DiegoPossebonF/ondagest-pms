@@ -212,7 +212,14 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
     )
   }, [watchDaily, watchPeriod])
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    if (!watchDaily) return
+    console.log(form.getValues())
+  }, [watchDaily])
+
   async function onSubmit(values: BookingSchema) {
+    alert('submit')
     if (booking) {
       startTransition(() => {
         updateBooking(booking.id, values).then(data => {
@@ -269,10 +276,7 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
           serverError={serverError}
         />
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="w-full space-y-4 pt-6"
-          >
+          <form className="w-full space-y-4 pt-6">
             <FormField
               control={form.control}
               name="status"
@@ -493,7 +497,14 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
             </div>
           ) : (
             <div className="flex gap-2">
-              <Button type="submit" className="w-full" size={'sm'}>
+              <Button
+                type="submit"
+                className="w-full"
+                size={'sm'}
+                onClick={() => {
+                  form.handleSubmit(onSubmit)()
+                }}
+              >
                 {isPending ? <LoadingSpinner size="sm" /> : 'Atualizar'}
               </Button>
               <Button
@@ -511,7 +522,14 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
             </div>
           )
         ) : (
-          <Button type="submit" className="w-full" size={'sm'}>
+          <Button
+            type="submit"
+            className="w-full"
+            size={'sm'}
+            onClick={() => {
+              form.handleSubmit(onSubmit)()
+            }}
+          >
             {isPending ? <LoadingSpinner size="sm" /> : 'Nova reserva'}
           </Button>
         )}

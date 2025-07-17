@@ -29,7 +29,7 @@ export async function getBookings({
   page = 1,
   perPage = 10,
   sortKey = 'startDate',
-  sortDirection = 'desc',
+  sortDirection = 'asc',
   filters = {},
 }: GetBookingsParams) {
   try {

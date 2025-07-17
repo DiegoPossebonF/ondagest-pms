@@ -306,9 +306,9 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
             <AccordionContent className="pb-0 bg-background" asChild>
               <div key="payments" className="overflow-hidden">
                 {payments.length === 0 && (
-                  <span className="text-sm text-muted-foreground">
+                  <div className="text-sm text-muted-foreground p-4">
                     Nenhum pagamento registrado.
-                  </span>
+                  </div>
                 )}
                 <div className="space-y-2">
                   <Table className="w-full text-xs">
@@ -372,9 +372,9 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
             <AccordionContent className="pb-0 bg-background" asChild>
               <div key="discounts" className="overflow-hidden">
                 {discounts.length === 0 && (
-                  <span className="text-sm text-muted-foreground">
+                  <div className="text-sm text-muted-foreground p-4">
                     Nenhum desconto aplicado.
-                  </span>
+                  </div>
                 )}
                 <div className="space-y-2">
                   <Table className="w-full text-xs">
@@ -427,9 +427,9 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
             <AccordionContent className="pb-0 bg-background" asChild>
               <div key="services" className="overflow-hidden">
                 {services.length === 0 && (
-                  <span className="text-sm text-muted-foreground">
+                  <div className="text-sm text-muted-foreground p-4">
                     Nenhum serviço lançado.
-                  </span>
+                  </div>
                 )}
                 <div className="space-y-2">
                   <Table className="w-full text-xs">

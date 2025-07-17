@@ -67,7 +67,7 @@ export function BookingsFiltersProvider({
 }: { children: React.ReactNode }) {
   const isMobile = useIsMobile()
   const [bookings, setBookings] = useState<BookingAllIncludes[]>([])
-  const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc')
   const [activeFilters, setActiveFilters] = useState(false)
   const [totalPages, setTotalPages] = useState(1)
   const [page, setPage] = useState(1)

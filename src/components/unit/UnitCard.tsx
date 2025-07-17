@@ -239,29 +239,30 @@ export default function UnitCard({ unit, index }: UnitCardProps) {
         >
           {booking ? (
             <>
-              <BookingActionsSheet
-                booking={booking}
-                openSheet={openSheet}
-                setOpenSheet={setOpenSheet}
-              />
-
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link href={`/bookings/${booking.id}`}>
                     <Button
                       size="icon"
                       className={`size-8 group-data-[collapsible=icon]:opacity-0`}
-                      variant="outline"
+                      variant="default"
+                      title="Ir para reserva"
                     >
                       <IconEdit className="h-4 w-4" />
-                      <span className="sr-only">Editar reserva</span>
+                      <span className="sr-only">Ir para reserva</span>
                     </Button>
                   </Link>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Editar reserva</p>
+                  <p>Ir para reserva</p>
                 </TooltipContent>
               </Tooltip>
+
+              <BookingActionsSheet
+                booking={booking}
+                openSheet={openSheet}
+                setOpenSheet={setOpenSheet}
+              />
 
               {managerAction && booking.status === 'PENDING' && (
                 <AlertDialog>
