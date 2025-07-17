@@ -21,7 +21,6 @@ const styles = StyleSheet.create({
     padding: 20,
     fontSize: 11,
     fontFamily: 'Helvetica',
-    border: '2px solid #1e3a8a',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
@@ -54,7 +53,7 @@ const styles = StyleSheet.create({
   },
   section: {
     marginBottom: 12,
-    padding: 8,
+    padding: 15,
     borderRadius: 4,
     backgroundColor: '#f1f5f9',
   },

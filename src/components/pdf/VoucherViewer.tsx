@@ -10,6 +10,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -22,6 +23,9 @@ export default function VoucherViewer({
   booking,
 }: { booking: BookingAllIncludes }) {
   const organization = useOrganization()
+
+  const isMobile =
+    typeof window !== 'undefined' && /Mobi|Android/i.test(navigator.userAgent)
 
   return (
     <Dialog>
@@ -45,7 +49,7 @@ export default function VoucherViewer({
           </TooltipContent>
         </Tooltip>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className={`flex flex-col ${isMobile ? '' : 'h-[90vh]'}`}>
         <DialogHeader>
           <DialogTitle>
             Voucher da Reserva #{padStart(booking.id.toString(), 5, '0')}
@@ -54,13 +58,34 @@ export default function VoucherViewer({
             Voucher da Reserva {booking.id}
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-4">
-          <div className="border rounded shadow">
-            <PDFViewer width="100%" className="h-100">
-              <VoucherDocument booking={booking} organization={organization} />
-            </PDFViewer>
+        <div className="space-y-4 h-full">
+          <div className="flex flex-col items-center justify-center border rounded shadow h-full">
+            {!isMobile ? (
+              <PDFViewer
+                width="98%"
+                height="98%"
+                style={{ borderRadius: '0.25rem' }}
+              >
+                <VoucherDocument
+                  booking={booking}
+                  organization={organization}
+                />
+              </PDFViewer>
+            ) : (
+              <div className="space-y-2 p-4">
+                <p className="text-muted-foreground text-center">
+                  Pré visualização do voucher indisponível em dispositivos
+                  móveis.
+                </p>
+                <p className="text-muted-foreground text-center">
+                  Para visualizar o voucher, clique no botão &quot;Baixar
+                  Voucher PDF&quot; abaixo.
+                </p>
+              </div>
+            )}
           </div>
-
+        </div>
+        <DialogFooter>
           <Button variant="outline" size="sm">
             <PDFDownloadLink
               document={
@@ -77,7 +102,7 @@ export default function VoucherViewer({
               }
             </PDFDownloadLink>
           </Button>
-        </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )
