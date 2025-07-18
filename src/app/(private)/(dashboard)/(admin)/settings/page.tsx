@@ -37,7 +37,7 @@ export default function SettingsPage() {
       title: 'Tipos de Unidade',
       description: 'Gerencie tipos de suas acomodações',
       icon: <IconHomeRibbon size={40} stroke={2} className="text-orange-500" />,
-      href: '/settings/unit-types',
+      href: '/settings/unit_types',
     },
     {
       title: 'Tarifas',

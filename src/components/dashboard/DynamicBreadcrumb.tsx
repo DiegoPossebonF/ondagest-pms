@@ -27,9 +27,17 @@ export function DynamicBreadcrumb() {
       units: 'Acomodações',
       payments: 'Pagamentos',
       new: 'Nova',
+      organization: 'Empresa',
+      users: 'Usuários',
+      unit_types: 'Tipos de Unidade',
+      rates: 'Tarifas',
     }
 
-    const label = labelMap[segment] || segment
+    const label = labelMap[segment]
+      ? labelMap[segment]
+      : Number(segment)
+        ? segment
+        : 'Editar'
 
     return { href, label }
   })

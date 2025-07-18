@@ -11,9 +11,9 @@ export default async function OrganizationPage() {
   return (
     <>
       <div className="p-6">
-        <h1 className="text-2xl font-bold mb-4">Organização</h1>
+        <h1 className="text-2xl font-bold mb-4">Empresa</h1>
         <p className="text-muted-foreground">
-          Aqui voce pode gerenciar os dados da sua organização (Empresa).
+          Aqui voce pode gerenciar os dados da sua empresa.
         </p>
       </div>
       <div className="flex flex-col p-6 items-center justify-center w-full">
