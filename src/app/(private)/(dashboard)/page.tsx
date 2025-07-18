@@ -1,4 +1,4 @@
-import { getUnitsWithUpdatedBookings } from '@/app/actions/unit/actions'
+import { getUnitsUpdatedBookingsByDate } from '@/app/actions/unit/actions'
 import { StatusLegend } from '@/components/StatusLegend'
 import UnitCard from '@/components/unit/UnitCard'
 import dayjs from 'dayjs'
@@ -7,7 +7,7 @@ import isBetween from 'dayjs/plugin/isBetween'
 dayjs.extend(isBetween)
 
 export default async function Dashboard() {
-  const res = await getUnitsWithUpdatedBookings()
+  const res = await getUnitsUpdatedBookingsByDate(dayjs().toDate())
 
   if (res.error || !res.data) {
     throw new Error(res.error)

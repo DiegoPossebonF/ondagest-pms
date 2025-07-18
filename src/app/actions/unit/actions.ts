@@ -197,3 +197,63 @@ export async function getUnitsWithUpdatedBookings() {
     }
   }
 }
+
+export async function getUnitsUpdatedBookingsByDate(currentDate: Date) {
+  try {
+    const units = await db.unit.findMany({
+      include: {
+        type: true,
+        bookings: {
+          where: {
+            ...activeBookingStatuses,
+            startDate: { lte: currentDate },
+            endDate: { gte: currentDate },
+          },
+          include: {
+            guest: true,
+            unit: {
+              include: {
+                type: {
+                  include: {
+                    rates: {
+                      include: { type: true },
+                    },
+                  },
+                },
+              },
+            },
+            payments: { orderBy: { paidAt: 'desc' } },
+            services: true,
+            discounts: true,
+            rate: { include: { type: true } },
+          },
+        },
+      },
+      orderBy: { name: 'asc' },
+    })
+
+    const updatedUnits = await Promise.all(
+      units.map(async unit => {
+        const updatedBookings = await Promise.all(
+          unit.bookings.map(async booking =>
+            updateBookingStatusIfNeeded(booking)
+          )
+        )
+
+        return { ...unit, bookings: updatedBookings }
+      })
+    )
+
+    return {
+      data: updatedUnits,
+      error: null,
+    }
+  } catch (error) {
+    console.error('Erro ao buscar acomodações atualizadas!', error)
+    return {
+      data: null,
+      error:
+        'Erro ao buscar acomodações atualizadas - tente novamente ou contate o suporte!',
+    }
+  }
+}

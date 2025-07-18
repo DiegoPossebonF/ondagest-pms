@@ -2,6 +2,7 @@
 import { createPayment } from '@/app/actions/payment/createPayment'
 import { updatePayment } from '@/app/actions/payment/updatePayment'
 import { type Payment, PaymentType } from '@/app/generated/prisma'
+import ReceiptViewer from '@/components/pdf/ReceiptViewer'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -19,6 +20,7 @@ import {
   formatCurrency,
 } from '@/lib/utils'
 import { type PaymentSchema, paymentSchema } from '@/schemas/payment-schema'
+import type { BookingAllIncludes } from '@/types/booking'
 import { zodResolver } from '@hookform/resolvers/zod'
 import dayjs from 'dayjs'
 import { CalendarIcon } from 'lucide-react'
@@ -38,13 +40,13 @@ import {
 import { PaymentAlertDialogDelete } from './PaymentAlertDialogDelete'
 
 interface PaymentFormProps {
-  bookingId: number
+  booking: BookingAllIncludes
   payment?: Payment
   closeDialog?: () => void
 }
 
 export function PaymentForm({
-  bookingId,
+  booking,
   payment,
   closeDialog,
 }: PaymentFormProps) {
@@ -57,7 +59,7 @@ export function PaymentForm({
   const form = useForm<PaymentSchema>({
     resolver: zodResolver(paymentSchema),
     defaultValues: {
-      bookingId: bookingId.toString(),
+      bookingId: booking.id.toString(),
       amount: payment?.amount || 0,
       paymentType: payment?.paymentType || 'PIX',
       paidAt: payment?.paidAt || dayjs().toDate(),
@@ -253,16 +255,19 @@ export function PaymentForm({
                   : 'Lançar pagamento'}
             </Button>
             {payment && (
-              <PaymentAlertDialogDelete
-                payment={payment}
-                open={openDeleteDialog}
-                setOpen={setOpenDeleteDialog}
-                closeSheet={closeDialog}
-              >
-                <Button className="bg-red-500 hover:bg-red-400" size={'sm'}>
-                  Excluir
-                </Button>
-              </PaymentAlertDialogDelete>
+              <>
+                <PaymentAlertDialogDelete
+                  payment={payment}
+                  open={openDeleteDialog}
+                  setOpen={setOpenDeleteDialog}
+                  closeSheet={closeDialog}
+                >
+                  <Button className="bg-red-500 hover:bg-red-400" size={'sm'}>
+                    Excluir
+                  </Button>
+                </PaymentAlertDialogDelete>
+                <ReceiptViewer booking={booking} payment={payment} />
+              </>
             )}
           </div>
         </form>

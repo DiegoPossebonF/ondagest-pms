@@ -169,7 +169,7 @@ export function BookingActionsSheet({
 
         {action === 'payment' && (
           <PaymentForm
-            bookingId={booking.id}
+            booking={booking}
             payment={editObject as Payment}
             closeDialog={() => setOpenSheet(false)}
           />
