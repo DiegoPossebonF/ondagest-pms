@@ -98,6 +98,10 @@ export async function freeUnitsPerPeriod(
   ignoreBookingId?: number
 ) {
   try {
+    // 🧼 Remove hora para evitar conflitos por diferença de time
+    const from = dayjs(period.from).startOf('day').toDate()
+    const to = dayjs(period.to).startOf('day').toDate()
+
     const units = await db.unit.findMany({
       where: {
         NOT: {
@@ -106,22 +110,19 @@ export async function freeUnitsPerPeriod(
               ...activeBookingStatuses,
               AND: [
                 {
+                  // Permite reservas cuja entrada é exatamente no último dia do período informado
+                  NOT: {
+                    startDate: to,
+                  },
+                },
+                {
                   OR: [
                     {
-                      startDate: { lte: period.from },
-                      endDate: { gte: period.from },
-                    },
-                    {
-                      startDate: { lte: period.to },
-                      endDate: { gte: period.to },
-                    },
-                    {
-                      startDate: { gte: period.from },
-                      endDate: { lte: period.to },
+                      startDate: { lt: to },
+                      endDate: { gt: from },
                     },
                   ],
                 },
-                // 🔸 Ignora o booking atual para não gerar auto-conflito
                 ignoreBookingId ? { id: { not: ignoreBookingId } } : {},
               ],
             },
@@ -134,7 +135,7 @@ export async function freeUnitsPerPeriod(
 
     return units
   } catch (error) {
-    console.log(error)
+    console.error('Erro ao buscar unidades livres:', error)
     return null
   }
 }

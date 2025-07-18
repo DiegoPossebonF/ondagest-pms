@@ -218,8 +218,14 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
     console.log(form.getValues())
   }, [watchDaily])
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    if (!watchPeriod) return
+    form.setValue('unitId', '')
+    setSelectedUnit(null)
+  }, [watchPeriod])
+
   async function onSubmit(values: BookingSchema) {
-    alert('submit')
     if (booking) {
       startTransition(() => {
         updateBooking(booking.id, values).then(data => {
@@ -276,7 +282,7 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
           serverError={serverError}
         />
         <Form {...form}>
-          <form className="w-full space-y-4 pt-6">
+          <form className="w-full space-y-4">
             <FormField
               control={form.control}
               name="status"

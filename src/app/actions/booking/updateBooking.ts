@@ -50,9 +50,30 @@ export async function updateBooking(id: number, data: BookingSchema) {
     totalAmount,
     pricingMode,
     daily,
+    status,
   } = parsed.data
 
-  const { status } = parsed.data
+  // Verificar se a unit já contem reserva para o perido informado, ignorando a reserva atual
+  const existingBooking = await db.booking.findFirst({
+    where: {
+      unitId,
+      startDate: {
+        lte: period.to,
+      },
+      endDate: {
+        gte: period.from,
+      },
+      id: {
+        not: id,
+      },
+    },
+  })
+
+  if (existingBooking) {
+    return {
+      error: 'A unit já possui uma reserva para o período informado.',
+    }
+  }
 
   const validation = await validateBookingStatusChange(
     booking,

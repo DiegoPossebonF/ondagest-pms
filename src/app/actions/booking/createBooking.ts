@@ -1,10 +1,10 @@
-// src/actions/booking.ts
-
 'use server'
 
 import { BookingStatus, PricingMode } from '@/app/generated/prisma'
 import db from '@/lib/db'
+import { activeBookingStatuses } from '@/lib/db/scopes'
 import { type BookingSchema, bookingSchema } from '@/schemas/booking-schema'
+import dayjs from 'dayjs'
 import { revalidatePath } from 'next/cache'
 
 export async function createBooking(data: BookingSchema) {
@@ -28,6 +28,23 @@ export async function createBooking(data: BookingSchema) {
     pricingMode,
     daily,
   } = parsed.data
+
+  const from = dayjs(period.from).startOf('day').toDate()
+  const to = dayjs(period.to).startOf('day').toDate()
+
+  const existingBooking = await db.booking.findFirst({
+    where: {
+      unitId,
+      AND: [{ startDate: { lt: to } }, { endDate: { gt: from } }],
+      ...activeBookingStatuses,
+    },
+  })
+
+  if (existingBooking) {
+    return {
+      error: 'Acomodação já possui reserva para o período informado',
+    }
+  }
 
   try {
     await db.booking.create({

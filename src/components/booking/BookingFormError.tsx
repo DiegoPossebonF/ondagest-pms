@@ -15,7 +15,7 @@ export function BookingFormError({ errors, serverError }: FormErrorProps) {
   }
 
   return (
-    <Alert variant="destructive" className="mb-6 bg-red-100 pt-6">
+    <Alert variant="destructive" className="mt-6 bg-red-100 ">
       <AlertCircle className="h-4 w-4" />
       <AlertTitle>
         {hasErrors ? 'Formulário incompleto!' : 'Ocorreu um erro'}
