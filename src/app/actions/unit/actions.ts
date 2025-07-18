@@ -3,6 +3,7 @@
 import db from '@/lib/db'
 import { updateBookingStatusIfNeeded } from '@/lib/db/actions/updateBookingStatusIfNeeded'
 import { activeBookingStatuses } from '@/lib/db/scopes'
+import dayjs from 'dayjs'
 
 export async function getUnits() {
   try {
@@ -200,14 +201,21 @@ export async function getUnitsWithUpdatedBookings() {
 
 export async function getUnitsUpdatedBookingsByDate(currentDate: Date) {
   try {
+    const startDate = dayjs(currentDate).startOf('day').toDate()
+    const endDate = dayjs(currentDate).endOf('day').toDate()
+
     const units = await db.unit.findMany({
       include: {
         type: true,
         bookings: {
           where: {
             ...activeBookingStatuses,
-            startDate: { lte: currentDate },
-            endDate: { gte: currentDate },
+            OR: [
+              {
+                startDate: { lte: endDate },
+                endDate: { gte: startDate },
+              },
+            ],
           },
           include: {
             guest: true,
@@ -235,11 +243,8 @@ export async function getUnitsUpdatedBookingsByDate(currentDate: Date) {
     const updatedUnits = await Promise.all(
       units.map(async unit => {
         const updatedBookings = await Promise.all(
-          unit.bookings.map(async booking =>
-            updateBookingStatusIfNeeded(booking)
-          )
+          unit.bookings.map(booking => updateBookingStatusIfNeeded(booking))
         )
-
         return { ...unit, bookings: updatedBookings }
       })
     )

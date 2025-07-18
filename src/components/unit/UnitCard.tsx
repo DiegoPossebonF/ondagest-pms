@@ -11,7 +11,7 @@ import {
 } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import type { UnitWithTypeAndBookings } from '@/types/unit'
-import { IconCalendarPlus, IconEdit } from '@tabler/icons-react'
+import { IconCalendarPlus, IconHome } from '@tabler/icons-react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -248,7 +248,7 @@ export default function UnitCard({ unit, index }: UnitCardProps) {
                       variant="default"
                       title="Ir para reserva"
                     >
-                      <IconEdit className="h-4 w-4" />
+                      <IconHome className="h-4 w-4" />
                       <span className="sr-only">Ir para reserva</span>
                     </Button>
                   </Link>
