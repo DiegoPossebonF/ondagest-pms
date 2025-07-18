@@ -1,6 +1,8 @@
 'use server'
 import db from '@/lib/db'
 import { updateBookingPaymentStatus } from '@/lib/db/actions/updateBookingPaymentStatus'
+import { updateBookingStatusIfNeeded } from '@/lib/db/actions/updateBookingStatusIfNeeded'
+import { getBookingById } from '../booking/actions'
 
 export async function deletePayment(paymentId: string) {
   try {
@@ -24,6 +26,12 @@ export async function deletePayment(paymentId: string) {
     }
 
     await updateBookingPaymentStatus(deletedPayment.bookingId)
+
+    await getBookingById(deletedPayment.bookingId).then(async res => {
+      if (res.data) {
+        await updateBookingStatusIfNeeded(res.data)
+      }
+    })
 
     return {
       success: true,

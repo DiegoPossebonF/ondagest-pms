@@ -13,6 +13,9 @@ export async function updateBookingStatusIfNeeded(
   const today = dayjs()
   let newStatus = booking.status
 
+  const totalPaid = booking.payments.reduce((acc, p) => acc + p.amount, 0)
+  const startDate = dayjs(booking.startDate)
+
   if (
     booking.status === 'CONFIRMED' &&
     dayjs(booking.startDate).isSameOrBefore(today, 'day')
@@ -28,6 +31,11 @@ export async function updateBookingStatusIfNeeded(
     dayjs(booking.endDate).isAfter(today, 'day')
   ) {
     newStatus = 'IN_PROGRESS'
+  }
+
+  if (totalPaid === 0 && dayjs().isBefore(startDate)) {
+    // Volta para PENDING
+    newStatus = 'PENDING'
   }
 
   if (newStatus !== booking.status) {

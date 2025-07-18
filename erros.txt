@@ -1,2 +1,6 @@
-1 - deletar pagamento não está atualizando o status da reserva.
+*1 - deletar pagamento não está atualizando o status da reserva.
+
 2 - verificar tratamento ao excluir usuário logado, não está deslogando.
+3 - formulario de reserva não mostrando a unit selecionada na pagina da reserva.
+
+* Fazendo
