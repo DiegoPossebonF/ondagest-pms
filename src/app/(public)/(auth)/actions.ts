@@ -1,7 +1,8 @@
 'use server'
-import type { SignupFormData } from '@/components/auth/SignupForm'
+
 import { signIn, signOut } from '@/lib/auth'
 import db from '@/lib/db'
+import { type SignupFormData, signupSchema } from '@/schemas/sign-up-schema'
 import { hash } from 'bcryptjs'
 
 export async function signinAction(email: string, password: string) {
@@ -28,50 +29,49 @@ export async function signinAction(email: string, password: string) {
   }
 }
 
-export async function signupAction(user: SignupFormData) {
-  try {
-    if (!user.name || !user.email || !user.password) {
-      return {
-        success: false,
-        error: 'Todos os campos são obrigatórios',
-      }
-    }
+export async function signupAction(data: SignupFormData) {
+  const parsed = signupSchema.safeParse(data)
 
+  if (!parsed.success) {
+    return {
+      error: 'Todos os campos são obrigatórios',
+    }
+  }
+
+  const { name, email, password } = parsed.data
+
+  try {
     const existingUser = await db.user.findUnique({
-      where: { email: user.email },
+      where: { email },
     })
 
     if (existingUser) {
       return {
-        success: false,
         error: 'Email já cadastrado',
       }
     }
 
-    const hashedPassword = await hash(user.password, 10)
+    const hashedPassword = await hash(password, 10)
 
     const createdUser = await db.user.create({
       data: {
-        name: user.name,
-        email: user.email,
+        name: name,
+        email: email,
         password: hashedPassword,
       },
     })
 
     if (!createdUser) {
       return {
-        success: false,
         error: 'Erro ao criar usuário',
       }
     }
 
     return {
-      success: true,
-      data: createdUser,
+      error: null,
     }
   } catch (error) {
     return {
-      success: false,
       error: 'Erro inesperado ao criar usuário. Tente novamente mais tarde.',
     }
   }

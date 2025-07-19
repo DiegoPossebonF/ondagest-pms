@@ -1,10 +1,5 @@
 'use client'
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useRouter } from 'next/navigation'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-
 import { signupAction } from '@/app/(public)/(auth)/actions'
 import { Button } from '@/components/ui/button'
 import {
@@ -13,25 +8,23 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { useToast } from '@/hooks/use-toast'
-
-const SignupSchema = z.object({
-  name: z.string().min(2, 'Nome obrigatório'),
-  email: z.string().email('Email inválido'),
-  password: z.string().min(6, 'A senha precisa ter ao menos 6 caracteres'),
-})
-
-export type SignupFormData = z.infer<typeof SignupSchema>
+import { type SignupFormData, signupSchema } from '@/schemas/sign-up-schema'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
+import { useState, useTransition } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import { FormError } from '../FormError'
 
 export function SignupForm() {
-  const { toast } = useToast()
   const router = useRouter()
+  const [isPending, startTransition] = useTransition()
+  const [serverError, setServerError] = useState<string | null>(null)
 
   const form = useForm<SignupFormData>({
-    resolver: zodResolver(SignupSchema),
+    resolver: zodResolver(signupSchema),
     defaultValues: {
       name: '',
       email: '',
@@ -39,24 +32,28 @@ export function SignupForm() {
     },
   })
 
-  async function onSubmit(formData: SignupFormData) {
-    const { success, data, error } = await signupAction(formData)
-
-    toast({
-      title: success ? 'Cadastrado com sucesso' : 'Erro ao cadastrar',
-      description: success
-        ? `Bem vindo, ${data?.name}. Agora você pode fazer login seu login no sistema.`
-        : error,
-      variant: success ? 'success' : 'destructive',
+  async function onSubmit(data: SignupFormData) {
+    startTransition(() => {
+      signupAction(data).then(data => {
+        if (data.error) {
+          setServerError(data.error)
+          return
+        }
+        toast('Sucesso', {
+          description: 'Cadastro realizado com sucesso.',
+          duration: 5000,
+          icon: '✅',
+        })
+        form.reset()
+        setServerError(null)
+        router.push('/signin')
+      })
     })
-
-    if (success) {
-      router.push('/signin')
-    }
   }
 
   return (
     <Form {...form}>
+      <FormError errors={form.formState.errors} serverError={serverError} />
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-4 max-w-sm mx-auto"
@@ -65,12 +62,11 @@ export function SignupForm() {
           control={form.control}
           name="name"
           render={({ field }) => (
-            <FormItem className="space-y-1">
+            <FormItem className="flex flex-col">
               <FormLabel className="text-muted-foreground">Nome</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />
@@ -78,12 +74,11 @@ export function SignupForm() {
           control={form.control}
           name="email"
           render={({ field }) => (
-            <FormItem className="space-y-1">
+            <FormItem className="flex flex-col">
               <FormLabel className="text-muted-foreground">Email</FormLabel>
               <FormControl>
                 <Input type="email" {...field} />
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />
@@ -91,12 +86,11 @@ export function SignupForm() {
           control={form.control}
           name="password"
           render={({ field }) => (
-            <FormItem className="space-y-1">
+            <FormItem className="flex flex-col">
               <FormLabel className="text-muted-foreground">Senha</FormLabel>
               <FormControl>
                 <Input type="password" {...field} />
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />
