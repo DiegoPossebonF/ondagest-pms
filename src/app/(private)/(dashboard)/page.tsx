@@ -1,3 +1,4 @@
+'use server'
 import { getUnitsUpdatedBookingsByDate } from '@/app/actions/unit/actions'
 import { StatusLegend } from '@/components/StatusLegend'
 import UnitCard from '@/components/unit/UnitCard'

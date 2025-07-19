@@ -12,10 +12,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.image = user.image
         token.role = user.role
       }
+
       return token
     },
 
     session: async ({ session, token }) => {
+      if (!token?.id) {
+        // Retorna sessão válida com usuário nulo
+        return { ...session, user: undefined }
+      }
+
       if (session.user && token) {
         session.user.id = token.id as string
         session.user.name = token.name as string

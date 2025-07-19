@@ -1,3 +1,4 @@
+'use client'
 import Logo from '@/public/images/LogoOndaGestName.png'
 import ImagemLogin from '@/public/images/wallpapper-login.webp'
 import {
@@ -20,7 +21,7 @@ export function SigninCard({ children }: SigninCardProps) {
         <div className="flex flex-col justify-center p-4">
           <CardHeader>
             <div className="flex justify-center mb-4">
-              <img src={Logo.src} alt="Logo" className="h-40 w-auto" />
+              <img src={Logo.src} alt="Logo" className="h-32 w-auto" />
             </div>
 
             <CardTitle className="text-4xl text-gray-700 text-center">
