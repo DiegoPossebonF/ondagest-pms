@@ -218,13 +218,6 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
     console.log(form.getValues())
   }, [watchDaily])
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    if (!watchPeriod) return
-    form.setValue('unitId', '')
-    setSelectedUnit(null)
-  }, [watchPeriod])
-
   async function onSubmit(values: BookingSchema) {
     if (booking) {
       startTransition(() => {

@@ -55,7 +55,7 @@ export function SigninForm() {
           control={form.control}
           name="email"
           render={({ field }) => (
-            <FormItem className="space-y-1">
+            <FormItem className="flex flex-col">
               <Label htmlFor="email">E-mail</Label>
               <FormControl>
                 <Input
@@ -74,7 +74,7 @@ export function SigninForm() {
           control={form.control}
           name="password"
           render={({ field }) => (
-            <FormItem className="space-y-1">
+            <FormItem className="flex flex-col">
               <Label htmlFor="password">Senha</Label>
               <FormControl>
                 <Input
