@@ -1,4 +1,1 @@
-
-3 - formulario de reserva não mostrando a unit selecionada na pagina da reserva.
-
-* Fazendo
+Todos corrigidos

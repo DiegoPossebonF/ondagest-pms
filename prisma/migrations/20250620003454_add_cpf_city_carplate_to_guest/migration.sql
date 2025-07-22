@@ -1,4 +1,0 @@
--- AlterTable
-ALTER TABLE "Guest" ADD COLUMN "carPlate" TEXT;
-ALTER TABLE "Guest" ADD COLUMN "city" TEXT;
-ALTER TABLE "Guest" ADD COLUMN "cpf" TEXT;

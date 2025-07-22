@@ -6,7 +6,10 @@ export async function getOrganization() {
     const organization: Organization | null = await db.organization.findFirst()
 
     if (!organization)
-      return { error: 'Nenhuma organização encontrada', data: null }
+      return {
+        error: 'Nenhuma organização encontrada',
+        data: null,
+      }
 
     return {
       data: organization,

@@ -212,9 +212,14 @@ export async function getUnitsUpdatedBookingsByDate(currentDate: Date) {
           where: {
             ...activeBookingStatuses,
             OR: [
+              // 1. Reservas que coincidem com a data atual (check-in, check-out ou no meio)
               {
                 startDate: { lte: endDate },
                 endDate: { gte: startDate },
+              },
+              // 2. Reservas já passadas que ainda estão ativas
+              {
+                endDate: { lt: startDate },
               },
             ],
           },

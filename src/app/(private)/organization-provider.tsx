@@ -14,6 +14,14 @@ export default async function OrganizationServerProvider({
     throw new Error(res.error)
   }
 
+  if (!res.data.logoUrl) {
+    return (
+      <OrganizationProvider organization={res.data}>
+        {children}
+      </OrganizationProvider>
+    )
+  }
+
   const logoBase64 = await fetchImageAsBase64(res.data.logoUrl || '')
 
   res.data.logoUrl = logoBase64
