@@ -124,7 +124,7 @@ export default function UnitForm({
                   onChange={(value: string) => field.onChange(value)}
                 />
                 <FormDescription className="sr-only">
-                  Informe uma descrição para o tipo de acomodação
+                  Informe o tipo de acomodação
                 </FormDescription>
                 <FormMessage />
               </FormItem>

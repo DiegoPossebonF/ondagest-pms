@@ -134,7 +134,7 @@ export function BookingsList() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-6">
+                <TableCell colSpan={8} className="text-center py-6">
                   Nenhuma reserva encontrada
                 </TableCell>
               </TableRow>

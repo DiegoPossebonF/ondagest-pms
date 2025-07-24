@@ -24,6 +24,8 @@ import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
+import { FormError } from '../FormError'
+import { ImageUpload } from '../ImageUpload'
 import { LoadingSpinner } from '../LoadingSpinner'
 import {
   Select,
@@ -50,7 +52,6 @@ export function OrganizationForm({
     resolver: zodResolver(organizationSchema),
     defaultValues: {
       name: organization?.name || '',
-      logoUrl: organization?.logoUrl || '',
       email: organization?.email || '',
       phone: organization?.phone || '',
       website: organization?.website || '',
@@ -103,48 +104,56 @@ export function OrganizationForm({
     })
   }
 
+  if (!organization) {
+    setServerError('Empresa não informada!')
+    return (
+      <FormError serverError={serverError} errors={form.formState.errors} />
+    )
+  }
+
   return (
-    <div className="flex flex-col gap-4 max-w-4xl">
+    <div className="flex flex-col items-center gap-4 max-w-4xl">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmitHandle)}
           className="space-y-4"
         >
+          <div className="flex flex-col items-center">
+            <FormField
+              name="logo"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel className="text-left">Logo</FormLabel>
+                  <FormControl>
+                    <ImageUpload
+                      initialImage={organization.logoUrl || undefined}
+                      organizationId={organization.id}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <FormField
+            name="name"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem className="flex flex-col justify-end">
+                <FormLabel>Nome da empresa</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    placeholder="Nome"
+                    className="h-8 rounded-md px-3 text-xs md:text-xs bg-popover"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField
-              name="name"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Nome da empresa</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="Nome"
-                      className="h-8 rounded-md px-3 text-xs md:text-xs bg-popover"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              name="logoUrl"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Logo URL</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="https://..."
-                      className="h-8 rounded-md px-3 text-xs md:text-xs bg-popover"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <FormField
               name="email"
               control={form.control}

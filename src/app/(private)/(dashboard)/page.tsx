@@ -1,9 +1,12 @@
 'use server'
 import { getUnitsUpdatedBookingsByDate } from '@/app/actions/unit/actions'
 import { StatusLegend } from '@/components/StatusLegend'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import UnitCard from '@/components/unit/UnitCard'
 import dayjs from 'dayjs'
 import isBetween from 'dayjs/plugin/isBetween'
+import Link from 'next/link'
 
 dayjs.extend(isBetween)
 
@@ -12,6 +15,25 @@ export default async function Dashboard() {
 
   if (res.error || !res.data) {
     throw new Error(res.error)
+  }
+
+  if (res.data.length <= 0) {
+    return (
+      <div className="flex flex-col items-center justify-center p-6 overflow-auto">
+        <Card className="w-5/6">
+          <div className="p-6 flex flex-col items-center justify-center gap-4">
+            <h1 className="text-2xl font-bold">
+              Não há acomodações cadastradas!
+            </h1>
+            <Link href={'/settings/units'}>
+              <Button variant={'secondary'} size={'sm'}>
+                Cadastrar acomodações
+              </Button>
+            </Link>
+          </div>
+        </Card>
+      </div>
+    )
   }
 
   return (

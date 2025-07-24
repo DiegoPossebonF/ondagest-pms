@@ -11,11 +11,6 @@ const phoneRegex = /^\(?\d{2}\)?\s?(9?\d{4})-?\d{4}$/
 
 export const organizationSchema = z.object({
   name: z.string().min(1, 'Nome da empresa é obrigatório'),
-  logoUrl: z
-    .string()
-    .url('Logo deve ser uma URL válida')
-    .optional()
-    .or(z.literal('')),
   email: z.string().email('E-mail inválido').min(1, 'E-mail obrigatório'),
   phone: z
     .string()

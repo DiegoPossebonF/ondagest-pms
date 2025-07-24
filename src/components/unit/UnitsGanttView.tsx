@@ -16,8 +16,9 @@ import {
 } from '@tabler/icons-react'
 import isBetween from 'dayjs/plugin/isBetween'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useTransition } from 'react'
 import AlertErrorGlobal from '../AlertErrorGlobal'
+import { LoadingSpinner } from '../LoadingSpinner'
 import { Button } from '../ui/button'
 import { Calendar } from '../ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
@@ -31,6 +32,7 @@ const COLUMN_WIDTH = 48
 
 export function UnitsGanttView() {
   const [open, setOpen] = useState(false)
+  const [isPending, startTransition] = useTransition()
   const [units, setUnits] = useState<UnitWithType[]>([])
   const [bookings, setBookings] = useState<BookingAllIncludes[]>([])
   const [startDate, setStartDate] = useState<Date>(
@@ -47,22 +49,24 @@ export function UnitsGanttView() {
         .toDate(),
     }
     const fetchData = async () => {
-      try {
-        const resBookings = await getBookingsPerPeriod(period)
-        const resUnit = await getUnits()
+      startTransition(async () => {
+        try {
+          const resBookings = await getBookingsPerPeriod(period)
+          const resUnit = await getUnits()
 
-        if (resBookings.error || !resBookings.data)
-          throw new Error(resBookings.error)
-        if (resUnit.error || !resUnit.data) throw new Error(resUnit.error)
+          if (resBookings.error || !resBookings.data)
+            throw new Error(resBookings.error)
+          if (resUnit.error || !resUnit.data) throw new Error(resUnit.error)
 
-        setBookings(resBookings?.data)
-        setUnits(resUnit.data)
-        setError(null)
-      } catch (error) {
-        setBookings([])
-        setUnits([])
-        setError((error as Error).message)
-      }
+          setBookings(resBookings?.data)
+          setUnits(resUnit.data)
+          setError(null)
+        } catch (error) {
+          setBookings([])
+          setUnits([])
+          setError((error as Error).message)
+        }
+      })
     }
 
     fetchData()
@@ -169,188 +173,210 @@ export function UnitsGanttView() {
         </Button>
       </div>
 
-      <div className="flex overflow-hidden z-50 border rounded-br-md rounded-bl-md">
-        <div className="flex flex-col bg-primary">
-          <div className="border-b border-r text-primary-foreground min-w-28 h-10 p-2 flex items-center justify-center ">
-            <h4 className="text-xs font-semibold">Acomodações</h4>
-          </div>
-
-          {/* Nome da Unidade */}
-          {units.map(unit => (
-            <div
-              key={unit.id}
-              className="border-b border-r text-primary-foreground text-xs font-semibold min-w-28 h-8 p-2 flex items-center justify-center z-10"
-            >
-              {unit.name}
-            </div>
-          ))}
+      {isPending ? (
+        <div className="flex items-center justify-center p-6">
+          <LoadingSpinner size="md" />
         </div>
-        <div className="flex flex-col overflow-auto">
-          {/* Cabeçalho datas*/}
-          <div className="flex flex-nowrap">
-            {dates.map((date, index) => (
-              <div
-                key={date.day}
-                className={`${dates.length === index + 1 ? 'border-b' : 'border-r border-b'} ${date.fullDate.isSame(dayjs(), 'day') ? 'bg-primary/50' : 'bg-sidebar/80'} min-w-12 h-10 p-2 flex flex-col items-center justify-center text-xs`}
-              >
-                <span className="text-xs font-semibold">{date.day}</span>
-                <span className="text-xs font-semibold text-primary">
-                  {date.week}
-                </span>
+      ) : (
+        <div className="flex overflow-hidden z-50 border rounded-br-md rounded-bl-md">
+          <div className="flex flex-col bg-primary">
+            <div className="border-b border-r text-primary-foreground min-w-28 h-10 p-2 flex items-center justify-center ">
+              <h4 className="text-xs font-semibold">Acomodações</h4>
+            </div>
+
+            {/* Nome da Unidade */}
+            {units.length > 0 ? (
+              units.map(unit => (
+                <div
+                  key={unit.id}
+                  className="border-b border-r text-primary-foreground text-xs font-semibold min-w-28 h-8 p-2 flex items-center justify-center z-10"
+                >
+                  {unit.name}
+                </div>
+              ))
+            ) : (
+              <div className="border-b border-r text-primary-foreground text-xs font-semibold min-w-28 h-8 p-2 flex items-center justify-center z-10">
+                -
               </div>
-            ))}
+            )}
           </div>
+          <div className="flex flex-col overflow-auto">
+            {/* Cabeçalho datas*/}
+            <div className="flex flex-nowrap">
+              {dates.map((date, index) => (
+                <div
+                  key={date.day}
+                  className={`${dates.length === index + 1 ? 'border-b' : 'border-r border-b'} ${date.fullDate.isSame(dayjs(), 'day') ? 'bg-primary/50' : 'bg-sidebar/80'} min-w-12 h-10 p-2 flex flex-col items-center justify-center text-xs`}
+                >
+                  <span className="text-xs font-semibold">{date.day}</span>
+                  <span className="text-xs font-semibold text-primary">
+                    {date.week}
+                  </span>
+                </div>
+              ))}
+            </div>
 
-          {/* Linhas das Unidades + Reservas */}
-          {units.map(unit => (
-            <div key={unit.id} className="flex flex-nowrap relative">
-              {/* Células de Dias */}
-              <div className="relative flex w-full">
-                {dates.map((date, index) => {
-                  const isDateInBooking = bookings.some(booking => {
-                    const start = dayjs(booking.startDate).startOf('day')
-                    const end = dayjs(booking.endDate).startOf('day')
-                    const checkDate = dayjs(
-                      date.fullDate,
-                      'YYYY-MM-DD'
-                    ).startOf('day') // Certifica que é um objeto dayjs válido
+            {/* Linhas das Unidades + Reservas */}
+            {units.length > 0 ? (
+              units.map(unit => (
+                <div key={unit.id} className="flex flex-nowrap relative">
+                  {/* Células de Dias */}
+                  <div className="relative flex w-full">
+                    {dates.map((date, index) => {
+                      const isDateInBooking = bookings.some(booking => {
+                        const start = dayjs(booking.startDate).startOf('day')
+                        const end = dayjs(booking.endDate).startOf('day')
+                        const checkDate = dayjs(
+                          date.fullDate,
+                          'YYYY-MM-DD'
+                        ).startOf('day') // Certifica que é um objeto dayjs válido
 
-                    return (
-                      checkDate.isBetween(start, end, 'day', '()') && // '[]' inclui os extremos
-                      booking.unitId === unit.id
-                    )
-                  })
+                        return (
+                          checkDate.isBetween(start, end, 'day', '()') && // '[]' inclui os extremos
+                          booking.unitId === unit.id
+                        )
+                      })
 
-                  const isStartDate = bookings.some(
-                    booking =>
-                      dayjs(date.fullDate).isSame(
-                        dayjs(booking.startDate),
-                        'day'
-                      ) && booking.unitId === unit.id
-                  )
+                      const isStartDate = bookings.some(
+                        booking =>
+                          dayjs(date.fullDate).isSame(
+                            dayjs(booking.startDate),
+                            'day'
+                          ) && booking.unitId === unit.id
+                      )
 
-                  const isEndDate = bookings.some(
-                    booking =>
-                      dayjs(date.fullDate).isSame(
-                        dayjs(booking.endDate),
-                        'day'
-                      ) && booking.unitId === unit.id
-                  )
+                      const isEndDate = bookings.some(
+                        booking =>
+                          dayjs(date.fullDate).isSame(
+                            dayjs(booking.endDate),
+                            'day'
+                          ) && booking.unitId === unit.id
+                      )
 
-                  const plusAlignment = isStartDate
-                    ? 'mr-6'
-                    : isEndDate
-                      ? 'ml-6'
-                      : ''
+                      const plusAlignment = isStartDate
+                        ? 'mr-6'
+                        : isEndDate
+                          ? 'ml-6'
+                          : ''
 
-                  return (
-                    <div
-                      key={date.day}
-                      className={`${date.fullDate.isSame(dayjs(), 'day') ? 'bg-primary/30' : ''} ${dates.length === index + 1 ? 'border-b' : 'border-r border-b'} ${date.week === 'dom' || date.week === 'sáb' ? 'bg-sidebar' : 'bg-card'} flex items-center min-w-12 w-full h-8`}
-                    >
-                      {!isDateInBooking && (
-                        <Link
-                          href={`/bookings/new?unitId=${unit.id}&unitName=${unit.name}-${unit.type.name}&startDate=${date.fullDate.format('YYYY-MM-DD')}`}
-                          className="w-full"
+                      return (
+                        <div
+                          key={date.day}
+                          className={`${date.fullDate.isSame(dayjs(), 'day') ? 'bg-primary/30' : ''} ${dates.length === index + 1 ? 'border-b' : 'border-r border-b'} ${date.week === 'dom' || date.week === 'sáb' ? 'bg-sidebar' : 'bg-card'} flex items-center min-w-12 w-full h-8`}
                         >
-                          <Button
-                            variant={'ghost'}
-                            size={'sm'}
-                            className={`rounded-none w-full`}
-                          >
-                            <IconPlus className={`h-3 w-3 ${plusAlignment}`} />
-                          </Button>
-                        </Link>
-                      )}
-                    </div>
-                  )
-                })}
+                          {!isDateInBooking && (
+                            <Link
+                              href={`/bookings/new?unitId=${unit.id}&unitName=${unit.name}-${unit.type.name}&startDate=${date.fullDate.format('YYYY-MM-DD')}`}
+                              className="w-full"
+                            >
+                              <Button
+                                variant={'ghost'}
+                                size={'sm'}
+                                className={`rounded-none w-full`}
+                              >
+                                <IconPlus
+                                  className={`h-3 w-3 ${plusAlignment}`}
+                                />
+                              </Button>
+                            </Link>
+                          )}
+                        </div>
+                      )
+                    })}
 
-                {/* Reservas */}
-                {bookings
-                  .filter(booking => booking.unitId === unit.id)
-                  .map(booking => {
-                    const start = dayjs(booking.startDate).format('YYYY-MM-DD')
-                    const end = dayjs(booking.endDate).format('YYYY-MM-DD')
+                    {/* Reservas */}
+                    {bookings
+                      .filter(booking => booking.unitId === unit.id)
+                      .map(booking => {
+                        const start = dayjs(booking.startDate).format(
+                          'YYYY-MM-DD'
+                        )
+                        const end = dayjs(booking.endDate).format('YYYY-MM-DD')
 
-                    let left = 0
-                    let width = 0
-                    let startIcon = true
-                    let endIcon = true
-                    let startDiagonal = true
-                    let endDiagonal = true
+                        let left = 0
+                        let width = 0
+                        let startIcon = true
+                        let endIcon = true
+                        let startDiagonal = true
+                        let endDiagonal = true
 
-                    // Encontrar índices das datas dentro do array de dias
-                    let startIndex = dates.findIndex(
-                      d => d.fullDate.format('YYYY-MM-DD') === start
-                    )
-                    let endIndex = dates.findIndex(
-                      d => d.fullDate.format('YYYY-MM-DD') === end
-                    )
+                        // Encontrar índices das datas dentro do array de dias
+                        let startIndex = dates.findIndex(
+                          d => d.fullDate.format('YYYY-MM-DD') === start
+                        )
+                        let endIndex = dates.findIndex(
+                          d => d.fullDate.format('YYYY-MM-DD') === end
+                        )
 
-                    //console.log('D-1:', startIndex, endIndex)
+                        //console.log('D-1:', startIndex, endIndex)
 
-                    if (startIndex === -1) {
-                      startIndex = 0
-                      endIndex = endIndex + 1
-                      startIcon = false
-                      startDiagonal = false
-                    } // Começa no primeiro dia visível
+                        if (startIndex === -1) {
+                          startIndex = 0
+                          endIndex = endIndex + 1
+                          startIcon = false
+                          startDiagonal = false
+                        } // Começa no primeiro dia visível
 
-                    if (endIndex === -1) {
-                      endIndex = dates.length
-                      endIcon = false
-                      endDiagonal = false
-                    } // Termina no último dia visível
+                        if (endIndex === -1) {
+                          endIndex = dates.length
+                          endIcon = false
+                          endDiagonal = false
+                        } // Termina no último dia visível
 
-                    //console.log('D-2:', startIndex, endIndex)
+                        //console.log('D-2:', startIndex, endIndex)
 
-                    // Garante que a reserva tenha pelo menos 1 dia de largura
-                    if (endIndex < startIndex) return null
+                        // Garante que a reserva tenha pelo menos 1 dia de largura
+                        if (endIndex < startIndex) return null
 
-                    left = startIndex * COLUMN_WIDTH
-                    width = (endIndex - startIndex) * COLUMN_WIDTH
+                        left = startIndex * COLUMN_WIDTH
+                        width = (endIndex - startIndex) * COLUMN_WIDTH
 
-                    if (startIndex !== 0 && endIndex !== 0) {
-                      left = left + 17
-                      width = width + 15
-                    }
+                        if (startIndex !== 0 && endIndex !== 0) {
+                          left = left + 17
+                          width = width + 15
+                        }
 
-                    if (startIndex === 0) {
-                      width = width + 17
-                      left = left + 15
-                    }
+                        if (startIndex === 0) {
+                          width = width + 17
+                          left = left + 15
+                        }
 
-                    if (
-                      startIndex === 0 &&
-                      !dayjs(startDate).isSame(booking.startDate, 'day')
-                    ) {
-                      left = left - 15
-                      width = width - 32
-                    }
+                        if (
+                          startIndex === 0 &&
+                          !dayjs(startDate).isSame(booking.startDate, 'day')
+                        ) {
+                          left = left - 15
+                          width = width - 32
+                        }
 
-                    if (endIndex === dates.length) width = width - 32
+                        if (endIndex === dates.length) width = width - 32
 
-                    return (
-                      <UnitBookingCardView
-                        key={booking.id}
-                        booking={booking}
-                        positionLeft={`${left}px`}
-                        widthCard={`${width}px`}
-                        startIcon={startIcon}
-                        endIcon={endIcon}
-                        startDiagonal={startDiagonal}
-                        endDiagonal={endDiagonal}
-                      />
-                    )
+                        return (
+                          <UnitBookingCardView
+                            key={booking.id}
+                            booking={booking}
+                            positionLeft={`${left}px`}
+                            widthCard={`${width}px`}
+                            startIcon={startIcon}
+                            endIcon={endIcon}
+                            startDiagonal={startDiagonal}
+                            endDiagonal={endDiagonal}
+                          />
+                        )
 
-                    //return null
-                  })}
+                        //return null
+                      })}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="border-b border-r text-xs font-semibold min-w-28 h-8 p-2 flex items-center justify-center z-10">
+                Não há acomodações cadastradas!
               </div>
-            </div>
-          ))}
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

@@ -85,7 +85,7 @@ export function UnitsList({
         <div className="flex flex-row justify-between gap-2 px-6">
           <ButtonTooltip
             icon={<IconHome className="w-4 h-4" />}
-            tooltipText="Novo Tipo de Unidade"
+            tooltipText="Nova acomodação"
             tooltipSide="top"
             className="self-start"
             onClick={() => setOpenNewUnit(true)}
@@ -129,7 +129,7 @@ export function UnitsList({
       <div className="flex flex-row justify-between gap-2">
         <ButtonTooltip
           icon={<IconHome className="w-4 h-4" />}
-          tooltipText="Novo Tipo de Unidade"
+          tooltipText="Nova acomodação"
           tooltipSide="top"
           className="self-start"
           onClick={() => setOpenNewUnit(true)}
@@ -188,7 +188,7 @@ export function UnitsList({
             ) : (
               <TableRow>
                 <TableCell colSpan={5} className="text-center py-6">
-                  Nenhuma unidade a.
+                  Nenhuma acomodacão cadastrada
                 </TableCell>
               </TableRow>
             )}
@@ -206,10 +206,10 @@ export function UnitsList({
         <SheetContent side="right" className="sm:w-[450px] w-[80%]">
           <SheetHeader>
             <SheetTitle className="text-xl font-semibold mb-4">
-              {'Editar tipo de unidade'}
+              {selectedUnit ? 'Editar acomodação' : 'Cadastrar acomodação'}
             </SheetTitle>
             <SheetDescription className="text-muted-foreground sr-only">
-              {'Edite o tipo de unidade'}
+              {selectedUnit ? 'Editar acomodação' : 'Cadastrar acomodação'}
             </SheetDescription>
           </SheetHeader>
           <UnitForm

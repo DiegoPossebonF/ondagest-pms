@@ -32,13 +32,13 @@ export function UnitTypesCombobox({
 
   useEffect(() => {
     async function handleGetUnitTypes() {
-      const data = await getUnitTypes()
-      if (data.error) {
-        console.log(data.error)
+      const res = await getUnitTypes()
+      if (res.error) {
+        console.log(res.error)
         return
       }
-      if (data.unitTypes) {
-        setUnitTypes(data.unitTypes)
+      if (res.data) {
+        setUnitTypes(res.data)
       }
     }
     handleGetUnitTypes()
@@ -90,8 +90,17 @@ export function UnitTypesCombobox({
         <Command>
           <CommandInput placeholder="Procurar acomodação..." className="h-9" />
           <CommandList>
-            <CommandEmpty>Nenhuma acomodação encontrada</CommandEmpty>
-            <CommandGroup>
+            <CommandEmpty className="flex flex-col gap-2 p-2">
+              <p className="text-sm text-muted-foreground text-center">
+                Nenhum tipo de acomodação encontrado
+              </p>
+              <Button className="w-full" variant={'secondary'} size={'sm'}>
+                <a href="/settings/unit_types">Novo tipo de acomodação</a>
+              </Button>
+            </CommandEmpty>
+            <CommandGroup
+              className={`${unitTypes && unitTypes.length > 0 ? 'p-2' : 'p-0'}`}
+            >
               {unitTypes?.map(type => (
                 <CommandItem
                   className="form-sm"

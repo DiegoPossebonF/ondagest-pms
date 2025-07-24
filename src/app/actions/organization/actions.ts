@@ -23,3 +23,28 @@ export async function getOrganization() {
     }
   }
 }
+
+// criar update logoUrl in organization
+
+export async function updateOrganizationLogo(
+  organizationId: string,
+  logoUrl: string
+) {
+  try {
+    const organization = await db.organization.update({
+      where: { id: organizationId },
+      data: { logoUrl },
+    })
+
+    return {
+      data: organization,
+    }
+  } catch (error) {
+    console.error('Erro ao atualizar o logo da organização', error)
+    return {
+      error:
+        'Erro ao atualizar o logo da organização - tente novamente ou contate o suporte!',
+      data: null,
+    }
+  }
+}
