@@ -15,7 +15,6 @@ import {
 } from '@/components/ui/sidebar'
 
 import type { User } from '@/app/generated/prisma'
-import logo from '@/public/images/LogoOndaGest.png'
 import {
   IconBook,
   IconBookFilled,
@@ -28,16 +27,12 @@ import {
   IconUser,
   IconUserFilled,
 } from '@tabler/icons-react'
+import { useOrganization } from '../organization/OrganizationProvider'
 import { AccessDenied } from './AccessDenied'
 import { NavSecondary } from './NavSecondary'
 import { SiteHeader } from './SiteHeader'
 
 const data = {
-  enterprise: {
-    name: 'OndaGest',
-    logo: logo.src,
-    subname: 'PMS',
-  },
   navMain: [
     {
       title: 'Início',
@@ -82,11 +77,17 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 }
 
 export function AppSidebar({ children, user, ...props }: AppSidebarProps) {
+  const organization = useOrganization()
   return (
     <SidebarProvider defaultOpen={false} className="overflow-hidden">
       <Sidebar collapsible="icon" {...props}>
         <SidebarHeader>
-          <EnterpriseLogo enterprise={data.enterprise} />
+          <EnterpriseLogo
+            enterprise={{
+              logo: organization?.logoUrl ?? '',
+              name: organization?.name ?? '',
+            }}
+          />
         </SidebarHeader>
         <SidebarContent className="justify-between">
           <NavMain items={data.navMain} />

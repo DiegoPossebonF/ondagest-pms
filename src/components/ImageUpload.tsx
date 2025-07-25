@@ -1,6 +1,5 @@
 'use client'
-
-import { uploadLogo } from '@/app/actions/storage/upload-logo'
+import { updateOrganizationLogo } from '@/app/actions/organization/updateOrganizationLogo'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
@@ -38,7 +37,7 @@ export function ImageUpload({
     setLoading(true)
 
     try {
-      const response = await uploadLogo(organizationId, file)
+      const response = await updateOrganizationLogo(organizationId, file)
 
       if (response?.error) {
         toast.error(response.error)

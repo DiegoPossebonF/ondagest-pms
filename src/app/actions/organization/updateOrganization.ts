@@ -65,7 +65,6 @@ export async function updateOrganization(
         cnpj: cnpj ?? '',
         cpf: cpf ?? '',
         website: organization.website,
-        logoUrl: organization.logoUrl,
         email: organization.email,
         facebook: organization.facebook,
         instagram: organization.instagram,

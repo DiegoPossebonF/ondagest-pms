@@ -13,7 +13,6 @@ export function EnterpriseLogo({
   enterprise: {
     name: string
     logo: string
-    subname: string
   }
 }) {
   return (
@@ -30,7 +29,6 @@ export function EnterpriseLogo({
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
               <span className="truncate font-medium">{enterprise.name}</span>
-              <span className="truncate text-xs">{enterprise.subname}</span>
             </div>
           </SidebarMenuButton>
         </Link>
