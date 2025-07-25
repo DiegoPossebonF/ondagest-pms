@@ -1,7 +1,4 @@
 'use client'
-import type * as React from 'react'
-
-import { EnterpriseLogo } from '@/components/dashboard/EnterpriseLogo'
 import { NavMain } from '@/components/dashboard/NavMain'
 import { NavUser } from '@/components/dashboard/NavUser'
 import {
@@ -13,6 +10,7 @@ import {
   SidebarProvider,
   SidebarRail,
 } from '@/components/ui/sidebar'
+import type * as React from 'react'
 
 import type { User } from '@/app/generated/prisma'
 import {
@@ -30,6 +28,7 @@ import {
 import { useOrganization } from '../organization/OrganizationProvider'
 import { AccessDenied } from './AccessDenied'
 import { NavSecondary } from './NavSecondary'
+import { OrganizationLogo } from './OrganizationLogo'
 import { SiteHeader } from './SiteHeader'
 
 const data = {
@@ -81,9 +80,9 @@ export function AppSidebar({ children, user, ...props }: AppSidebarProps) {
   return (
     <SidebarProvider defaultOpen={false} className="overflow-hidden">
       <Sidebar collapsible="icon" {...props}>
-        <SidebarHeader>
-          <EnterpriseLogo
-            enterprise={{
+        <SidebarHeader className="flex flex-col justify-center h-14">
+          <OrganizationLogo
+            organization={{
               logo: organization?.logoUrl ?? '',
               name: organization?.name ?? '',
             }}

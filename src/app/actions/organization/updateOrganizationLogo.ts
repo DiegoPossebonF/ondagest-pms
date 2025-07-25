@@ -8,6 +8,8 @@ export async function updateOrganizationLogo(orgId: string, file: File) {
   try {
     const path = `logos/${orgId}.png`
 
+    if (file.type !== 'image/png' && file.type !== 'image/jpeg')
+      return { error: 'Formato inválido (apenas PNG ou JPEG).' }
     // 🔸 Tenta remover o logo anterior
     await supabase.storage.from('public-media').remove([path])
 

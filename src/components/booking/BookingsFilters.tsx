@@ -33,6 +33,7 @@ export default function BookingsFilters() {
           <Button
             variant="destructive"
             size="icon"
+            className="size-8 group-data-[collapsible=icon]:opacity-0"
             onClick={() => resetFilters()}
           >
             <IconFilterX className="w-4 h-4" />
@@ -67,7 +68,7 @@ export default function BookingsFilters() {
       {activeFilters && (
         <ButtonTooltip
           icon={<IconFilterX className="w-4 h-4 text-red-500" />}
-          className="self-start"
+          className="self-start size-8 group-data-[collapsible=icon]:opacity-0"
           tooltipText="Limpar filtros"
           tooltipSide="top"
           onClick={() => resetFilters()}
@@ -81,7 +82,11 @@ export default function BookingsFilters() {
           tooltipSide="top"
         >
           <PopoverTrigger asChild>
-            <Button variant="outline" size="icon">
+            <Button
+              variant="outline"
+              size="icon"
+              className="size-8 group-data-[collapsible=icon]:opacity-0"
+            >
               <IconFilterEdit className="w-4 h-4" />
             </Button>
           </PopoverTrigger>

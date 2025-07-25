@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { ImageOff, UploadCloud } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { Input } from './ui/input'
 
@@ -23,6 +23,15 @@ export function ImageUpload({
   const [file, setFile] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (!initialImage) return
+
+    const img = new Image()
+    img.src = initialImage
+    img.onload = () => setPreview(initialImage)
+    img.onerror = () => setPreview(null)
+  }, [initialImage])
 
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     const selectedFile = e.target.files?.[0]
@@ -73,6 +82,7 @@ export function ImageUpload({
               src={preview}
               alt="Pré-visualização"
               className="object-cover w-full h-full rounded-md"
+              onError={() => setPreview(null)}
             />
           ) : (
             <ImageOff className="w-8 h-8 text-muted-foreground" />

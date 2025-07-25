@@ -40,7 +40,11 @@ export function StatusLegend() {
     <Popover>
       <ButtonTooltip onClick={() => {}} tooltipText="Legenda" tooltipSide="top">
         <PopoverTrigger asChild>
-          <Button variant="outline" size="icon" className="self-start">
+          <Button
+            variant="outline"
+            size="icon"
+            className="self-start size-8 group-data-[collapsible=icon]:opacity-0"
+          >
             <IconMessageQuestion className="w-4 h-4" />
           </Button>
         </PopoverTrigger>

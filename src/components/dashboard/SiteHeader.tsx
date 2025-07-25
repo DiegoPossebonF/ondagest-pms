@@ -9,7 +9,7 @@ import { DynamicBreadcrumb } from './DynamicBreadcrumb'
 export function SiteHeader() {
   const { theme, setTheme } = useTheme()
   return (
-    <header className="flex h-16 shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
+    <header className="flex h-14 shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
       <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
         <SidebarTrigger className="-ml-1" />
         <Separator
@@ -19,10 +19,10 @@ export function SiteHeader() {
         <DynamicBreadcrumb />
         <div className="ml-auto flex items-center gap-2">
           <Button
-            variant="secondary"
-            asChild
             size="icon"
-            className="flex rounded-full p-[10px] cursor-pointer dark:text-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+            className={`size-8 group-data-[collapsible=icon]:opacity-0`}
+            variant="outline"
+            title="Lançar pagamento"
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
           >
             {theme === 'dark' ? (

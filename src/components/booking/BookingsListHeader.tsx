@@ -15,7 +15,7 @@ export default function BookingsListHeader() {
       <ButtonTooltip
         icon={<IconCalendarPlus className="w-4 h-4" />}
         tooltipText="Nova reserva"
-        className="self-start"
+        className="self-start size-8 group-data-[collapsible=icon]:opacity-0"
         onClick={() => router.push('/bookings/new')}
         tooltipSide="top"
       />

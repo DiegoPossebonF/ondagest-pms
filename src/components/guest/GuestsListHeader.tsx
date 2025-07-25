@@ -15,7 +15,7 @@ export default function GuestsListHeader() {
       <ButtonTooltip
         icon={<IconUsersPlus className="w-4 h-4" />}
         tooltipText="Novo Hóspede"
-        className="self-start"
+        className="self-start size-8 group-data-[collapsible=icon]:opacity-0"
         onClick={() => router.push('/guests/new')}
         tooltipSide="top"
       />

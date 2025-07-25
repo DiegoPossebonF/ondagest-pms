@@ -31,6 +31,7 @@ export default function GuestsFilters() {
           <Button
             variant="destructive"
             size="icon"
+            className="size-8 group-data-[collapsible=icon]:opacity-0"
             onClick={() => resetFilters()}
           >
             <IconFilterX className="w-4 h-4" />
@@ -67,6 +68,7 @@ export default function GuestsFilters() {
           icon={<IconFilterX className="w-4 h-4" />}
           tooltipText="Limpar filtros"
           tooltipSide="top"
+          className="size-8 group-data-[collapsible=icon]:opacity-0"
           onClick={() => resetFilters()}
         />
       )}
@@ -77,7 +79,11 @@ export default function GuestsFilters() {
           tooltipSide="top"
         >
           <PopoverTrigger asChild>
-            <Button variant="outline" size="icon">
+            <Button
+              variant="outline"
+              size="icon"
+              className="size-8 group-data-[collapsible=icon]:opacity-0"
+            >
               <IconFilterEdit className="w-4 h-4" />
             </Button>
           </PopoverTrigger>
