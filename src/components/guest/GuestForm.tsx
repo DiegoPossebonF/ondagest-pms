@@ -22,6 +22,7 @@ import {
 import { Input } from '../ui/input'
 import { GuestDeleteAlertDialog } from './GuestDeleteAlertDialog'
 import { GuestFormError } from './GuestFormError'
+import { useGuestsFilters } from './GuestsFiltersProvider'
 
 interface GuestFormProps {
   guest?: Guest
@@ -29,6 +30,7 @@ interface GuestFormProps {
 
 export default function GuestForm({ guest }: GuestFormProps) {
   const router = useRouter()
+  const { refetch } = useGuestsFilters()
   const [serverError, setServerError] = useState<string | null>(null)
 
   const [isDisabled, setIsDisabled] = useState(!!guest || false)
@@ -62,7 +64,8 @@ export default function GuestForm({ guest }: GuestFormProps) {
             })
             setIsDisabled(true)
             setServerError(null)
-            router.push(`/guests/${guest.id}`)
+            refetch()
+            router.push(`/guests`)
           }
         })
       })
@@ -79,6 +82,7 @@ export default function GuestForm({ guest }: GuestFormProps) {
             })
             form.reset()
             setServerError(null)
+            refetch()
             router.push('/guests')
           }
         })

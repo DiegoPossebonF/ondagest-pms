@@ -24,7 +24,7 @@ export default function ReceiptViewer({
   booking,
   payment,
 }: { booking: BookingAllIncludes; payment: Payment }) {
-  const organization = useOrganization()
+  const { logoBase64, organization } = useOrganization()
   const isMobile =
     typeof window !== 'undefined' && /Mobi|Android/i.test(navigator.userAgent)
 
@@ -69,8 +69,8 @@ export default function ReceiptViewer({
               >
                 <ReceiptDocument
                   booking={booking}
-                  organization={organization}
                   payment={payment}
+                  organization={{ ...organization, logoUrl: logoBase64 }}
                 />
               </PDFViewer>
             ) : (
@@ -93,8 +93,8 @@ export default function ReceiptViewer({
               document={
                 <ReceiptDocument
                   booking={booking}
-                  organization={organization}
                   payment={payment}
+                  organization={{ ...organization, logoUrl: logoBase64 }}
                 />
               }
               fileName={`recibo-pagamento-reserva-nr-${padStart(booking.id.toString(), 5, '0')}.pdf`}

@@ -12,7 +12,6 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar'
 import { usePathname, useRouter } from 'next/navigation'
-import { useOrganization } from '../organization/OrganizationProvider'
 
 export function NavMain({
   items,
@@ -28,8 +27,6 @@ export function NavMain({
   const router = useRouter()
   const pathname = usePathname()
   const segments = pathname.split('/').filter(Boolean)
-
-  const organization = useOrganization()
 
   const active = (url: string) => {
     return segments[0] === url.replace('/', '')

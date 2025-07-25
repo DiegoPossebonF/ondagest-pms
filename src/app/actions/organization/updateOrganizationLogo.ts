@@ -6,10 +6,11 @@ import { revalidatePath } from 'next/cache'
 
 export async function updateOrganizationLogo(orgId: string, file: File) {
   try {
-    const path = `logos/${orgId}.png`
-
     if (file.type !== 'image/png' && file.type !== 'image/jpeg')
       return { error: 'Formato inválido (apenas PNG ou JPEG).' }
+
+    const path = `logos/${orgId}.${file.type.split('/')[1]}`
+
     // 🔸 Tenta remover o logo anterior
     await supabase.storage.from('public-media').remove([path])
 
@@ -18,7 +19,7 @@ export async function updateOrganizationLogo(orgId: string, file: File) {
     const optimizedBuffer = await optimizeImageWithSharp(buffer, {
       width: 500,
       height: 500,
-      format: 'webp',
+      format: file.type.split('/')[1] as 'jpeg' | 'png',
       quality: 70,
       crop: true, // 🔹 corta centralizado para quadrado fixo
     })

@@ -22,7 +22,7 @@ import VoucherDocument from './VoucherDocument'
 export default function VoucherViewer({
   booking,
 }: { booking: BookingAllIncludes }) {
-  const organization = useOrganization()
+  const { logoBase64, organization } = useOrganization()
 
   const isMobile =
     typeof window !== 'undefined' && /Mobi|Android/i.test(navigator.userAgent)
@@ -68,7 +68,7 @@ export default function VoucherViewer({
               >
                 <VoucherDocument
                   booking={booking}
-                  organization={organization}
+                  organization={{ ...organization, logoUrl: logoBase64 }}
                 />
               </PDFViewer>
             ) : (
@@ -91,7 +91,7 @@ export default function VoucherViewer({
               document={
                 <VoucherDocument
                   booking={booking}
-                  organization={organization}
+                  organization={{ ...organization, logoUrl: logoBase64 }}
                 />
               }
               fileName={`voucher-reserva-nr-${padStart(booking.id.toString(), 5, '0')}.pdf`}

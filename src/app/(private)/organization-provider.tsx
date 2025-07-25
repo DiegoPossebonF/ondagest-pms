@@ -1,7 +1,7 @@
 import { OrganizationProvider } from '@/components/organization/OrganizationProvider'
-import { fetchImageAsBase64 } from '@/utils/imageBase64'
 import type { ReactNode } from 'react'
 import { getOrganization } from '../actions/organization/actions'
+import { getImageBase64 } from '../actions/utils/getImageBase64'
 
 export default async function OrganizationServerProvider({
   children,
@@ -14,20 +14,12 @@ export default async function OrganizationServerProvider({
     throw new Error(res.error)
   }
 
-  if (!res.data.logoUrl) {
-    return (
-      <OrganizationProvider organization={res.data}>
-        {children}
-      </OrganizationProvider>
-    )
-  }
-
-  const logoBase64 = await fetchImageAsBase64(res.data.logoUrl || '')
-
-  res.data.logoUrl = logoBase64
+  const logoBase64 = res.data.logoUrl
+    ? await getImageBase64(res.data.logoUrl)
+    : null
 
   return (
-    <OrganizationProvider organization={res.data}>
+    <OrganizationProvider organization={res.data} logoBase64={logoBase64}>
       {children}
     </OrganizationProvider>
   )

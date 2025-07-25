@@ -111,7 +111,7 @@ export function GuestsFiltersProvider({
     fetchData()
   }, [page, perPage, sortKey, sortDirection, filters])
 
-  const refetch = () => fetchData()
+  const refetch = async () => await fetchData()
 
   const resetFilters = () => {
     setFilters({

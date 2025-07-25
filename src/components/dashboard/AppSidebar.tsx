@@ -76,7 +76,7 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 }
 
 export function AppSidebar({ children, user, ...props }: AppSidebarProps) {
-  const organization = useOrganization()
+  const { organization } = useOrganization()
   return (
     <SidebarProvider defaultOpen={false} className="overflow-hidden">
       <Sidebar collapsible="icon" {...props}>
