@@ -1,6 +1,10 @@
 'use client'
 
-import { IconDotsVertical, IconLogout } from '@tabler/icons-react'
+import {
+  IconDotsVertical,
+  IconLogout,
+  IconUserCircle,
+} from '@tabler/icons-react'
 
 import SignOut from '@/app/actions/auth/signout'
 import type { User } from '@/app/generated/prisma'
@@ -19,12 +23,13 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
-import Logo from '@/public/images/male-avatar.png'
 
 type UserSession = Omit<User, 'createdAt' | 'updatedAt' | 'password'>
 
 export function NavUser({ user }: { user?: UserSession }) {
   const { isMobile } = useSidebar()
+
+  const avatar = user?.image || ''
 
   return (
     <SidebarMenu>
@@ -33,11 +38,13 @@ export function NavUser({ user }: { user?: UserSession }) {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground rounded-lg"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user?.image || Logo.src} alt={user?.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarImage src={avatar} alt={user?.name} />
+                <AvatarFallback className="rounded-lg">
+                  <IconUserCircle className="h-4 w-4" />
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user?.name}</span>
@@ -57,8 +64,10 @@ export function NavUser({ user }: { user?: UserSession }) {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center justify-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="w-20 h-20 rounded-lg">
-                  <AvatarImage src={user?.image || Logo.src} alt={user?.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarImage src={avatar} alt={user?.name} />
+                  <AvatarFallback className="rounded-lg">
+                    <IconUserCircle className="h-14 w-14" strokeWidth={1} />
+                  </AvatarFallback>
                 </Avatar>
               </div>
             </DropdownMenuLabel>

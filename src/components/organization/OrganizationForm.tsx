@@ -25,7 +25,6 @@ import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { FormError } from '../FormError'
-import { ImageUpload } from '../ImageUpload'
 import { LoadingSpinner } from '../LoadingSpinner'
 import {
   Select,
@@ -34,6 +33,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select'
+import { OrganizationLogoUpload } from './OrganizationLogoUpload'
 
 interface OrganizationFormProps {
   organization?: Organization
@@ -125,7 +125,7 @@ export function OrganizationForm({
                 <FormItem className="flex flex-col">
                   <FormLabel className="text-left">Logo</FormLabel>
                   <FormControl>
-                    <ImageUpload
+                    <OrganizationLogoUpload
                       initialImage={organization.logoUrl || undefined}
                       organizationId={organization.id}
                     />

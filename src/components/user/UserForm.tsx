@@ -28,6 +28,7 @@ import {
   SelectValue,
 } from '../ui/select'
 import { UserAlertDialogDelete } from './UserAlertDialogDelete'
+import { UserAvatarUpload } from './UserAvatarUpload'
 import { UserFormError } from './UserFormError'
 import { type UserData, useUsersFilters } from './UsersFiltersProvider'
 
@@ -108,6 +109,13 @@ export default function UserForm({
           onSubmit={form.handleSubmit(onSubmit)}
           className="w-full space-y-4"
         >
+          <div className="flex flex-row w-full justify-center">
+            <UserAvatarUpload
+              userId={selectedUser?.id ?? ''}
+              initialImage={selectedUser?.image ?? ''}
+            />
+          </div>
+
           <FormField
             control={form.control}
             name="name"
