@@ -1,8 +1,6 @@
-'use client'
-
 import type { Organization } from '@/app/generated/prisma'
+import db from '@/lib/db'
 import { STATUS_LABELS, formatCurrency } from '@/lib/utils'
-import LogoPMS from '@/public/images/LogoOndaGest.png'
 import type { BookingAllIncludes } from '@/types/booking'
 import {
   Document,
@@ -11,10 +9,13 @@ import {
   StyleSheet,
   Text,
   View,
+  renderToBuffer,
 } from '@react-pdf/renderer'
 import dayjs from 'dayjs'
 import { padStart } from 'lodash'
 import type React from 'react'
+
+import LogoPMS from '@/public/images/LogoOndaGest.png'
 
 const styles = StyleSheet.create({
   page: {
@@ -273,3 +274,17 @@ const VoucherDocument: React.FC<VoucherDocumentProps> = ({
 }
 
 export default VoucherDocument
+
+export async function generateVoucherPdfBuffer(booking: BookingAllIncludes) {
+  const organization = await db.organization.findFirst()
+
+  if (!organization) {
+    throw new Error('Organização não encontrada.')
+  }
+
+  const buffer = await renderToBuffer(
+    <VoucherDocument booking={booking} organization={organization} />
+  )
+
+  return buffer
+}

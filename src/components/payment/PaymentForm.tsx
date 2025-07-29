@@ -22,6 +22,7 @@ import {
 import { type PaymentSchema, paymentSchema } from '@/schemas/payment-schema'
 import type { BookingAllIncludes } from '@/types/booking'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { IconDeviceFloppy } from '@tabler/icons-react'
 import dayjs from 'dayjs'
 import { CalendarIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -246,6 +247,7 @@ export function PaymentForm({
               size={'sm'}
               disabled={isPending}
             >
+              <IconDeviceFloppy className="w-4 h-4" />
               {isPending
                 ? payment
                   ? 'Salvando...'
@@ -256,6 +258,7 @@ export function PaymentForm({
             </Button>
             {payment && (
               <>
+                <ReceiptViewer booking={booking} payment={payment} />
                 <PaymentAlertDialogDelete
                   payment={payment}
                   open={openDeleteDialog}
@@ -266,7 +269,6 @@ export function PaymentForm({
                     Excluir
                   </Button>
                 </PaymentAlertDialogDelete>
-                <ReceiptViewer booking={booking} payment={payment} />
               </>
             )}
           </div>

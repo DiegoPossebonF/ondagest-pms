@@ -1,9 +1,12 @@
 'use client'
+import { uploadReceipt } from '@/app/actions/pdf/uploadReceipt'
 import type { Payment } from '@/app/generated/prisma'
 import type { BookingAllIncludes } from '@/types/booking'
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer'
 import { IconReceipt } from '@tabler/icons-react'
 import { padStart } from 'lodash'
+import { useTransition } from 'react'
+import { toast } from 'sonner'
 import { LoadingSpinner } from '../LoadingSpinner'
 import { useOrganization } from '../organization/OrganizationProvider'
 import { Button } from '../ui/button'
@@ -24,9 +27,28 @@ export default function ReceiptViewer({
   booking,
   payment,
 }: { booking: BookingAllIncludes; payment: Payment }) {
+  const [isPending, startTransition] = useTransition()
   const { logoBase64, organization } = useOrganization()
   const isMobile =
     typeof window !== 'undefined' && /Mobi|Android/i.test(navigator.userAgent)
+
+  const handleUpload = async () => {
+    startTransition(() => {
+      uploadReceipt(booking, payment).then(data => {
+        if (data.error) {
+          toast.error(data.error)
+          return
+        }
+        if (data.signedUrl) {
+          toast('Sucesso', {
+            description: data.signedUrl,
+            duration: 5000,
+            icon: '✅',
+          })
+        }
+      })
+    })
+  }
 
   return (
     <Dialog>
@@ -35,13 +57,13 @@ export default function ReceiptViewer({
           <TooltipTrigger asChild>
             <SheetTrigger asChild>
               <Button
-                size="icon"
-                className={`size-8 group-data-[collapsible=icon]:opacity-0`}
+                size="sm"
+                className={`w-fullsize-8 group-data-[collapsible=icon]:opacity-0`}
                 variant="default"
                 title="Gerar Recibo"
               >
                 <IconReceipt className="h-4 w-4" />
-                <span className="sr-only">Gerar Recibo</span>
+                <span>Gerar Recibo</span>
               </Button>
             </SheetTrigger>
           </TooltipTrigger>
@@ -88,6 +110,9 @@ export default function ReceiptViewer({
           </div>
         </div>
         <DialogFooter>
+          <Button variant={'outline'} size={'sm'} onClick={handleUpload}>
+            Upload
+          </Button>
           <Button variant="outline" size="sm">
             <PDFDownloadLink
               document={
