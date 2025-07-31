@@ -23,31 +23,4 @@ export default async function BookingId({
       </div>
     </div>
   )
-
-  /*
-  return (
-    <div className="p-6 overflow-auto">
-      <div className="flex flex-col lg:flex-row gap-6">
-        <div className="md:basis-1/2">
-          <Card className="w-full">
-            <CardHeader className="space-y-2 pb-2">
-              <CardTitle className="flex flex-row items-center">
-                Formulário da Reserva #{Number(id)}
-              </CardTitle>
-            </CardHeader>
-            <Separator />
-
-            <CardContent className="space-y-4">
-              <BookingForm bookingData={res.data} />
-            </CardContent>
-            <CardFooter className="flex justify-end">TESTE</CardFooter>
-          </Card>
-        </div>
-        <div className="md:basis-1/2">
-          <BookingDetails booking={res.data} />
-        </div>
-      </div>
-    </div>
-  )
-    */
 }

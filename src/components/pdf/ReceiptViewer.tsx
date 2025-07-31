@@ -1,12 +1,10 @@
 'use client'
-import { uploadReceipt } from '@/app/actions/pdf/uploadReceipt'
 import type { Payment } from '@/app/generated/prisma'
 import type { BookingAllIncludes } from '@/types/booking'
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer'
 import { IconReceipt } from '@tabler/icons-react'
 import { padStart } from 'lodash'
 import { useTransition } from 'react'
-import { toast } from 'sonner'
 import { LoadingSpinner } from '../LoadingSpinner'
 import { useOrganization } from '../organization/OrganizationProvider'
 import { Button } from '../ui/button'
@@ -31,24 +29,6 @@ export default function ReceiptViewer({
   const { logoBase64, organization } = useOrganization()
   const isMobile =
     typeof window !== 'undefined' && /Mobi|Android/i.test(navigator.userAgent)
-
-  const handleUpload = async () => {
-    startTransition(() => {
-      uploadReceipt(booking, payment).then(data => {
-        if (data.error) {
-          toast.error(data.error)
-          return
-        }
-        if (data.signedUrl) {
-          toast('Sucesso', {
-            description: data.signedUrl,
-            duration: 5000,
-            icon: '✅',
-          })
-        }
-      })
-    })
-  }
 
   return (
     <Dialog>
@@ -110,8 +90,14 @@ export default function ReceiptViewer({
           </div>
         </div>
         <DialogFooter>
-          <Button variant={'outline'} size={'sm'} onClick={handleUpload}>
-            Upload
+          <Button
+            variant={'outline'}
+            size={'sm'}
+            onClick={() => {
+              alert('Criar')
+            }}
+          >
+            Enviar por WhatsApp
           </Button>
           <Button variant="outline" size="sm">
             <PDFDownloadLink

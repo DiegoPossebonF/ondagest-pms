@@ -85,6 +85,7 @@ model Unit {
 
 model Booking {
   id             Int           @id @default(autoincrement())
+  publicId       String        @unique @default(dbgenerated("gen_random_uuid()")) // Para PostgreSQL
   guest          Guest         @relation(fields: [guestId], references: [id])
   guestId        String
   unit           Unit          @relation(fields: [unitId], references: [id])

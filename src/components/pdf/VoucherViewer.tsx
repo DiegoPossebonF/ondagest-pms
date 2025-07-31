@@ -1,7 +1,8 @@
 'use client'
+import { formatPhoneNumber } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer'
-import { IconFileLike } from '@tabler/icons-react'
+import { IconBrandWhatsapp, IconFileLike } from '@tabler/icons-react'
 import { padStart } from 'lodash'
 import { LoadingSpinner } from '../LoadingSpinner'
 import { useOrganization } from '../organization/OrganizationProvider'
@@ -26,6 +27,20 @@ export default function VoucherViewer({
 
   const isMobile =
     typeof window !== 'undefined' && /Mobi|Android/i.test(navigator.userAgent)
+
+  const handleShare = () => {
+    const linkVoucher = `${process.env.NEXT_PUBLIC_API_URL}/booking/voucher/${booking.publicId}`
+
+    const message = organization.invoiceMessageVoucher?.replace(
+      '[LINK]',
+      linkVoucher
+    )
+
+    const encodedMessage = encodeURIComponent(message || '')
+    const whatsappLink = `https://api.whatsapp.com/send?phone=55${formatPhoneNumber(booking.guest.phone || '')}&text=${encodedMessage}`
+
+    window.open(whatsappLink, '_blank')
+  }
 
   return (
     <Dialog>
@@ -86,6 +101,10 @@ export default function VoucherViewer({
           </div>
         </div>
         <DialogFooter>
+          <Button variant="outline" size="sm" onClick={handleShare}>
+            <IconBrandWhatsapp className="h-4 w-4" />
+            Compartilhar
+          </Button>
           <Button variant="outline" size="sm">
             <PDFDownloadLink
               document={

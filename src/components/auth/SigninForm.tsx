@@ -13,9 +13,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { motion } from 'framer-motion'
 import { AlertCircle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { LoadingSpinner } from '../LoadingSpinner'
 import { Label } from '../ui/label'
 
 const SigninSchema = z.object({
@@ -28,6 +29,7 @@ type SigninFormData = z.infer<typeof SigninSchema>
 export function SigninForm() {
   const router = useRouter()
   const [errorMessage, setErrorMessage] = useState('')
+  const [isPending, startTransition] = useTransition()
 
   const form = useForm<SigninFormData>({
     resolver: zodResolver(SigninSchema),
@@ -38,13 +40,18 @@ export function SigninForm() {
   })
 
   const onSubmit = async (values: SigninFormData) => {
-    const { success, error } = await signinAction(values.email, values.password)
+    startTransition(async () => {
+      const { success, error } = await signinAction(
+        values.email,
+        values.password
+      )
 
-    if (success) {
-      router.push('/')
-    }
+      if (success) {
+        router.push('/')
+      }
 
-    setErrorMessage(error || '')
+      setErrorMessage(error || '')
+    })
   }
 
   return (
@@ -106,7 +113,7 @@ export function SigninForm() {
           className="w-full"
           disabled={form.formState.isSubmitting}
         >
-          {form.formState.isSubmitting ? 'Entrando...' : 'Entrar'}
+          {isPending ? <LoadingSpinner size="sm" /> : 'Entrar'}
         </Button>
         <Button
           type="button"

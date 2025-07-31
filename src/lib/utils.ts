@@ -148,3 +148,7 @@ export function parseCurrencyToNumber(value: string): number {
 export function padNumber(num: number, length = 6) {
   return String(num).padStart(length, '0')
 }
+
+export function formatPhoneNumber(raw: string): string {
+  return raw.replace(/\D/g, '')
+}

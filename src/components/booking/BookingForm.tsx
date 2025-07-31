@@ -269,7 +269,7 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
         <CardTitle>Formulário da Reserva #{booking?.id}</CardTitle>
       </CardHeader>
       <Separator />
-      <CardContent className="flex-1 overflow-auto space-y-4">
+      <CardContent className="flex-1 overflow-auto space-y-4 p-6">
         <BookingFormError
           errors={form.formState.errors}
           serverError={serverError}

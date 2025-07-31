@@ -1,5 +1,6 @@
+import { getBookingById } from '@/app/actions/booking/actions'
+import { getOrganization } from '@/app/actions/organization/actions'
 import type { Organization, Payment } from '@/app/generated/prisma'
-import db from '@/lib/db'
 import { formatCurrency } from '@/lib/utils'
 import LogoPMS from '@/public/images/LogoOndaGest.png'
 import type { BookingAllIncludes } from '@/types/booking'
@@ -10,7 +11,6 @@ import {
   StyleSheet,
   Text,
   View,
-  renderToBuffer,
 } from '@react-pdf/renderer'
 import dayjs from 'dayjs'
 import { padStart } from 'lodash'
@@ -205,23 +205,18 @@ const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
 
 export default ReceiptDocument
 
-export async function generateReceiptPdfBuffer(
-  booking: BookingAllIncludes,
-  payment: Payment
-) {
-  const organization = await db.organization.findFirst()
+export async function generateReceiptDocument(payment: Payment) {
+  const { data, error } = await getOrganization()
+  if (error) throw new Error(error)
+  if (!data) throw new Error('Organização não encontrada')
 
-  if (!organization) {
-    throw new Error('Organização não encontrada.')
-  }
-
-  const buffer = await renderToBuffer(
-    <ReceiptDocument
-      booking={booking}
-      organization={organization}
-      payment={payment}
-    />
+  const { data: booking, error: bookingError } = await getBookingById(
+    payment.bookingId
   )
 
-  return buffer
+  if (bookingError) throw new Error(bookingError)
+  if (!booking) throw new Error('Reserva não encontrada')
+  return (
+    <ReceiptDocument payment={payment} organization={data} booking={booking} />
+  )
 }

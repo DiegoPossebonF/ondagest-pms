@@ -186,3 +186,35 @@ export async function getBookingById(id: number) {
     }
   }
 }
+
+export async function getBookingByPublicId(publicId: string) {
+  try {
+    const booking = await db.booking.findUnique({
+      where: { publicId },
+      include: {
+        guest: true,
+        unit: { include: { type: { include: { rates: true } } } },
+        payments: { orderBy: { paidAt: 'desc' } },
+        discounts: { orderBy: { createdAt: 'desc' } },
+        services: { orderBy: { createdAt: 'desc' } },
+        rate: { include: { type: true } },
+      },
+    })
+
+    if (!booking) {
+      return {
+        data: null,
+        error: 'A reserva que você procura não existe ou foi removida.',
+      }
+    }
+
+    return { data: booking }
+  } catch (error) {
+    console.error('Erro ao buscar reserva por Public ID', error)
+    return {
+      error:
+        'Erro ao buscar reserva por Public ID. Por favor, tente novamente mais tarde ou contate o suporte.',
+      data: null,
+    }
+  }
+}
