@@ -1,8 +1,9 @@
 'use client'
+import { shareReceipt } from '@/app/actions/utils/sharePDF'
 import type { Payment } from '@/app/generated/prisma'
 import type { BookingAllIncludes } from '@/types/booking'
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer'
-import { IconReceipt } from '@tabler/icons-react'
+import { IconBrandWhatsapp, IconReceipt } from '@tabler/icons-react'
 import { padStart } from 'lodash'
 import { useTransition } from 'react'
 import { LoadingSpinner } from '../LoadingSpinner'
@@ -91,13 +92,20 @@ export default function ReceiptViewer({
         </div>
         <DialogFooter>
           <Button
-            variant={'outline'}
-            size={'sm'}
-            onClick={() => {
-              alert('Criar')
+            variant="outline"
+            size="sm"
+            onClick={async () => {
+              const whatsappLink = await shareReceipt(
+                payment.id,
+                organization.invoiceMessageReceipt || '',
+                booking.guest.phone || ''
+              )
+
+              window.open(whatsappLink, '_blank')
             }}
           >
-            Enviar por WhatsApp
+            <IconBrandWhatsapp className="h-4 w-4" />
+            Compartilhar
           </Button>
           <Button variant="outline" size="sm">
             <PDFDownloadLink
