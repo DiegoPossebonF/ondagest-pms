@@ -6,21 +6,26 @@ export async function findUserByCredentials(
   email: string,
   password: string
 ): Promise<User | null> {
-  const user = await db.user.findFirst({
-    where: {
-      email,
-    },
-  })
+  try {
+    const user = await db.user.findFirst({
+      where: {
+        email,
+      },
+    })
 
-  if (!user) {
+    if (!user) {
+      return null
+    }
+
+    const passwordMatch = await compare(password, user.password)
+
+    if (!passwordMatch) {
+      return null
+    }
+
+    return user
+  } catch (error) {
+    console.error(error)
     return null
   }
-
-  const passwordMatch = await compare(password, user.password)
-
-  if (!passwordMatch) {
-    return null
-  }
-
-  return user
 }
