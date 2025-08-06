@@ -86,7 +86,9 @@ export default function VoucherViewer({
             )}
           </div>
         </div>
-        <DialogFooter>
+        <DialogFooter
+          className={`flex flex-col  ${isMobile ? 'gap-4' : 'gap-2'}`}
+        >
           <Button
             variant="outline"
             size="sm"

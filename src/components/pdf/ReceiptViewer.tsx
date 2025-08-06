@@ -90,7 +90,9 @@ export default function ReceiptViewer({
             )}
           </div>
         </div>
-        <DialogFooter>
+        <DialogFooter
+          className={`flex flex-col  ${isMobile ? 'gap-4' : 'gap-2'}`}
+        >
           <Button
             variant="outline"
             size="sm"
