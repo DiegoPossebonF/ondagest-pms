@@ -90,6 +90,6 @@
     "typescript": "^5"
   },
   "pkg": {
-    "assets": ["node_modules/.prisma/client/*.node"]
+    "assets": ["src/app/generated/prisma/*.node", "node_modules/.prisma/*.node"]
   }
 }
