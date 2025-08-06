@@ -1,9 +1,9 @@
 import { AppSidebar } from '@/components/dashboard/AppSidebar'
 import { auth } from '@/lib/auth'
 import db from '@/lib/db'
+import type { User } from '@prisma/client'
 import { redirect } from 'next/navigation'
 import type { ReactNode } from 'react'
-import type { User } from '../generated/prisma'
 import OrganizationServerProvider from './organization-provider'
 
 interface DashboardLayoutProps {
