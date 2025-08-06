@@ -31,13 +31,13 @@ export function RateUnitTypeCombobox({
 
   useEffect(() => {
     async function handleGetUnitTypes() {
-      const data = await getUnitTypes()
-      if (data.error) {
-        console.log(data.error)
+      const { data, error, success } = await getUnitTypes()
+      if (error) {
+        console.log(error)
         return
       }
-      if (data.unitTypes) {
-        setUnitTypes(data.unitTypes)
+      if (data) {
+        setUnitTypes(data)
       }
     }
     handleGetUnitTypes()
