@@ -283,7 +283,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\Diego\\Documents\\Projetos\\ondagest\\src\\app\\generated\\prisma",
+      "value": "C:\\Users\\DPFDEV\\Documents\\Projetos\\ondagest-pms\\src\\app\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -297,7 +297,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\Diego\\Documents\\Projetos\\ondagest\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\DPFDEV\\Documents\\Projetos\\ondagest-pms\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -311,11 +311,12 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": "postgresql://postgres.pzjkycvjhxnybnbyvjjm:hFd6jjItnXLsfeGe@aws-0-sa-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
+        "value": null
       }
     }
   },

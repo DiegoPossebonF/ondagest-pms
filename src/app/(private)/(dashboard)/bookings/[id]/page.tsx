@@ -4,7 +4,9 @@ import BookingForm from '@/components/booking/BookingForm'
 
 export default async function BookingId({
   params,
-}: { params: { id: string } }) {
+}: {
+  params: Promise<{ id: string }>
+}) {
   const { id } = await params
 
   const res = await getBookingById(Number(id))
