@@ -11,7 +11,7 @@ import {
 import type { Guest } from '@/app/generated/prisma'
 import { useState } from 'react'
 import { Separator } from '../ui/separator'
-import { GuestForm } from './GuestForm'
+import GuestForm from './GuestForm'
 
 interface GuestSheetProps {
   guest?: Guest
@@ -34,7 +34,7 @@ export function GuestSheet({ children, guest }: GuestSheetProps) {
           </SheetDescription>
         </SheetHeader>
         <Separator className="mb-4" />
-        <GuestForm guest={guest} setOpen={setOpen} />
+        <GuestForm guest={guest} />
       </SheetContent>
     </Sheet>
   )
