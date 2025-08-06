@@ -1,7 +1,6 @@
 'use client'
 import { createService } from '@/app/actions/service/createService'
 import { updateService } from '@/app/actions/service/updateService'
-import type { Service } from '@/app/generated/prisma'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -15,6 +14,7 @@ import { Input } from '@/components/ui/input'
 import { formatCurrency } from '@/lib/utils'
 import { type ServiceSchema, serviceSchema } from '@/schemas/service-schema'
 import { zodResolver } from '@hookform/resolvers/zod'
+import type { Service } from '@prisma/client'
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'

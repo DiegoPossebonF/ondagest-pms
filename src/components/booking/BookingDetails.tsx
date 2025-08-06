@@ -17,7 +17,6 @@ import {
 import { Separator } from '@/components/ui/separator'
 import dayjs from 'dayjs'
 import 'dayjs/locale/pt-br'
-import type { Discount, Payment, Service } from '@/app/generated/prisma'
 import {
   PAYMENT_TYPE_ICONS,
   PAYMENT_TYPE_LABELS,
@@ -30,6 +29,7 @@ import {
   formatCurrency,
 } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
+import type { Discount, Payment, Service } from '@prisma/client'
 import {
   IconCalendarCheck,
   IconCashRegister,

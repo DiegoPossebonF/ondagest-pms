@@ -1,4 +1,3 @@
-import { BookingStatus, PaymentStatus } from '@/app/generated/prisma'
 import {
   Popover,
   PopoverContent,
@@ -10,6 +9,7 @@ import {
   STATUS_PAYMENT_COLORS,
   STATUS_PAYMENT_LABELS,
 } from '@/lib/utils'
+import { BookingStatus, PaymentStatus } from '@prisma/client'
 import { IconMessageQuestion } from '@tabler/icons-react'
 import { ButtonTooltip } from './ButtonTooltip'
 import { Button } from './ui/button'

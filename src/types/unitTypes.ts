@@ -1,4 +1,4 @@
-import type { Prisma } from '@/app/generated/prisma'
+import type { Prisma } from '@prisma/client'
 
 export type UnitWithTypeAndBookings = Prisma.UnitGetPayload<{
   include: {

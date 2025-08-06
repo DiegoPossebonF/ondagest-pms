@@ -1,10 +1,10 @@
 // src/actions/booking.ts
 
 'use server'
-import type { PaymentType } from '@/app/generated/prisma'
 import db from '@/lib/db'
 import { updateBookingPaymentStatus } from '@/lib/db/actions/updateBookingPaymentStatus'
 import { type PaymentSchema, paymentSchema } from '@/schemas/payment-schema'
+import type { PaymentType } from '@prisma/client'
 import { revalidatePath } from 'next/cache'
 
 export async function updatePayment(paymentId: string, data: PaymentSchema) {

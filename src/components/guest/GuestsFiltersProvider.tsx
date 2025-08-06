@@ -1,7 +1,7 @@
 'use client'
 import { getGuests } from '@/app/actions/guest/actions'
-import type { Guest } from '@/app/generated/prisma'
 import { useIsMobile } from '@/hooks/use-mobile'
+import type { Guest } from '@prisma/client'
 import { ArrowDown, ArrowUp } from 'lucide-react'
 import { type JSX, createContext, useContext, useEffect, useState } from 'react'
 import { Button } from '../ui/button'

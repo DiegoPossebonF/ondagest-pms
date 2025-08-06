@@ -1,5 +1,5 @@
-import type { BookingStatus } from '@/app/generated/prisma'
 import type { BookingAllIncludes } from '@/types/booking'
+import type { BookingStatus } from '@prisma/client'
 import calculateBookingValues from './calculateBookingValues'
 
 export default async function validateBookingStatusChange(

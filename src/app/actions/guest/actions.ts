@@ -1,7 +1,7 @@
 'use server'
 
-import type { Guest } from '@/app/generated/prisma'
 import db from '@/lib/db'
+import type { Guest } from '@prisma/client'
 
 interface GetGuestsParams {
   page: number

@@ -1,6 +1,6 @@
 'use client'
-import { Role } from '@/app/generated/prisma'
 import { Input } from '@/components/ui/input'
+import { Role } from '@prisma/client'
 import { ChevronsUpDown } from 'lucide-react'
 import { Button } from '../ui/button'
 import { Checkbox } from '../ui/checkbox'

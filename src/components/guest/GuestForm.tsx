@@ -2,11 +2,11 @@
 
 import { createGuest } from '@/app/actions/guest/createGuest'
 import { updateGuest } from '@/app/actions/guest/updateGuest'
-import type { Guest } from '@/app/generated/prisma'
 import { Button } from '@/components/ui/button'
 import { type GuestSchema, guestSchema } from '@/schemas/guest-schema'
 import { cpfMask, phoneMask } from '@/utils/masks'
 import { zodResolver } from '@hookform/resolvers/zod'
+import type { Guest } from '@prisma/client'
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'

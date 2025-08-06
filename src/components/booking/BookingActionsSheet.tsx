@@ -1,6 +1,5 @@
 'use client'
 
-import type { Discount, Payment, Service } from '@/app/generated/prisma'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -12,6 +11,7 @@ import {
 } from '@/components/ui/sheet'
 import { padNumber } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
+import type { Discount, Payment, Service } from '@prisma/client'
 import {
   IconCashRegister,
   IconMoneybagMinus,

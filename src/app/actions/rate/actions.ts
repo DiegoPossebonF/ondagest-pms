@@ -1,6 +1,6 @@
 'use server'
-import type { Prisma } from '@/app/generated/prisma'
 import db from '@/lib/db'
+import type { Prisma } from '@prisma/client'
 import { revalidatePath } from 'next/cache'
 
 export type RateWithUnitType = Prisma.RateGetPayload<{

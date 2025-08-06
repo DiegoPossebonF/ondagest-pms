@@ -1,8 +1,8 @@
 'use server'
 
-import type { BookingStatus } from '@/app/generated/prisma'
 import db from '@/lib/db'
 import { STATUS_LABELS } from '@/lib/utils'
+import type { BookingStatus } from '@prisma/client'
 import validateBookingStatusChange from './validateBookingStatusChange'
 
 export async function cancelBooking(

@@ -1,5 +1,5 @@
-import type { Organization } from '@/app/generated/prisma'
 import db from '@/lib/db'
+import type { Organization } from '@prisma/client'
 
 export async function getOrganization() {
   try {

@@ -1,6 +1,6 @@
 'use server'
-import type { Role, User } from '@/app/generated/prisma'
 import db from '@/lib/db'
+import type { Role, User } from '@prisma/client'
 
 export interface GetUsersParams {
   page: number

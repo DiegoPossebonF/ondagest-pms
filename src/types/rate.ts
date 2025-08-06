@@ -1,3 +1,3 @@
-import type { Prisma } from '@/app/generated/prisma'
+import type { Prisma } from '@prisma/client'
 
 export type Rate = Prisma.RateGetPayload<{ include: { type: true } }>

@@ -1,7 +1,6 @@
 'use client'
 import { createDiscount } from '@/app/actions/discount/createDiscount'
 import { updateDiscount } from '@/app/actions/discount/updateDiscount'
-import type { Discount } from '@/app/generated/prisma'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -15,6 +14,7 @@ import { Input } from '@/components/ui/input'
 import { formatCurrency } from '@/lib/utils'
 import { type DiscountSchema, discountSchema } from '@/schemas/discount-schema'
 import { zodResolver } from '@hookform/resolvers/zod'
+import type { Discount } from '@prisma/client'
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'

@@ -1,6 +1,6 @@
 'use client'
 import { getUsers } from '@/app/actions/user/actions'
-import type { Role, User } from '@/app/generated/prisma'
+import type { Role, User } from '@prisma/client'
 import { ArrowDown, ArrowUp } from 'lucide-react'
 import { type JSX, createContext, useContext, useEffect, useState } from 'react'
 import { Button } from '../ui/button'

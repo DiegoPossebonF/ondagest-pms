@@ -1,4 +1,4 @@
-import type { BookingStatus } from '@/app/generated/prisma'
+import type { BookingStatus } from '@prisma/client'
 
 export const activeBookingFilter = {
   status: {

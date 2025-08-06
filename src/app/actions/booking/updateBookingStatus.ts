@@ -1,6 +1,6 @@
 'use server'
-import type { BookingStatus } from '@/app/generated/prisma'
 import db from '@/lib/db'
+import type { BookingStatus } from '@prisma/client'
 
 export const updateBookingStatus = async (
   bookingId: number,

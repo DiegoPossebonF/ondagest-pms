@@ -1,11 +1,11 @@
 'use client'
 import { deletePayment } from '@/app/actions/payment/deletePayment'
-import type { Payment } from '@/app/generated/prisma'
 import {
   PAYMENT_TYPE_ICONS,
   PAYMENT_TYPE_LABELS,
   formatCurrency,
 } from '@/lib/utils'
+import type { Payment } from '@prisma/client'
 import { IconCalendarCheck } from '@tabler/icons-react'
 import dayjs from 'dayjs'
 import { useRouter } from 'next/navigation'

@@ -1,9 +1,9 @@
 'use client'
 
 import { getBookings } from '@/app/actions/booking/actions'
-import type { BookingStatus, PaymentStatus } from '@/app/generated/prisma'
 import { useIsMobile } from '@/hooks/use-mobile'
 import type { BookingAllIncludes } from '@/types/booking'
+import type { BookingStatus, PaymentStatus } from '@prisma/client'
 import { ArrowDown, ArrowUp } from 'lucide-react'
 import { type JSX, createContext, useContext, useEffect, useState } from 'react'
 import { Button } from '../ui/button'

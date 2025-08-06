@@ -1,9 +1,9 @@
 import { getBookingById } from '@/app/actions/booking/actions'
 import { getOrganization } from '@/app/actions/organization/actions'
-import type { Organization, Payment } from '@/app/generated/prisma'
 import { formatCurrency } from '@/lib/utils'
 import LogoPMS from '@/public/images/LogoOndaGest.png'
 import type { BookingAllIncludes } from '@/types/booking'
+import type { Organization, Payment } from '@prisma/client'
 import {
   Document,
   Image,

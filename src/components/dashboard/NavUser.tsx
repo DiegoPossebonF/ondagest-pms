@@ -7,7 +7,6 @@ import {
 } from '@tabler/icons-react'
 
 import SignOut from '@/app/actions/auth/signout'
-import type { User } from '@/app/generated/prisma'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   DropdownMenu,
@@ -23,6 +22,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
+import type { User } from '@prisma/client'
 
 type UserSession = Omit<User, 'createdAt' | 'updatedAt' | 'password'>
 

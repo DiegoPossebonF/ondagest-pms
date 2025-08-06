@@ -2,7 +2,6 @@
 
 import { createOrganization } from '@/app/actions/organization/createOrganization'
 import { updateOrganization } from '@/app/actions/organization/updateOrganization'
-import type { Organization } from '@/app/generated/prisma'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -20,6 +19,7 @@ import {
 } from '@/schemas/organization-schema'
 import { cepMask, cnpjMask, cpfMask, phoneMask } from '@/utils/masks'
 import { zodResolver } from '@hookform/resolvers/zod'
+import type { Organization } from '@prisma/client'
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'

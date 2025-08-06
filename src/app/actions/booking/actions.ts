@@ -1,13 +1,9 @@
 'use server'
-import type {
-  BookingStatus,
-  PaymentStatus,
-  Prisma,
-} from '@/app/generated/prisma'
 import type { SortKey } from '@/components/booking/BookingsFiltersProvider'
 import db from '@/lib/db'
 import { activeBookingStatuses } from '@/lib/db/scopes'
 import type { BookingAllIncludes } from '@/types/booking'
+import type { BookingStatus, PaymentStatus, Prisma } from '@prisma/client'
 
 interface GetBookingsParams {
   page?: number

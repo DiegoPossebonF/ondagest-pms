@@ -1,5 +1,5 @@
-import type { User } from '@/app/generated/prisma'
 import db from '@/lib/db'
+import type { User } from '@prisma/client'
 import { compare } from 'bcryptjs'
 
 export async function findUserByCredentials(

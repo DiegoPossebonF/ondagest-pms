@@ -8,7 +8,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 
-import type { Guest } from '@/app/generated/prisma'
+import type { Guest } from '@prisma/client'
 import { useState } from 'react'
 import { Separator } from '../ui/separator'
 import GuestForm from './GuestForm'

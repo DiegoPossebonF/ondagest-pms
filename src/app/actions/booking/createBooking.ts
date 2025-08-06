@@ -1,9 +1,9 @@
 'use server'
 
-import { BookingStatus, PricingMode } from '@/app/generated/prisma'
 import db from '@/lib/db'
 import { activeBookingStatuses } from '@/lib/db/scopes'
 import { type BookingSchema, bookingSchema } from '@/schemas/booking-schema'
+import { BookingStatus, PricingMode } from '@prisma/client'
 import dayjs from 'dayjs'
 import { revalidatePath } from 'next/cache'
 

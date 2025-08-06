@@ -1,6 +1,5 @@
 'use client'
 import { getUnitTypes } from '@/app/actions/unitType/actions'
-import type { UnitType } from '@/app/generated/prisma'
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -17,6 +16,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
+import type { UnitType } from '@prisma/client'
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { useEffect, useState } from 'react'
 

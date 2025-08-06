@@ -1,4 +1,4 @@
-import type { Prisma } from '@/app/generated/prisma/client'
+import type { Prisma } from '@prisma/client'
 
 export type BookingAllIncludes = Prisma.BookingGetPayload<{
   include: {

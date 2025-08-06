@@ -2,7 +2,6 @@
 
 import { createUser } from '@/app/actions/user/createUser'
 import { updateUser } from '@/app/actions/user/updateUser'
-import { Role } from '@/app/generated/prisma'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -16,6 +15,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { type UserSchema, userSchema } from '@/schemas/user-schema'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Role } from '@prisma/client'
 import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'

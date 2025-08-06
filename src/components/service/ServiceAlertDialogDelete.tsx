@@ -1,7 +1,7 @@
 'use client'
 import { deleteService } from '@/app/actions/service/deleteService'
-import type { Service } from '@/app/generated/prisma'
 import { formatCurrency } from '@/lib/utils'
+import type { Service } from '@prisma/client'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import {

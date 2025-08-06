@@ -1,7 +1,6 @@
 'use client'
 import { createUnitType } from '@/app/actions/unitType/createUnitType'
 import { updateUnitType } from '@/app/actions/unitType/updateUnitType'
-import type { UnitType } from '@/app/generated/prisma'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -14,6 +13,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { type UnitTypeSchema, unitTypeSchema } from '@/schemas/unit-type-schema'
 import { zodResolver } from '@hookform/resolvers/zod'
+import type { UnitType } from '@prisma/client'
 import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'

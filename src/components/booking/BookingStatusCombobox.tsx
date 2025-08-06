@@ -1,5 +1,4 @@
 'use client'
-import { BookingStatus } from '@/app/generated/prisma'
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -16,6 +15,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { STATUS_LABELS, cn } from '@/lib/utils'
+import { BookingStatus } from '@prisma/client'
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { useEffect, useState } from 'react'
 

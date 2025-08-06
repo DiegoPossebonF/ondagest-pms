@@ -1,4 +1,4 @@
-import type { UnitType } from '@/app/generated/prisma'
+import type { UnitType } from '@prisma/client'
 import dayjs from 'dayjs'
 import type { JSX } from 'react'
 import {

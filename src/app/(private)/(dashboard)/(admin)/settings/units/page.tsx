@@ -1,6 +1,6 @@
 import { getUnits } from '@/app/actions/unit/actions'
-import type { Prisma } from '@/app/generated/prisma'
 import { UnitsList } from '@/components/unit/UnitsList'
+import type { Prisma } from '@prisma/client'
 
 export type UnitWithTypeAndBookings = Prisma.UnitGetPayload<{
   include: { type: true; bookings: true }

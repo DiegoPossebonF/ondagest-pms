@@ -1,4 +1,4 @@
-import { PaymentType } from '@/app/generated/prisma'
+import { PaymentType } from '@prisma/client'
 import { z } from 'zod'
 
 export const paymentSchema = z.object({

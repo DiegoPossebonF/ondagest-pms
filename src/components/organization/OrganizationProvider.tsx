@@ -1,5 +1,5 @@
 'use client'
-import type { Organization } from '@/app/generated/prisma'
+import type { Organization } from '@prisma/client'
 import { createContext, useContext } from 'react'
 
 type OrganizationContextProps = {

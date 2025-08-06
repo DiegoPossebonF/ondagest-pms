@@ -1,7 +1,6 @@
 'use client'
 import { createPayment } from '@/app/actions/payment/createPayment'
 import { updatePayment } from '@/app/actions/payment/updatePayment'
-import { type Payment, PaymentType } from '@/app/generated/prisma'
 import ReceiptViewer from '@/components/pdf/ReceiptViewer'
 import { Button } from '@/components/ui/button'
 import {
@@ -22,6 +21,7 @@ import {
 import { type PaymentSchema, paymentSchema } from '@/schemas/payment-schema'
 import type { BookingAllIncludes } from '@/types/booking'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { type Payment, PaymentType } from '@prisma/client'
 import { IconDeviceFloppy } from '@tabler/icons-react'
 import dayjs from 'dayjs'
 import { CalendarIcon } from 'lucide-react'

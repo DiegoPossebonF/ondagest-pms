@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/sidebar'
 import type * as React from 'react'
 
-import type { User } from '@/app/generated/prisma'
+import type { User } from '@prisma/client'
 import {
   IconBook,
   IconBookFilled,

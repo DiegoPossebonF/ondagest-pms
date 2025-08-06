@@ -1,6 +1,6 @@
 'use client'
 import { deleteDiscount } from '@/app/actions/discount/deleteDiscount'
-import type { Discount } from '@/app/generated/prisma'
+import type { Discount } from '@prisma/client'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import {

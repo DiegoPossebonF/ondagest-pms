@@ -1,7 +1,6 @@
 'use client'
 import calculateBookingValues from '@/app/actions/booking/calculateBookingValues'
 import { updateBookingStatus } from '@/app/actions/booking/updateBookingStatus'
-import { BookingStatus } from '@/app/generated/prisma'
 import {
   STATUS_COLORS,
   STATUS_COLORS_TEXT,
@@ -11,6 +10,7 @@ import {
 } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import type { UnitWithTypeAndBookings } from '@/types/unit'
+import { BookingStatus } from '@prisma/client'
 import { IconCalendarPlus, IconHome } from '@tabler/icons-react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'

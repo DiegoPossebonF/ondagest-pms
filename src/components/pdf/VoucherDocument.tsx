@@ -1,6 +1,6 @@
-import type { Organization } from '@/app/generated/prisma'
 import { STATUS_LABELS, formatCurrency } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
+import type { Organization } from '@prisma/client'
 import {
   Document,
   Image,

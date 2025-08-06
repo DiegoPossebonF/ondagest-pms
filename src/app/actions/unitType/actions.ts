@@ -1,7 +1,7 @@
 'use server'
 
-import type { Prisma } from '@/app/generated/prisma'
 import db from '@/lib/db'
+import type { Prisma } from '@prisma/client'
 
 type UnitTypeWithUnitsAndRates = Prisma.UnitTypeGetPayload<{
   include: { units: true; rates: true }

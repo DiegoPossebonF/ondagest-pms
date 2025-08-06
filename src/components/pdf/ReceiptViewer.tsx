@@ -1,7 +1,7 @@
 'use client'
 import { shareReceipt } from '@/app/actions/utils/sharePDF'
-import type { Payment } from '@/app/generated/prisma'
 import type { BookingAllIncludes } from '@/types/booking'
+import type { Payment } from '@prisma/client'
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer'
 import { IconBrandWhatsapp, IconReceipt } from '@tabler/icons-react'
 import { padStart } from 'lodash'

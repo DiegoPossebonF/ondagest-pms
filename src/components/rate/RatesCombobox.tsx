@@ -1,5 +1,4 @@
 'use client'
-import type { Rate } from '@/app/generated/prisma'
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -17,6 +16,7 @@ import {
 } from '@/components/ui/popover'
 import { cn, formatCurrency } from '@/lib/utils'
 import type { BookingSchema } from '@/schemas/booking-schema'
+import type { Rate } from '@prisma/client'
 import { IconCurrencyReal, IconUserFilled } from '@tabler/icons-react'
 import type { Dictionary } from 'lodash'
 import { Check, ChevronsUpDown, Info } from 'lucide-react'

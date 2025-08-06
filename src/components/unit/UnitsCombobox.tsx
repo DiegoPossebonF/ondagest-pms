@@ -1,7 +1,6 @@
 'use client'
 
 import { freeUnitsPerPeriod } from '@/app/actions/unit/actions'
-import type { Unit, UnitType } from '@/app/generated/prisma'
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -18,6 +17,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
+import type { Unit, UnitType } from '@prisma/client'
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { type Dispatch, type SetStateAction, useEffect, useState } from 'react'
 import { LoadingSpinner } from '../LoadingSpinner'

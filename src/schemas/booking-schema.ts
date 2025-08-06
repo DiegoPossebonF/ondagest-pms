@@ -1,4 +1,4 @@
-import { BookingStatus, PricingMode } from '@/app/generated/prisma'
+import { BookingStatus, PricingMode } from '@prisma/client'
 import { z } from 'zod'
 
 export const bookingSchema = z

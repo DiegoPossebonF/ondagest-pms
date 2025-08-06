@@ -1,5 +1,4 @@
 'use client'
-import type { UnitType } from '@/app/generated/prisma'
 import {
   Table,
   TableBody,
@@ -9,6 +8,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { useIsMobile } from '@/hooks/use-mobile'
+import type { UnitType } from '@prisma/client'
 import { IconHomeCog } from '@tabler/icons-react'
 import dayjs from 'dayjs'
 import { ArrowDown, ArrowUp } from 'lucide-react'

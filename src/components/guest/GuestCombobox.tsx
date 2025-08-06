@@ -1,6 +1,5 @@
 'use client'
 import { searchGuestName } from '@/app/actions/guest/actions'
-import type { Guest } from '@/app/generated/prisma'
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -17,6 +16,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
+import type { Guest } from '@prisma/client'
 import { IconUserPlus } from '@tabler/icons-react'
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { useRouter } from 'next/navigation'

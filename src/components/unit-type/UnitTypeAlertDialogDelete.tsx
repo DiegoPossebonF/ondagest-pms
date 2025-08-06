@@ -1,7 +1,7 @@
 'use client'
 import { deleteUnitType } from '@/app/actions/unitType/deleteUnitType'
-import type { UnitType } from '@/app/generated/prisma'
 import { Button } from '@/components/ui/button'
+import type { UnitType } from '@prisma/client'
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 import {
