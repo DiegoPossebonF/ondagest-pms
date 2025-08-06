@@ -6,7 +6,7 @@ import type { NextRequest } from 'next/server'
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { paymentId: string } }
+  { params }: { params: Promise<{ paymentId: string }> }
 ) {
   try {
     const { paymentId } = await params

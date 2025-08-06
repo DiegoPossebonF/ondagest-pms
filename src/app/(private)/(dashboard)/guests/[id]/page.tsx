@@ -1,7 +1,11 @@
 import { getGuestById } from '@/app/actions/guest/actions'
 import GuestForm from '@/components/guest/GuestForm'
 
-export default async function GuestId({ params }: { params: { id: string } }) {
+export default async function GuestId({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
   const { id } = await params
 
   const res = await getGuestById(id)
