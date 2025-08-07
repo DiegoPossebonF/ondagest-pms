@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -72,7 +73,6 @@ export function OrganizationForm({
   })
 
   async function onSubmitHandle(values: OrganizationSchema) {
-    alert(JSON.stringify(values, null, 2))
     startTransition(() => {
       if (organization) {
         updateOrganization(organization.id, values).then(data => {
@@ -433,16 +433,20 @@ export function OrganizationForm({
             control={form.control}
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>Mensagem no Voucher</FormLabel>
+                <FormLabel>Voucher - Mensagem de compartilhamento</FormLabel>
+                <FormMessage />
                 <FormControl>
                   <Textarea
                     {...field}
-                    rows={3}
+                    rows={5}
                     placeholder="Mensagem personalizada para voucher"
-                    className="h-8 rounded-md px-3 text-xs md:text-xs bg-popover"
+                    className="rounded-md px-3 text-xs md:text-xs bg-popover resize-y"
                   />
                 </FormControl>
-                <FormMessage />
+                <FormDescription>
+                  Obrigatório conter uma tag [LINK] na mensagem, que será
+                  substituida pelo link do voucher.
+                </FormDescription>
               </FormItem>
             )}
           />
@@ -451,16 +455,20 @@ export function OrganizationForm({
             control={form.control}
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>Mensagem no Recibo</FormLabel>
+                <FormLabel>Recibo - Mensagem de compartilhamento</FormLabel>
+                <FormMessage />
                 <FormControl>
                   <Textarea
                     {...field}
-                    rows={3}
+                    rows={5}
                     placeholder="Mensagem personalizada para recibo"
-                    className="h-8 rounded-md px-3 text-xs md:text-xs bg-popover"
+                    className="rounded-md px-3 text-xs md:text-xs bg-popover resize-y"
                   />
                 </FormControl>
-                <FormMessage />
+                <FormDescription>
+                  Obrigatório conter uma tag [LINK] na mensagem, que será
+                  substituida pelo link do recibo.
+                </FormDescription>
               </FormItem>
             )}
           />
