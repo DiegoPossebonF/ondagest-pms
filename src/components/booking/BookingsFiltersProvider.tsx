@@ -5,7 +5,14 @@ import { useIsMobile } from '@/hooks/use-mobile'
 import type { BookingAllIncludes } from '@/types/booking'
 import type { BookingStatus, PaymentStatus } from '@prisma/client'
 import { ArrowDown, ArrowUp } from 'lucide-react'
-import { type JSX, createContext, useContext, useEffect, useState } from 'react'
+import {
+  type JSX,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useTransition,
+} from 'react'
 import { Button } from '../ui/button'
 
 export type SortKey =
@@ -40,6 +47,7 @@ type BookingFilters = {
   sortKey: SortKey
   sortDirection: SortDirection
   activeFilters: boolean
+  isPending: boolean
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   handleFilterChange: (key: string, value: any) => void
   handleSort: (key: SortKey) => void
@@ -66,6 +74,7 @@ export function BookingsFiltersProvider({
   children,
 }: { children: React.ReactNode }) {
   const isMobile = useIsMobile()
+  const [isPending, startTransition] = useTransition()
   const [bookings, setBookings] = useState<BookingAllIncludes[]>([])
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc')
   const [activeFilters, setActiveFilters] = useState(false)
@@ -94,19 +103,21 @@ export function BookingsFiltersProvider({
 
   const fetchData = async () => {
     try {
-      const result = await getBookings({
-        page,
-        perPage,
-        sortKey,
-        sortDirection,
-        filters,
+      startTransition(async () => {
+        const result = await getBookings({
+          page,
+          perPage,
+          sortKey,
+          sortDirection,
+          filters,
+        })
+
+        if (result.error || !result.data) throw new Error(result.error)
+
+        setBookings(result.data.bookings)
+        setTotalPages(result.data.totalPages)
+        setError(null)
       })
-
-      if (result.error || !result.data) throw new Error(result.error)
-
-      setBookings(result.data.bookings)
-      setTotalPages(result.data.totalPages)
-      setError(null)
     } catch (error) {
       setBookings([])
       setTotalPages(1)
@@ -188,6 +199,7 @@ export function BookingsFiltersProvider({
           sortKey,
           sortDirection,
           activeFilters,
+          isPending,
           handleFilterChange,
           handleSort,
           setPage,

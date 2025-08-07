@@ -16,6 +16,7 @@ import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import { useRouter } from 'next/navigation'
 import AlertErrorGlobal from '../AlertErrorGlobal'
+import { LoadingSpinner } from '../LoadingSpinner'
 import {
   Table,
   TableBody,
@@ -34,7 +35,7 @@ dayjs.locale('pt-br')
 
 export function BookingsList() {
   const router = useRouter()
-  const { bookings, error, SortHeader } = useBookingFilters()
+  const { bookings, error, SortHeader, isPending } = useBookingFilters()
 
   const isMobile = useIsMobile()
 
@@ -135,7 +136,11 @@ export function BookingsList() {
             ) : (
               <TableRow>
                 <TableCell colSpan={8} className="text-center py-6">
-                  Nenhuma reserva encontrada
+                  {isPending ? (
+                    <LoadingSpinner size="sm" />
+                  ) : (
+                    'Nenhuma reserva encontrada'
+                  )}
                 </TableCell>
               </TableRow>
             )}

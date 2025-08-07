@@ -5,7 +5,6 @@ import type { Payment } from '@prisma/client'
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer'
 import { IconBrandWhatsapp, IconReceipt } from '@tabler/icons-react'
 import { padStart } from 'lodash'
-import { useTransition } from 'react'
 import { LoadingSpinner } from '../LoadingSpinner'
 import { useOrganization } from '../organization/OrganizationProvider'
 import { Button } from '../ui/button'
@@ -26,7 +25,6 @@ export default function ReceiptViewer({
   booking,
   payment,
 }: { booking: BookingAllIncludes; payment: Payment }) {
-  const [isPending, startTransition] = useTransition()
   const { logoBase64, organization } = useOrganization()
   const isMobile =
     typeof window !== 'undefined' && /Mobi|Android/i.test(navigator.userAgent)
@@ -93,22 +91,6 @@ export default function ReceiptViewer({
         <DialogFooter
           className={`flex flex-col  ${isMobile ? 'gap-4' : 'gap-2'}`}
         >
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={async () => {
-              const whatsappLink = await shareReceipt(
-                payment.id,
-                organization.invoiceMessageReceipt || '',
-                booking.guest.phone || ''
-              )
-
-              window.open(whatsappLink, '_blank')
-            }}
-          >
-            <IconBrandWhatsapp className="h-4 w-4" />
-            Compartilhar
-          </Button>
           <Button variant="outline" size="sm">
             <PDFDownloadLink
               document={
@@ -125,6 +107,22 @@ export default function ReceiptViewer({
                 loading ? <LoadingSpinner size="sm" /> : 'Baixar Recibo PDF'
               }
             </PDFDownloadLink>
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={async () => {
+              const whatsappLink = await shareReceipt(
+                payment.id,
+                organization.invoiceMessageReceipt || '',
+                booking.guest.phone || ''
+              )
+
+              window.open(whatsappLink, '_blank')
+            }}
+          >
+            <IconBrandWhatsapp className="h-4 w-4" />
+            Compartilhar
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -89,22 +89,6 @@ export default function VoucherViewer({
         <DialogFooter
           className={`flex flex-col  ${isMobile ? 'gap-4' : 'gap-2'}`}
         >
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={async () => {
-              const whatsappLink = await shareVoucher(
-                booking.publicId,
-                organization.invoiceMessageVoucher || '',
-                booking.guest.phone || ''
-              )
-
-              window.open(whatsappLink, '_blank')
-            }}
-          >
-            <IconBrandWhatsapp className="h-4 w-4" />
-            Compartilhar
-          </Button>
           <Button variant="outline" size="sm">
             <PDFDownloadLink
               document={
@@ -120,6 +104,22 @@ export default function VoucherViewer({
                 loading ? <LoadingSpinner size="sm" /> : 'Baixar Voucher PDF'
               }
             </PDFDownloadLink>
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={async () => {
+              const whatsappLink = await shareVoucher(
+                booking.publicId,
+                organization.invoiceMessageVoucher || '',
+                booking.guest.phone || ''
+              )
+
+              window.open(whatsappLink, '_blank')
+            }}
+          >
+            <IconBrandWhatsapp className="h-4 w-4" />
+            Compartilhar
           </Button>
         </DialogFooter>
       </DialogContent>

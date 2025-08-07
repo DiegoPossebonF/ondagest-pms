@@ -138,7 +138,7 @@ export function RatesList() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-6">
+                <TableCell colSpan={6} className="text-center py-6">
                   Nenhuma tarifa localizada
                 </TableCell>
               </TableRow>

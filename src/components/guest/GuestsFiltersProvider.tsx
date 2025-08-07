@@ -3,7 +3,14 @@ import { getGuests } from '@/app/actions/guest/actions'
 import { useIsMobile } from '@/hooks/use-mobile'
 import type { Guest } from '@prisma/client'
 import { ArrowDown, ArrowUp } from 'lucide-react'
-import { type JSX, createContext, useContext, useEffect, useState } from 'react'
+import {
+  type JSX,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useTransition,
+} from 'react'
 import { Button } from '../ui/button'
 
 export type SortDirection = 'asc' | 'desc'
@@ -39,6 +46,7 @@ type GuestFilters = {
   page: number
   perPage: number
   sortKey: SortKey
+  isPending: boolean
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   handleFilterChange: (key: string, value: any) => void
   resetFilters: () => void
@@ -62,7 +70,7 @@ export function GuestsFiltersProvider({
   children,
 }: { children: React.ReactNode }) {
   const isMobile = useIsMobile()
-
+  const [isPending, startTransition] = useTransition()
   const [guests, setGuests] = useState<Guest[]>([])
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
   const [activeFilters, setActiveFilters] = useState(false)
@@ -86,19 +94,21 @@ export function GuestsFiltersProvider({
 
   const fetchData = async () => {
     try {
-      const res = await getGuests({
-        page,
-        perPage,
-        orderBy: sortKey,
-        direction: sortDirection,
-        filters,
+      startTransition(async () => {
+        const res = await getGuests({
+          page,
+          perPage,
+          orderBy: sortKey,
+          direction: sortDirection,
+          filters,
+        })
+
+        if (res.error || !res.data) throw new Error(res.error)
+
+        setGuests(res.data.guests)
+        setTotalPages(res.data.totalPages)
+        setError(null)
       })
-
-      if (res.error || !res.data) throw new Error(res.error)
-
-      setGuests(res.data.guests)
-      setTotalPages(res.data.totalPages)
-      setError(null)
     } catch (error) {
       setGuests([])
       setTotalPages(1)
@@ -175,6 +185,7 @@ export function GuestsFiltersProvider({
           page,
           perPage,
           sortKey,
+          isPending,
           handleFilterChange,
           resetFilters,
           refetch,

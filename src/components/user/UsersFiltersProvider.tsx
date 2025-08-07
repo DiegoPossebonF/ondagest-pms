@@ -2,7 +2,14 @@
 import { getUsers } from '@/app/actions/user/actions'
 import type { Role, User } from '@prisma/client'
 import { ArrowDown, ArrowUp } from 'lucide-react'
-import { type JSX, createContext, useContext, useEffect, useState } from 'react'
+import {
+  type JSX,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useTransition,
+} from 'react'
 import { Button } from '../ui/button'
 
 /* model User {
@@ -40,6 +47,7 @@ type UserFilters = {
   page: number
   perPage: number
   sortKey: SortKey
+  isPending: boolean
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   handleFilterChange: (key: string, value: any) => void
   resetFilters: () => void
@@ -62,6 +70,7 @@ const UsersFiltersContext = createContext<UserFilters | undefined>(undefined)
 export function UsersFiltersProvider({
   children,
 }: { children: React.ReactNode }) {
+  const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const [users, setUsers] = useState<UserData[]>([])
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
@@ -81,19 +90,21 @@ export function UsersFiltersProvider({
 
   const fetchData = async () => {
     try {
-      const res = await getUsers({
-        page,
-        perPage,
-        orderBy: sortKey,
-        direction: sortDirection,
-        filters,
+      startTransition(async () => {
+        const res = await getUsers({
+          page,
+          perPage,
+          orderBy: sortKey,
+          direction: sortDirection,
+          filters,
+        })
+
+        if (res.error || !res.data) throw new Error(res.error)
+
+        setUsers(res.data?.users)
+        setTotalPages(res.data?.totalPages)
+        setError(null)
       })
-
-      if (res.error || !res.data) throw new Error(res.error)
-
-      setUsers(res.data?.users)
-      setTotalPages(res.data?.totalPages)
-      setError(null)
     } catch (error) {
       setUsers([])
       setTotalPages(1)
@@ -166,6 +177,7 @@ export function UsersFiltersProvider({
           page,
           perPage,
           sortKey,
+          isPending,
           handleFilterChange,
           resetFilters,
           refetch,

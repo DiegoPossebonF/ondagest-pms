@@ -11,6 +11,7 @@ import { useIsMobile } from '@/hooks/use-mobile'
 import dayjs from 'dayjs'
 import { useState } from 'react'
 import AlertErrorGlobal from '../AlertErrorGlobal'
+import { LoadingSpinner } from '../LoadingSpinner'
 import {
   Sheet,
   SheetContent,
@@ -31,7 +32,7 @@ import UsersListHeader from './UsersListHeader'
 export function UsersList() {
   const [selectedUser, setSelectedUser] = useState<UserData | null>(null)
   const [openNewUser, setOpenNewUser] = useState(false)
-  const { users, error, SortHeader } = useUsersFilters()
+  const { users, error, SortHeader, isPending } = useUsersFilters()
 
   const isMobile = useIsMobile()
 
@@ -125,7 +126,11 @@ export function UsersList() {
             ) : (
               <TableRow>
                 <TableCell colSpan={7} className="text-center py-6">
-                  Nenhum usuário encontrado.
+                  {isPending ? (
+                    <LoadingSpinner size="sm" />
+                  ) : (
+                    'Nenhum usuário encontrado.'
+                  )}
                 </TableCell>
               </TableRow>
             )}
