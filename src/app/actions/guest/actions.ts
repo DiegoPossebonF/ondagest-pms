@@ -83,7 +83,10 @@ export async function searchGuestName(searchTerm: string) {
   try {
     const guests = await db.guest.findMany({
       where: {
-        name: { contains: searchTerm },
+        name: {
+          contains: searchTerm,
+          mode: 'insensitive',
+        },
       },
       take: 5,
       orderBy: {

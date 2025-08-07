@@ -34,10 +34,14 @@ export async function getBookings({
         equals: filters.id ? Number(filters.id) : undefined,
       },
       guest: {
-        name: filters.guestName ? { contains: filters.guestName } : undefined,
+        name: filters.guestName
+          ? { contains: filters.guestName, mode: 'insensitive' }
+          : undefined,
       },
       unit: {
-        name: filters.unitName ? { contains: filters.unitName } : undefined,
+        name: filters.unitName
+          ? { contains: filters.unitName, mode: 'insensitive' }
+          : undefined,
       },
       status: {
         in: filters.status ? filters.status : undefined,

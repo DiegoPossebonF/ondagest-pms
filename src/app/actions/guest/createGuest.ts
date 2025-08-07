@@ -18,6 +18,14 @@ export async function createGuest(data: GuestSchema) {
   const { name, email, phone, cpf, city, carPlate } = parsed.data
 
   try {
+    const existingEmail = await db.guest.findUnique({
+      where: { email },
+    })
+
+    if (existingEmail) {
+      return { error: 'Email já cadastrado' }
+    }
+
     await db.guest.create({
       data: {
         name: name,

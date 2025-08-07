@@ -364,26 +364,6 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
 
             <FormField
               control={form.control}
-              name="rateId"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Tarifa</FormLabel>
-                  <RatesCombobox
-                    rates={rates}
-                    selectedRateName={selectedRateName}
-                    setSelectedRateName={setSelectedRateName}
-                    setValue={form.setValue}
-                    disabled={!form.watch('unitId') || isDisabled}
-                  />
-                  <FormDescription className="sr-only">
-                    Selecione uma tarifa para a reserva
-                  </FormDescription>
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
               name="numberOfPeople"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
@@ -411,6 +391,26 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
                   />
                   <FormDescription className="sr-only">
                     Informe quantidade de pessoas
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="rateId"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Tarifa</FormLabel>
+                  <RatesCombobox
+                    rates={rates}
+                    selectedRateName={selectedRateName}
+                    setSelectedRateName={setSelectedRateName}
+                    setValue={form.setValue}
+                    disabled={!form.watch('unitId') || isDisabled}
+                  />
+                  <FormDescription className="sr-only">
+                    Selecione uma tarifa para a reserva
                   </FormDescription>
                 </FormItem>
               )}

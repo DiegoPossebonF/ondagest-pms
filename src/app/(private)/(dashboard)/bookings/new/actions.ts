@@ -15,20 +15,6 @@ export async function getGuestsOrderUpdated() {
   }
 }
 
-export async function getGuestsByName(name: string) {
-  try {
-    const guests = await db.guest.findMany({
-      where: { name: { contains: name } },
-      take: 5,
-      orderBy: { name: 'asc' },
-    })
-    return guests
-  } catch (error) {
-    console.log(error)
-    return null
-  }
-}
-
 export async function groupedByRateNamePerUnit(unit: string) {
   try {
     const unitType = await db.unit.findUnique({
