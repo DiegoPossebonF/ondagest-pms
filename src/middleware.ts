@@ -9,6 +9,7 @@ const privateRoutes = ['/']
 
 // rotas só para ADMIN
 const adminRoutes = [
+  '/reports',
   '/settings',
   '/admin',
   '/admin/users',
