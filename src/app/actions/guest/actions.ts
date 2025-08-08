@@ -1,7 +1,7 @@
 'use server'
 
 import db from '@/lib/db'
-import type { Guest } from '@prisma/client'
+import { type Guest, Prisma } from '@prisma/client'
 
 interface GetGuestsParams {
   page: number
@@ -28,18 +28,54 @@ export async function getGuests({
   filters = {},
 }: GetGuestsParams) {
   try {
-    const where = {
-      name: filters.name ? { contains: filters.name } : undefined,
-      email: filters.email ? { contains: filters.email } : undefined,
-      phone: filters.phone ? { contains: filters.phone } : undefined,
-      cpf: filters.cpf ? { contains: filters.cpf } : undefined,
-      city: filters.city ? { contains: filters.city } : undefined,
-      carPlate: filters.carPlate ? { contains: filters.carPlate } : undefined,
+    const where: Prisma.GuestWhereInput = {
+      name: filters.name
+        ? {
+            contains: filters.name,
+            mode: Prisma.QueryMode.insensitive,
+          }
+        : undefined,
+
+      email: filters.email
+        ? {
+            contains: filters.email,
+            mode: Prisma.QueryMode.insensitive,
+          }
+        : undefined,
+
+      phone: filters.phone
+        ? {
+            contains: filters.phone,
+            mode: Prisma.QueryMode.insensitive,
+          }
+        : undefined,
+
+      cpf: filters.cpf
+        ? {
+            contains: filters.cpf,
+            mode: Prisma.QueryMode.insensitive,
+          }
+        : undefined,
+
+      city: filters.city
+        ? {
+            contains: filters.city,
+            mode: Prisma.QueryMode.insensitive,
+          }
+        : undefined,
+
+      carPlate: filters.carPlate
+        ? {
+            contains: filters.carPlate,
+            mode: Prisma.QueryMode.insensitive,
+          }
+        : undefined,
+
       createdAt:
         filters.startDate || filters.endDate
           ? {
-              gte: filters.startDate ?? undefined,
-              lte: filters.endDate ?? undefined,
+              gte: filters.startDate ? new Date(filters.startDate) : undefined,
+              lte: filters.endDate ? new Date(filters.endDate) : undefined,
             }
           : undefined,
     }

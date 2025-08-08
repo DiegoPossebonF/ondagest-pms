@@ -14,6 +14,7 @@ import { IconEye, IconEyeOff } from '@tabler/icons-react'
 import dayjs from 'dayjs'
 import { useState } from 'react'
 import AlertErrorGlobal from '../AlertErrorGlobal'
+import { LoadingSpinner } from '../LoadingSpinner'
 import {
   Sheet,
   SheetContent,
@@ -32,7 +33,7 @@ export function RatesList() {
   const [selectedRate, setSelectedRate] = useState<RateWithUnitType | null>(
     null
   )
-  const { rates, error, SortHeader } = useRatesFilters()
+  const { rates, error, SortHeader, isPending } = useRatesFilters()
 
   const isMobile = useIsMobile()
 
@@ -105,7 +106,13 @@ export function RatesList() {
             </TableRow>
           </TableHeader>
           <TableBody className="bg-white dark:bg-muted">
-            {rates.length > 0 ? (
+            {isPending ? (
+              <TableRow>
+                <TableCell colSpan={6} className="text-center py-6">
+                  <LoadingSpinner />
+                </TableCell>
+              </TableRow>
+            ) : rates.length > 0 ? (
               rates.map(rate => (
                 <TableRow
                   key={rate.id}
@@ -139,7 +146,11 @@ export function RatesList() {
             ) : (
               <TableRow>
                 <TableCell colSpan={6} className="text-center py-6">
-                  Nenhuma tarifa localizada
+                  {isPending ? (
+                    <LoadingSpinner size="sm" />
+                  ) : (
+                    'Nenhuma tarifa localizada.'
+                  )}
                 </TableCell>
               </TableRow>
             )}

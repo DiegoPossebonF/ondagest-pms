@@ -102,7 +102,13 @@ export function UsersList() {
             </TableRow>
           </TableHeader>
           <TableBody className="bg-white dark:bg-muted">
-            {users.length > 0 ? (
+            {isPending ? (
+              <TableRow>
+                <TableCell colSpan={8} className="text-center py-6">
+                  <LoadingSpinner />
+                </TableCell>
+              </TableRow>
+            ) : users.length > 0 ? (
               users.map(user => (
                 <TableRow
                   key={user.id}

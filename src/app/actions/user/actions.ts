@@ -1,6 +1,6 @@
 'use server'
 import db from '@/lib/db'
-import type { Role, User } from '@prisma/client'
+import { Prisma, type Role, type User } from '@prisma/client'
 
 export interface GetUsersParams {
   page: number
@@ -22,11 +22,32 @@ export async function getUsers({
   filters = {},
 }: GetUsersParams) {
   try {
-    const where = {
-      name: filters.name ? { contains: filters.name } : undefined,
-      email: filters.email ? { contains: filters.email } : undefined,
-      role: { in: filters.role ? filters.role : undefined },
-      createdAt: filters.createdAt ? { gte: filters.createdAt } : undefined,
+    const where: Prisma.UserWhereInput = {
+      name: filters.name
+        ? {
+            contains: filters.name,
+            mode: Prisma.QueryMode.insensitive,
+          }
+        : undefined,
+
+      email: filters.email
+        ? {
+            contains: filters.email,
+            mode: Prisma.QueryMode.insensitive,
+          }
+        : undefined,
+
+      role: filters.role?.length
+        ? {
+            in: filters.role,
+          }
+        : undefined,
+
+      createdAt: filters.createdAt
+        ? {
+            gte: new Date(filters.createdAt),
+          }
+        : undefined,
     }
 
     const [users, total] = await Promise.all([

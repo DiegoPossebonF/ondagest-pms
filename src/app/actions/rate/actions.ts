@@ -1,6 +1,6 @@
 'use server'
 import db from '@/lib/db'
-import type { Prisma } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 import { revalidatePath } from 'next/cache'
 
 export type RateWithUnitType = Prisma.RateGetPayload<{
@@ -30,15 +30,46 @@ export async function getRatesFilters({
   filters = {},
 }: GetRatesParams) {
   try {
-    const where = {
-      name: filters.name ? { contains: filters.name } : undefined,
-      value: filters.value ? { equals: filters.value } : undefined,
-      numberOfPeople: filters.numberOfPeople
-        ? { equals: filters.numberOfPeople }
+    const where: Prisma.RateWhereInput = {
+      name: filters.name
+        ? {
+            contains: filters.name,
+            mode: Prisma.QueryMode.insensitive,
+          }
         : undefined,
-      typeId: filters.typeId ? { equals: filters.typeId } : undefined,
-      active: filters.active ? { equals: filters.active } : undefined,
-      createdAt: filters.createdAt ? { gte: filters.createdAt } : undefined,
+
+      value:
+        typeof filters.value === 'number'
+          ? {
+              equals: filters.value,
+            }
+          : undefined,
+
+      numberOfPeople:
+        typeof filters.numberOfPeople === 'number'
+          ? {
+              equals: filters.numberOfPeople,
+            }
+          : undefined,
+
+      typeId: filters.typeId
+        ? {
+            equals: filters.typeId,
+          }
+        : undefined,
+
+      active:
+        typeof filters.active === 'boolean'
+          ? {
+              equals: filters.active,
+            }
+          : undefined,
+
+      createdAt: filters.createdAt
+        ? {
+            gte: new Date(filters.createdAt),
+          }
+        : undefined,
     }
 
     const orderByWithType = () => {

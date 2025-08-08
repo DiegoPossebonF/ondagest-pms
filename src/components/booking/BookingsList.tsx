@@ -91,7 +91,13 @@ export function BookingsList() {
             </TableRow>
           </TableHeader>
           <TableBody className="bg-white dark:bg-muted">
-            {bookings.length > 0 ? (
+            {isPending ? (
+              <TableRow>
+                <TableCell colSpan={8} className="text-center py-6">
+                  <LoadingSpinner />
+                </TableCell>
+              </TableRow>
+            ) : bookings.length > 0 ? (
               bookings.map(booking => (
                 <TableRow
                   key={booking.id}

@@ -69,7 +69,13 @@ export function GuestsList() {
             </TableRow>
           </TableHeader>
           <TableBody className="bg-white dark:bg-muted">
-            {guests.length > 0 ? (
+            {isPending ? (
+              <TableRow>
+                <TableCell colSpan={8} className="text-center py-6">
+                  <LoadingSpinner />
+                </TableCell>
+              </TableRow>
+            ) : guests.length > 0 ? (
               guests.map(guest => (
                 <TableRow
                   key={guest.id}
@@ -107,7 +113,7 @@ export function GuestsList() {
                   {isPending ? (
                     <LoadingSpinner size="sm" />
                   ) : (
-                    'Nenhum hóspede cadastrado'
+                    'Nenhum hóspede encontrado'
                   )}
                 </TableCell>
               </TableRow>

@@ -5,22 +5,15 @@ import {
 } from '@/app/actions/rate/actions'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { ArrowDown, ArrowUp } from 'lucide-react'
-import { type JSX, createContext, useContext, useEffect, useState } from 'react'
+import {
+  type JSX,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useTransition,
+} from 'react'
 import { Button } from '../ui/button'
-
-/* model Rate {
-    id             String     @id @default(uuid()) 
-    name           String
-    value          Float
-    numberOfPeople Int
-    type           UnitType   @relation(fields: [typeId], references: [id])
-    typeId         String
-    bookings       Booking[]
-    active         Boolean  @default(true)
-    createdAt      DateTime   @default(now())
-    updatedAt      DateTime   @updatedAt
-  }
-*/
 
 export type SortDirection = 'asc' | 'desc'
 
@@ -52,6 +45,7 @@ type RateFilters = {
   page: number
   perPage: number
   sortKey: SortKey
+  isPending: boolean
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   handleFilterChange: (key: string, value: any) => void
   resetFilters: () => void
@@ -75,7 +69,7 @@ export function RatesFiltersProvider({
   children,
 }: { children: React.ReactNode }) {
   const isMobile = useIsMobile()
-
+  const [isPending, startTransition] = useTransition()
   const [rates, setRates] = useState<RateWithUnitType[]>([])
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
   const [activeFilters, setActiveFilters] = useState(false)
@@ -97,19 +91,21 @@ export function RatesFiltersProvider({
 
   const fetchData = async () => {
     try {
-      const result = await getRatesFilters({
-        page,
-        perPage,
-        orderBy: sortKey,
-        direction: sortDirection,
-        filters,
+      startTransition(async () => {
+        const result = await getRatesFilters({
+          page,
+          perPage,
+          orderBy: sortKey,
+          direction: sortDirection,
+          filters,
+        })
+
+        if (result.error || !result.data) throw new Error(result.error)
+
+        setRates(result.data.rates)
+        setTotalPages(result.data.totalPages)
+        setError(null)
       })
-
-      if (result.error || !result.data) throw new Error(result.error)
-
-      setRates(result.data.rates)
-      setTotalPages(result.data.totalPages)
-      setError(null)
     } catch (error) {
       setRates([])
       setTotalPages(1)
@@ -184,6 +180,7 @@ export function RatesFiltersProvider({
           page,
           perPage,
           sortKey,
+          isPending,
           handleFilterChange,
           resetFilters,
           refetch,
