@@ -48,7 +48,7 @@ export function PaymentMethodChart({ range }: Props) {
   const total = data.reduce((acc, item) => acc + item.total, 0)
 
   return (
-    <Card className="shadow-sm">
+    <Card className="shadow-md rounded-lg">
       <CardHeader>
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <div>

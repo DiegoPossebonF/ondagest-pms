@@ -63,7 +63,7 @@ export function RevenueChart({ range }: Props) {
   }, [range, granularity])
 
   return (
-    <Card className="shadow-sm">
+    <Card className="shadow-md rounded-lg">
       <CardHeader>
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <div>
