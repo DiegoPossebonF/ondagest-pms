@@ -16,6 +16,8 @@ import type { User } from '@prisma/client'
 import {
   IconBook,
   IconBookFilled,
+  IconClipboardData,
+  IconClipboardDataFilled,
   IconHome,
   IconHomeFilled,
   IconMapPin,
@@ -59,6 +61,12 @@ const data = {
     },
   ],
   navSecondary: [
+    {
+      title: 'Relatórios',
+      url: '/reports',
+      icon: IconClipboardData,
+      iconFilled: IconClipboardDataFilled,
+    },
     {
       title: 'Configurações',
       url: '/settings',
