@@ -39,7 +39,11 @@ export default function GuestsFilters() {
         )}
         <Drawer>
           <DrawerTrigger asChild>
-            <Button variant="outline" size="icon">
+            <Button
+              variant="outline"
+              size="icon"
+              className="size-8 group-data-[collapsible=icon]:opacity-0"
+            >
               <IconFilterEdit className="w-4 h-4" />
             </Button>
           </DrawerTrigger>

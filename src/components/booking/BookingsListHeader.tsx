@@ -4,11 +4,9 @@ import { useRouter } from 'next/navigation'
 import { ButtonTooltip } from '../ButtonTooltip'
 import { StatusLegend } from '../StatusLegend'
 import BookingsFilters from './BookingsFilters'
-import { useBookingFilters } from './BookingsFiltersProvider'
 
 export default function BookingsListHeader() {
   const router = useRouter()
-  const { activeFilters, resetFilters } = useBookingFilters()
 
   return (
     <div className="flex flex-row justify-between gap-2">

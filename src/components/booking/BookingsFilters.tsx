@@ -8,7 +8,6 @@ import {
 } from '@/components/ui/popover'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { IconFilterEdit, IconFilterX } from '@tabler/icons-react'
-import { useRouter } from 'next/navigation'
 import { ButtonTooltip } from '../ButtonTooltip'
 import {
   Drawer,
@@ -22,7 +21,6 @@ import { useBookingFilters } from './BookingsFiltersProvider'
 
 export default function BookingsFilters() {
   const isMobile = useIsMobile()
-  const router = useRouter()
   const { filters, activeFilters, handleFilterChange, resetFilters } =
     useBookingFilters()
 
@@ -41,7 +39,11 @@ export default function BookingsFilters() {
         )}
         <Drawer>
           <DrawerTrigger asChild>
-            <Button variant="outline" size="icon">
+            <Button
+              variant="outline"
+              size="icon"
+              className="size-8 group-data-[collapsible=icon]:opacity-0"
+            >
               <IconFilterEdit className="w-4 h-4" />
             </Button>
           </DrawerTrigger>
