@@ -1,5 +1,5 @@
-import Logo from '@/public/images/LogoOndaGestName.png'
-import ImagemLogin from '@/public/images/wallpapper-login.webp'
+import Logo from '../../../public/images/LogoOndaGestName.png'
+import ImagemLogin from '../../../public/images/wallpapper-login.webp'
 import {
   Card,
   CardContent,
