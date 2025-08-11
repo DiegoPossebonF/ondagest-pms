@@ -5,6 +5,7 @@ import dayjs from 'dayjs'
 import 'dayjs/locale/pt-br'
 import { getBookingsPerPeriod } from '@/app/actions/booking/actions'
 import { getUnits } from '@/app/actions/unit/actions'
+import { useIsMobile } from '@/hooks/use-mobile'
 import { cn } from '@/lib/utils'
 import {
   IconCalendarWeekFilled,
@@ -32,6 +33,7 @@ const COLUMN_WIDTH = 48
 
 export function UnitsGanttView() {
   const [open, setOpen] = useState(false)
+  const isMobile = useIsMobile()
   const [isPending, startTransition] = useTransition()
   const [units, setUnits] = useState<UnitWithType[]>([])
   const [bookings, setBookings] = useState<BookingAllIncludes[]>([])
@@ -81,13 +83,13 @@ export function UnitsGanttView() {
   if (error) return <AlertErrorGlobal message={error} />
 
   return (
-    <div className="flex flex-col">
+    <div className={`flex flex-col ${isMobile ? 'px-0' : 'px-6'}`}>
       <div className="flex flex-row">
         <Button
           variant={'outline'}
           size={'icon'}
           className={cn(
-            'flex-1 text-left font-normal border-b-0 rounded-b-none rounded-r-none',
+            `flex-1 text-left font-normal border-b-0 rounded-b-none rounded-r-none ${isMobile ? 'rounded-l-none' : ''} `,
             !startDate && 'text-muted-foreground'
           )}
           onClick={() => {
@@ -161,7 +163,7 @@ export function UnitsGanttView() {
         <Button
           variant={'outline'}
           className={cn(
-            'flex-1 text-left font-normal border-b-0 rounded-b-none rounded-l-none',
+            `flex-1 text-left font-normal border-b-0 rounded-b-none rounded-l-none ${isMobile ? 'rounded-r-none' : ''}`,
             !startDate && 'text-muted-foreground'
           )}
           size={'icon'}
@@ -174,28 +176,40 @@ export function UnitsGanttView() {
       </div>
 
       {isPending ? (
-        <div className="flex items-center justify-center p-6">
+        <div
+          className={`flex items-center justify-center p-6 border bg-card  ${isMobile ? '' : 'rounded-br-md rounded-bl-md'}`}
+        >
           <LoadingSpinner size="md" />
         </div>
       ) : (
-        <div className="flex overflow-hidden z-50 border rounded-br-md rounded-bl-md">
+        <div
+          className={`flex overflow-hidden z-50 border  ${isMobile ? '' : 'rounded-br-md rounded-bl-md'}`}
+        >
           <div className="flex flex-col bg-primary">
-            <div className="border-b border-r text-primary-foreground min-w-28 h-10 p-2 flex items-center justify-center ">
-              <h4 className="text-xs font-semibold">Acomodações</h4>
+            <div className="border-b border-r text-primary-foreground h-10 p-2 flex items-center justify-center ">
+              <h4 className={`text-xs font-semibold ${isMobile ? 'px-2' : ''}`}>
+                {isMobile ? 'UH' : 'Acomodações'}
+              </h4>
             </div>
 
             {/* Nome da Unidade */}
             {units.length > 0 ? (
               units.map(unit => (
-                <div
-                  key={unit.id}
-                  className="border-b border-r text-primary-foreground text-xs font-semibold min-w-28 h-8 p-2 flex items-center justify-center z-10"
-                >
-                  {unit.name}
-                </div>
+                <>
+                  <Popover key={unit.id}>
+                    <PopoverTrigger className="border-b border-r text-primary-foreground text-xs font-semibold h-8 p-2 flex items-center justify-center z-10">
+                      {unit.name}
+                    </PopoverTrigger>
+                    <PopoverContent>
+                      <span className="truncate text-xs font-semibold max-w-[66px] overflow-hidden">
+                        {`${unit.name} - ${unit.type.name}`}
+                      </span>
+                    </PopoverContent>
+                  </Popover>
+                </>
               ))
             ) : (
-              <div className="border-b border-r text-primary-foreground text-xs font-semibold min-w-28 h-8 p-2 flex items-center justify-center z-10">
+              <div className="border-b border-r text-primary-foreground text-xs font-semibold h-8 p-2 flex items-center justify-center z-10">
                 -
               </div>
             )}
@@ -370,7 +384,7 @@ export function UnitsGanttView() {
                 </div>
               ))
             ) : (
-              <div className="border-b border-r text-xs font-semibold min-w-28 h-8 p-2 flex items-center justify-center z-10">
+              <div className="border-b border-r text-xs font-semibold h-8 p-2 flex items-center justify-center z-10">
                 Não há acomodações cadastradas!
               </div>
             )}

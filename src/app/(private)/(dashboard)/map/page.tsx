@@ -4,11 +4,15 @@ import { UnitsGanttView } from '@/components/unit/UnitsGanttView'
 
 export default function MapPage() {
   return (
-    <div className="flex flex-col p-6 gap-4 overflow-hidden">
-      <div className="flex flex-row w-full justify-end items-end">
-        <StatusLegend />
+    <>
+      <div className="flex flex-col p-6 gap-4 overflow-hidden">
+        <div className="flex flex-row w-full justify-end items-end">
+          <StatusLegend />
+        </div>
       </div>
-      <UnitsGanttView />
-    </div>
+      <div className="flex flex-col gap-4 overflow-hidden">
+        <UnitsGanttView />
+      </div>
+    </>
   )
 }
