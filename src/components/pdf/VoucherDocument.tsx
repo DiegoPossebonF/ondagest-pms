@@ -14,7 +14,7 @@ import { padStart } from 'lodash'
 import type React from 'react'
 
 import { getOrganization } from '@/app/actions/organization/actions'
-import LogoPMS from '@/public/images/LogoOndaGest.png'
+import LogoPMS from '../../../public/images/LogoOndaGest.png'
 
 const styles = StyleSheet.create({
   page: {

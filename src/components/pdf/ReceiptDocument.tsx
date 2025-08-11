@@ -1,7 +1,6 @@
 import { getBookingById } from '@/app/actions/booking/actions'
 import { getOrganization } from '@/app/actions/organization/actions'
 import { formatCurrency } from '@/lib/utils'
-import LogoPMS from '@/public/images/LogoOndaGest.png'
 import type { BookingAllIncludes } from '@/types/booking'
 import type { Organization, Payment } from '@prisma/client'
 import {
@@ -15,6 +14,7 @@ import {
 import dayjs from 'dayjs'
 import { padStart } from 'lodash'
 import type React from 'react'
+import LogoPMS from '../../../public/images/LogoOndaGest.png'
 
 const styles = StyleSheet.create({
   page: {
