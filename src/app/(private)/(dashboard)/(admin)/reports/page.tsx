@@ -1,6 +1,8 @@
 'use client'
 
 import { PaymentList } from '@/components/payment/PaymentList'
+import { DiscountsChart } from '@/components/reports/DiscountsChart'
+import { ServicesChart } from '@/components/reports/ServicesChart'
 import { PaymentMethodChart } from '@/components/reports/payment-method-chart'
 import { RevenueChart } from '@/components/reports/revenue-chart'
 import { DateRangePicker } from '@/components/ui/date-range-picker'
@@ -63,13 +65,29 @@ export default function ReportsPage() {
         >
           <PaymentMethodChart range={range} />
         </motion.div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
+          animate={{ opacity: 1, scale: 1, rotate: 0 }}
+          transition={{ duration: 0.6, ease: 'easeOut', delay: 0.4 }}
+          className="h-full" // faz o motion.div ocupar toda a altura
+        >
+          <ServicesChart range={range} />
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
+          animate={{ opacity: 1, scale: 1, rotate: 0 }}
+          transition={{ duration: 0.6, ease: 'easeOut', delay: 0.6 }}
+          className="h-full" // faz o motion.div ocupar toda a altura
+        >
+          <DiscountsChart range={range} />
+        </motion.div>
       </div>
       <div className="grid grid-cols-1 gap-6">
         {range?.from && range?.to && (
           <motion.div
             initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
             animate={{ opacity: 1, scale: 1, rotate: 0 }}
-            transition={{ duration: 0.6, ease: 'easeOut', delay: 0.4 }}
+            transition={{ duration: 0.6, ease: 'easeOut', delay: 0.8 }}
             className="h-full" // faz o motion.div ocupar toda a altura
           >
             <PaymentList from={range.from} to={range.to} />

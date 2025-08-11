@@ -1,5 +1,6 @@
 'use client'
-import { getRevenue } from '@/app/actions/reports/get-revenue'
+
+import { getDiscountReport } from '@/app/actions/reports/get-discount-report'
 import {
   Card,
   CardContent,
@@ -31,32 +32,37 @@ type Props = {
   range: DateRange | undefined
 }
 
-type RevenueEntry = {
+type DiscountEntry = {
   date: string
   total: number
 }
 
 type Granularity = 'daily' | 'monthly'
 
-export function RevenueChart({ range }: Props) {
-  const [data, setData] = useState<RevenueEntry[]>([])
+export function DiscountsChart({ range }: Props) {
+  const [data, setData] = useState<DiscountEntry[]>([])
   const [loading, setLoading] = useState(false)
   const [granularity, setGranularity] = useState<Granularity>('daily')
 
-  const totalRevenue = data.reduce((acc, item) => acc + item.total, 0)
+  const totalDiscount = data.reduce((acc, item) => acc + item.total, 0)
 
   useEffect(() => {
     async function loadData() {
       if (!range?.from || !range?.to) return
       setLoading(true)
-      const result = await getRevenue({
-        from: range.from,
-        to: range.to,
-        groupBy: granularity,
-      })
-
-      setData(result)
-      setLoading(false)
+      try {
+        const result = await getDiscountReport({
+          from: range.from,
+          to: range.to,
+          groupBy: granularity,
+        })
+        setData(result)
+      } catch (err) {
+        console.error('Erro ao buscar relatório de descontos', err)
+        setData([])
+      } finally {
+        setLoading(false)
+      }
     }
 
     loadData()
@@ -68,23 +74,23 @@ export function RevenueChart({ range }: Props) {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <div>
             <CardTitle className="text-base font-semibold">
-              Receita por {granularity === 'monthly' ? 'mês' : 'dia'}
+              Descontos por {granularity === 'monthly' ? 'mês' : 'dia'}
             </CardTitle>
             <CardDescription className="text-sm text-muted-foreground">
               Total no período:{' '}
-              <span className="font-medium text-primary">
-                {totalRevenue.toLocaleString('pt-BR', {
+              <span className="font-medium text-sidebar-accent">
+                -
+                {totalDiscount.toLocaleString('pt-BR', {
                   style: 'currency',
                   currency: 'BRL',
                 })}
               </span>
             </CardDescription>
           </div>
+
           <Select
             defaultValue="daily"
-            onValueChange={value =>
-              setGranularity(value as 'daily' | 'monthly')
-            }
+            onValueChange={value => setGranularity(value as Granularity)}
           >
             <SelectTrigger className="h-8 w-[110px] text-xs">
               <SelectValue />
@@ -96,6 +102,7 @@ export function RevenueChart({ range }: Props) {
           </Select>
         </div>
       </CardHeader>
+
       <CardContent className="h-[200px]">
         {loading ? (
           <LoadingSpinner />
@@ -134,18 +141,27 @@ export function RevenueChart({ range }: Props) {
               />
               <Tooltip
                 formatter={(value: number) =>
-                  value.toLocaleString('pt-BR', {
+                  `-${value.toLocaleString('pt-BR', {
                     style: 'currency',
                     currency: 'BRL',
-                  })
+                  })}`
                 }
                 labelFormatter={(label: string) =>
-                  `${granularity === 'monthly' ? 'Mês' : 'Dia'} ${format(parseISO(label), granularity === 'monthly' ? 'MM/yyyy' : 'dd/MM/yyyy')}`
+                  `${granularity === 'monthly' ? 'Mês' : 'Dia'} ${(() => {
+                    try {
+                      return format(
+                        parseISO(label.length === 7 ? `${label}-01` : label),
+                        granularity === 'monthly' ? 'MM/yyyy' : 'dd/MM/yyyy'
+                      )
+                    } catch {
+                      return label
+                    }
+                  })()}`
                 }
               />
               <Bar
                 dataKey="total"
-                fill="hsl(var(--primary))"
+                fill="hsl(var(--sidebar-accent))"
                 radius={[8, 8, 0, 0]}
               />
             </BarChart>

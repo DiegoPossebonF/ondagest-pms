@@ -165,7 +165,7 @@ export function ServiceForm({
               ) : service ? (
                 'Salvar alterações'
               ) : (
-                'Lançar Desconto'
+                'Lançar serviço'
               )}
             </Button>
             {service && (

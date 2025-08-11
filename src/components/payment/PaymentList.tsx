@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/table'
 import { padNumber } from '@/lib/utils'
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp } from 'lucide-react'
+import Link from 'next/link'
 import { useEffect, useState, useTransition } from 'react'
 import { LoadingSpinner } from '../LoadingSpinner'
 
@@ -41,8 +42,6 @@ export function PaymentList({ from, to }: PaymentListProps) {
   const [data, setData] = useState<Payment[]>([])
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
-  const [guestName, setGuestName] = useState('')
-  const [amount, setAmount] = useState('')
 
   const [sortField, setSortField] = useState<'paidAt' | 'amount' | 'guestName'>(
     'paidAt'
@@ -171,7 +170,9 @@ export function PaymentList({ from, to }: PaymentListProps) {
                 data.map(p => (
                   <TableRow key={p.id}>
                     <TableCell>
-                      {p.bookingId ? padNumber(p.bookingId) : '-'}
+                      <Link href={`/bookings/${p.bookingId}`}>
+                        #{p.bookingId ? padNumber(p.bookingId) : '-'}
+                      </Link>
                     </TableCell>
                     <TableCell>{p.date}</TableCell>
                     <TableCell>{p.guest}</TableCell>

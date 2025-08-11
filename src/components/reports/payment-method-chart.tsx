@@ -57,7 +57,7 @@ export function PaymentMethodChart({ range }: Props) {
             </CardTitle>
             <CardDescription className="text-sm text-muted-foreground">
               Total no período:{' '}
-              <span className="font-medium">
+              <span className="font-medium text-primary">
                 {total.toLocaleString('pt-BR', {
                   style: 'currency',
                   currency: 'BRL',
@@ -105,7 +105,7 @@ export function PaymentMethodChart({ range }: Props) {
               <Bar
                 dataKey="total"
                 fill="hsl(var(--primary))"
-                radius={[0, 4, 4, 0]}
+                radius={[0, 8, 8, 0]}
               />
             </BarChart>
           </ResponsiveContainer>

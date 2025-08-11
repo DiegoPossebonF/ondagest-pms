@@ -1,5 +1,6 @@
 'use client'
-import { getRevenue } from '@/app/actions/reports/get-revenue'
+
+import { getServicesReport } from '@/app/actions/reports/get-services-report'
 import {
   Card,
   CardContent,
@@ -31,25 +32,25 @@ type Props = {
   range: DateRange | undefined
 }
 
-type RevenueEntry = {
+type ServiceEntry = {
   date: string
   total: number
 }
 
 type Granularity = 'daily' | 'monthly'
 
-export function RevenueChart({ range }: Props) {
-  const [data, setData] = useState<RevenueEntry[]>([])
+export function ServicesChart({ range }: Props) {
+  const [data, setData] = useState<ServiceEntry[]>([])
   const [loading, setLoading] = useState(false)
   const [granularity, setGranularity] = useState<Granularity>('daily')
 
-  const totalRevenue = data.reduce((acc, item) => acc + item.total, 0)
+  const totalServices = data.reduce((acc, item) => acc + item.total, 0)
 
   useEffect(() => {
     async function loadData() {
       if (!range?.from || !range?.to) return
       setLoading(true)
-      const result = await getRevenue({
+      const result = await getServicesReport({
         from: range.from,
         to: range.to,
         groupBy: granularity,
@@ -68,12 +69,12 @@ export function RevenueChart({ range }: Props) {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <div>
             <CardTitle className="text-base font-semibold">
-              Receita por {granularity === 'monthly' ? 'mês' : 'dia'}
+              Serviços por {granularity === 'monthly' ? 'mês' : 'dia'}
             </CardTitle>
             <CardDescription className="text-sm text-muted-foreground">
               Total no período:{' '}
               <span className="font-medium text-primary">
-                {totalRevenue.toLocaleString('pt-BR', {
+                {totalServices.toLocaleString('pt-BR', {
                   style: 'currency',
                   currency: 'BRL',
                 })}
@@ -146,7 +147,7 @@ export function RevenueChart({ range }: Props) {
               <Bar
                 dataKey="total"
                 fill="hsl(var(--primary))"
-                radius={[8, 8, 0, 0]}
+                radius={[4, 4, 0, 0]}
               />
             </BarChart>
           </ResponsiveContainer>

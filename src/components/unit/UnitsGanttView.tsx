@@ -195,18 +195,16 @@ export function UnitsGanttView() {
             {/* Nome da Unidade */}
             {units.length > 0 ? (
               units.map(unit => (
-                <>
-                  <Popover key={unit.id}>
-                    <PopoverTrigger className="border-b border-r text-primary-foreground text-xs font-semibold h-8 p-2 flex items-center justify-center z-10">
+                <Popover key={unit.id}>
+                  <PopoverTrigger className="border-b border-r text-primary-foreground text-xs font-semibold h-8 p-2 flex items-center justify-center z-10">
+                    <span className="truncate text-xs font-semibold max-w-[66px] overflow-hidden">
                       {unit.name}
-                    </PopoverTrigger>
-                    <PopoverContent>
-                      <span className="truncate text-xs font-semibold max-w-[66px] overflow-hidden">
-                        {`${unit.name} - ${unit.type.name}`}
-                      </span>
-                    </PopoverContent>
-                  </Popover>
-                </>
+                    </span>
+                  </PopoverTrigger>
+                  <PopoverContent className="text-xs font-semibold p-2 w-full ">
+                    {`${unit.name} - ${unit.type.name}`}
+                  </PopoverContent>
+                </Popover>
               ))
             ) : (
               <div className="border-b border-r text-primary-foreground text-xs font-semibold h-8 p-2 flex items-center justify-center z-10">

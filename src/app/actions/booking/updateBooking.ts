@@ -4,8 +4,10 @@
 
 import db from '@/lib/db'
 import { updateBookingStatusIfNeeded } from '@/lib/db/actions/updateBookingStatusIfNeeded'
+import { activeBookingStatuses } from '@/lib/db/scopes'
 import { type BookingSchema, bookingSchema } from '@/schemas/booking-schema'
 import { BookingStatus, PricingMode } from '@prisma/client'
+import dayjs from 'dayjs'
 import { revalidatePath } from 'next/cache'
 import validateBookingStatusChange from './validateBookingStatusChange'
 
@@ -53,19 +55,16 @@ export async function updateBooking(id: number, data: BookingSchema) {
     status,
   } = parsed.data
 
+  const from = dayjs(period.from).startOf('day').toDate()
+  const to = dayjs(period.to).startOf('day').toDate()
+
   // Verificar se a unit já contem reserva para o perido informado, ignorando a reserva atual
   const existingBooking = await db.booking.findFirst({
     where: {
       unitId,
-      startDate: {
-        lte: period.to,
-      },
-      endDate: {
-        gte: period.from,
-      },
-      id: {
-        not: id,
-      },
+      AND: [{ startDate: { lt: to } }, { endDate: { gt: from } }],
+      ...activeBookingStatuses,
+      NOT: { id },
     },
   })
 

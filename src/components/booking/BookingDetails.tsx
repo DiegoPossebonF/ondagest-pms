@@ -27,6 +27,7 @@ import {
   STATUS_PAYMENT_LABELS,
   cn,
   formatCurrency,
+  padNumber,
 } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import type { Discount, Payment, Service } from '@prisma/client'
@@ -96,7 +97,7 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
       <Card className="flex flex-col w-full h-full bg-sidebar dark:bg-muted">
         <CardHeader className="space-y-2 pb-2">
           <CardTitle className="flex flex-row items-center">
-            Detalhes da Reserva #{booking.id}
+            Detalhes da Reserva #{booking?.id && padNumber(booking?.id)}
           </CardTitle>
           <div className="flex gap-2 flex-wrap">
             <Badge
@@ -122,7 +123,7 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
     <Card className="flex flex-col w-full h-full bg-sidebar dark:bg-muted">
       <CardHeader className="space-y-2">
         <CardTitle className="flex flex-row items-center">
-          Detalhes da Reserva #{booking.id}
+          Detalhes da Reserva #{booking?.id && padNumber(booking?.id)}
         </CardTitle>
       </CardHeader>
 

@@ -9,6 +9,7 @@ import { createBooking } from '@/app/actions/booking/createBooking'
 import { updateBooking } from '@/app/actions/booking/updateBooking'
 import { getUnitById } from '@/app/actions/unit/actions'
 import { Button } from '@/components/ui/button'
+import { padNumber } from '@/lib/utils'
 import { type BookingSchema, bookingSchema } from '@/schemas/booking-schema'
 import type { BookingAllIncludes } from '@/types/booking'
 import type { Rate, Unit, UnitType } from '@prisma/client'
@@ -78,7 +79,6 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
   )
   const [selectedRate, setSelectedRate] = useState<Rate | null>(null)
 
-  const [isDisabled, setIsDisabled] = useState(!!booking || false)
   const [isPending, startTransition] = useTransition()
   const [serverError, setServerError] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -233,7 +233,6 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
               icon: '✅',
             })
             setBooking(data.booking)
-            setIsDisabled(true)
             setServerError(null)
             router.refresh()
             refetch()
@@ -266,7 +265,9 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
   return (
     <Card className="flex flex-col w-full h-full bg-sidebar dark:bg-muted">
       <CardHeader className="space-y-2 shrink-0">
-        <CardTitle>Formulário da Reserva #{booking?.id}</CardTitle>
+        <CardTitle>
+          Formulário da Reserva #{booking?.id && padNumber(booking?.id)}
+        </CardTitle>
       </CardHeader>
       <Separator />
       <CardContent className="flex-1 overflow-auto space-y-4 p-6">
@@ -285,7 +286,6 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
                   <BookingStatusCombobox
                     value={field.value}
                     onChange={field.onChange}
-                    disabled={isDisabled}
                     havePayments={
                       booking?.payments ? booking.payments.length > 0 : false
                     }
@@ -308,7 +308,6 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
                     selectedGuestName={selectedGuestName}
                     setSelectedGuestName={setSelectedGuestName}
                     onChange={field.onChange}
-                    disabled={isDisabled}
                   />
                   <FormDescription className="sr-only">
                     Selecione o hóspede da reserva
@@ -326,7 +325,6 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
                   <BookingDateRangeCalendar
                     period={field.value}
                     onChange={field.onChange}
-                    disabled={isDisabled}
                   />
                   <FormDescription>
                     Quantidade de dias:
@@ -353,7 +351,6 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
                     setSelectedUnit={setSelectedUnit}
                     onChange={field.onChange}
                     period={form.watch('period')}
-                    disabled={isDisabled}
                   />
                   <FormDescription className="sr-only">
                     Selecione a acomodação da reserva
@@ -387,7 +384,6 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
                       }
                     }}
                     className={'h-8 rounded-md px-3 text-xs bg-popover'}
-                    disabled={isDisabled}
                   />
                   <FormDescription className="sr-only">
                     Informe quantidade de pessoas
@@ -407,7 +403,6 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
                     selectedRateName={selectedRateName}
                     setSelectedRateName={setSelectedRateName}
                     setValue={form.setValue}
-                    disabled={!form.watch('unitId') || isDisabled}
                   />
                   <FormDescription className="sr-only">
                     Selecione uma tarifa para a reserva
@@ -441,7 +436,7 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
                       }
                     }}
                     className={'h-8 rounded-md px-3 text-xs bg-popover'}
-                    disabled={watchPricingMode === 'RATE' || isDisabled}
+                    disabled={watchPricingMode === 'RATE'}
                   />
                   <FormDescription className="sr-only">
                     Valor da diária da reserva
@@ -476,50 +471,21 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
         </Form>
       </CardContent>
       <Separator />
-      <CardFooter className="flex flex-row py-4 px-6">
+      <CardFooter className="flex flex-row py-4 px-6 justify-end">
         {booking ? (
-          isDisabled ? (
-            <div className="flex gap-2">
-              <Button
-                type="button"
-                className="w-full"
-                onClick={e => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  setIsDisabled(false)
-                }}
-                size={'sm'}
-              >
-                Editar
-              </Button>
-              <BookingCancelAlertDialog bookingId={booking.id} />
-            </div>
-          ) : (
-            <div className="flex gap-2">
-              <Button
-                type="submit"
-                className="w-full"
-                size={'sm'}
-                onClick={() => {
-                  form.handleSubmit(onSubmit)()
-                }}
-              >
-                {isPending ? <LoadingSpinner size="sm" /> : 'Atualizar'}
-              </Button>
-              <Button
-                type="button"
-                variant={'outline'}
-                size={'sm'}
-                onClick={() => {
-                  setIsDisabled(true)
-                  form.reset()
-                  setServerError(null)
-                }}
-              >
-                {isPending ? <LoadingSpinner size="sm" /> : 'Cancelar'}
-              </Button>
-            </div>
-          )
+          <div className="flex gap-2">
+            <Button
+              type="submit"
+              className="w-full"
+              size={'sm'}
+              onClick={() => {
+                form.handleSubmit(onSubmit)()
+              }}
+            >
+              {isPending ? <LoadingSpinner size="sm" /> : 'Atualizar'}
+            </Button>
+            <BookingCancelAlertDialog bookingId={booking.id} />
+          </div>
         ) : (
           <Button
             type="submit"
