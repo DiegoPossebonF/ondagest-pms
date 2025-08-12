@@ -13,8 +13,12 @@ export async function findUserByCredentials(
       },
     })
 
-    if (!user) {
+    if (!user || !user.password) {
       return null
+    }
+
+    if (!user.emailVerified) {
+      throw new Error('Confirme seu email antes de entrar.')
     }
 
     const passwordMatch = await compare(password, user.password)

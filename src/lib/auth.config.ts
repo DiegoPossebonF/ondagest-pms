@@ -10,9 +10,7 @@ export const authConfig = {
         password: { label: 'Password', type: 'password' },
       },
       authorize: async credentials => {
-        if (!credentials?.email || !credentials?.password) {
-          return null
-        }
+        if (!credentials?.email || !credentials?.password) return null
 
         const user = await findUserByCredentials(
           credentials.email as string,
@@ -25,7 +23,7 @@ export const authConfig = {
 
         return {
           id: user.id,
-          name: user.name,
+          name: user.name || '',
           email: user.email,
           role: user.role,
           image: user.image || '',

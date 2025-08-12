@@ -34,7 +34,7 @@ export async function signupAction(data: SignupFormData) {
 
   if (!parsed.success) {
     return {
-      error: 'Todos os campos são obrigatórios',
+      error: parsed.error.errors.map(e => e.message).join(', '),
     }
   }
 
@@ -58,6 +58,7 @@ export async function signupAction(data: SignupFormData) {
         name: name,
         email: email,
         password: hashedPassword,
+        emailVerified: null,
       },
     })
 
