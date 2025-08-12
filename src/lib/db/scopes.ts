@@ -18,3 +18,15 @@ export const activeBookingStatuses = {
     ] as BookingStatus[],
   },
 }
+
+export const dashboardBookingStatuses = {
+  status: {
+    in: [
+      'PENDING',
+      'CONFIRMED',
+      'CHECKED_IN',
+      'IN_PROGRESS',
+      'CHECKED_OUT',
+    ] as BookingStatus[],
+  },
+}

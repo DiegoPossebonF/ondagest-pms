@@ -2,7 +2,10 @@
 
 import db from '@/lib/db'
 import { updateBookingStatusIfNeeded } from '@/lib/db/actions/updateBookingStatusIfNeeded'
-import { activeBookingStatuses } from '@/lib/db/scopes'
+import {
+  activeBookingStatuses,
+  dashboardBookingStatuses,
+} from '@/lib/db/scopes'
 import dayjs from 'dayjs'
 
 export async function getUnits() {
@@ -169,6 +172,7 @@ export async function getUnitsWithUpdatedBookings() {
             discounts: true,
             rate: { include: { type: true } },
           },
+          orderBy: { startDate: 'asc' },
         },
       },
       orderBy: { name: 'asc' },
@@ -210,7 +214,7 @@ export async function getUnitsUpdatedBookingsByDate(currentDate: Date) {
         type: true,
         bookings: {
           where: {
-            ...activeBookingStatuses,
+            ...dashboardBookingStatuses,
             OR: [
               // 1. Reservas que coincidem com a data atual (check-in, check-out ou no meio)
               {
@@ -219,7 +223,7 @@ export async function getUnitsUpdatedBookingsByDate(currentDate: Date) {
               },
               // 2. Reservas já passadas que ainda estão ativas
               {
-                endDate: { lt: startDate },
+                endDate: { lte: startDate },
               },
             ],
           },
@@ -241,6 +245,7 @@ export async function getUnitsUpdatedBookingsByDate(currentDate: Date) {
             discounts: true,
             rate: { include: { type: true } },
           },
+          orderBy: { startDate: 'asc' },
         },
       },
       orderBy: { name: 'asc' },

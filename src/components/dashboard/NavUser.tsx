@@ -41,7 +41,7 @@ export function NavUser({ user }: { user?: UserSession }) {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground rounded-lg"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={avatar} alt={user?.name} />
+                <AvatarImage src={avatar} alt={user?.name || ''} />
                 <AvatarFallback className="rounded-lg">
                   <IconUserCircle className="h-4 w-4" />
                 </AvatarFallback>
@@ -64,7 +64,7 @@ export function NavUser({ user }: { user?: UserSession }) {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center justify-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="w-20 h-20 rounded-lg">
-                  <AvatarImage src={avatar} alt={user?.name} />
+                  <AvatarImage src={avatar} alt={user?.name || '-'} />
                   <AvatarFallback className="rounded-lg">
                     <IconUserCircle className="h-14 w-14" strokeWidth={1} />
                   </AvatarFallback>

@@ -59,37 +59,10 @@ const validStatuses: BookingStatus[] = [
 function getRelevantBooking(
   bookings: BookingAllIncludes[]
 ): { managerAction?: boolean; booking?: BookingAllIncludes } | null {
+  //console.log('getRelevantBooking', bookings)
   const today = new Date()
 
-  // 🔴 Primeiro, procurar reservas pendentes
-  const pendent = bookings.find(
-    booking =>
-      booking.status === BookingStatus.PENDING &&
-      new Date(booking.startDate) <= today
-  )
-
-  if (pendent) {
-    return {
-      managerAction: true,
-      booking: pendent,
-    }
-  }
-
-  // 🔴 Segundo, procurar reservas que deveriam ter iniciado mas ainda não fizeram check-in
-  const started = bookings.find(
-    booking =>
-      booking.status === BookingStatus.CHECKED_IN &&
-      new Date(booking.startDate) <= today
-  )
-
-  if (started) {
-    return {
-      managerAction: true,
-      booking: started,
-    }
-  }
-
-  // 🔴 Terceiro, procurar reservas que deveriam ter terminado mas não fizeram check-out
+  // 🔴 Primeiro, procurar reservas que deveriam ter terminado mas não fizeram check-out
   const overdue = bookings.find(
     booking =>
       (booking.status === BookingStatus.CONFIRMED ||
@@ -103,6 +76,34 @@ function getRelevantBooking(
     return {
       managerAction: true,
       booking: overdue,
+    }
+  }
+
+  // 🔴 Segundo, procurar reservas pendentes
+  const pendent = bookings.find(
+    booking =>
+      booking.status === BookingStatus.PENDING &&
+      new Date(booking.startDate) <= today
+  )
+
+  if (pendent) {
+    return {
+      managerAction: true,
+      booking: pendent,
+    }
+  }
+
+  // 🔴 Terceiro, procurar reservas que deveriam ter iniciado mas ainda não fizeram check-in
+  const started = bookings.find(
+    booking =>
+      booking.status === BookingStatus.CHECKED_IN &&
+      new Date(booking.startDate) <= today
+  )
+
+  if (started) {
+    return {
+      managerAction: true,
+      booking: started,
     }
   }
 

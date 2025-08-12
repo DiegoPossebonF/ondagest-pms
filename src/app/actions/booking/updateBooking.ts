@@ -98,7 +98,6 @@ export async function updateBooking(id: number, data: BookingSchema) {
         daily: daily,
         totalAmount: totalAmount,
         status: BookingStatus[status as keyof typeof BookingStatus],
-        paymentStatus: 'PENDING',
         pricingMode: PricingMode[pricingMode as keyof typeof PricingMode],
       },
       include: {
