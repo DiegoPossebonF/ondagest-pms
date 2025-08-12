@@ -7,18 +7,29 @@ import { hash } from 'bcryptjs'
 
 export async function signinAction(email: string, password: string) {
   try {
-    await signIn('credentials', {
+    const res = await signIn('credentials', {
       redirect: false,
       email,
       password,
     })
 
+    if (res?.error) {
+      return { success: false, error: res.error }
+    }
+
     return { success: true }
   } catch (e) {
-    const err = e as { type?: string }
+    const err = e as { type?: string; code?: string }
 
-    if (err.type === 'CredentialsSignin') {
+    if (err.type === 'CredentialsSignin' && err.code === 'credentials') {
       return { success: false, error: 'Email ou senha incorretos!' }
+    }
+
+    if (err.type === 'CredentialsSignin' && err.code === 'EmailVerifiedError') {
+      return {
+        success: false,
+        error: 'Confirme seu email antes de entrar.',
+      }
     }
 
     console.error('[Login Error]', err)

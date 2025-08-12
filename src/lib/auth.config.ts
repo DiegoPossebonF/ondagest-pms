@@ -1,6 +1,10 @@
-import type { NextAuthConfig } from 'next-auth'
+import { CredentialsSignin, type NextAuthConfig } from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import { findUserByCredentials } from './db/actions/findUserByCredentials'
+
+class EmailVerifiedError extends CredentialsSignin {
+  code = 'EmailVerifiedError'
+}
 
 export const authConfig = {
   providers: [
@@ -19,6 +23,10 @@ export const authConfig = {
 
         if (!user) {
           return null
+        }
+
+        if (!user.emailVerified) {
+          throw new EmailVerifiedError()
         }
 
         return {

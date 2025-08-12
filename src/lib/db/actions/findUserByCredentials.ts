@@ -17,10 +17,6 @@ export async function findUserByCredentials(
       return null
     }
 
-    if (!user.emailVerified) {
-      throw new Error('Confirme seu email antes de entrar.')
-    }
-
     const passwordMatch = await compare(password, user.password)
 
     if (!passwordMatch) {

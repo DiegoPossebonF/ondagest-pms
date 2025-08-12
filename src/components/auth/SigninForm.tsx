@@ -21,7 +21,7 @@ import { Label } from '../ui/label'
 
 const SigninSchema = z.object({
   email: z.string().email('E-mail inválido'),
-  password: z.string().min(6, 'A senha deve ter pelo menos 6 caracteres'),
+  password: z.string().min(8, 'Senha deve ter ao menos 8 caracteres'),
 })
 
 type SigninFormData = z.infer<typeof SigninSchema>
