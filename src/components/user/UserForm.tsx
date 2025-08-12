@@ -52,10 +52,7 @@ export default function UserForm({
       name: selectedUser?.name ?? '',
       email: selectedUser?.email ?? '',
       password: '',
-      role:
-        selectedUser?.role === 'user' || selectedUser?.role === 'admin'
-          ? selectedUser.role
-          : 'user',
+      role: selectedUser?.role ?? 'USER',
     },
   })
 

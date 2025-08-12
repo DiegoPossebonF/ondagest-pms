@@ -6,11 +6,11 @@ export const userSchema = z.object({
   password: z
     .string()
     .transform(val => val.trim())
-    .refine(val => val.length === 0 || val.length >= 6, {
-      message: 'Senha deve ter pelo menos 6 caracteres',
+    .refine(val => val.length === 0 || val.length >= 8, {
+      message: 'Senha deve ter pelo menos 8 caracteres',
     })
     .optional(), // opcional para edição
-  role: z.enum(['user', 'admin']),
+  role: z.enum(['USER', 'ADMIN']),
   //image: z.string().url('URL inválida').optional(),
 })
 
