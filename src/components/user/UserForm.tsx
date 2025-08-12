@@ -52,7 +52,10 @@ export default function UserForm({
       name: selectedUser?.name ?? '',
       email: selectedUser?.email ?? '',
       password: '',
-      role: selectedUser?.role ?? 'USER',
+      role:
+        selectedUser?.role === 'user' || selectedUser?.role === 'admin'
+          ? selectedUser.role
+          : 'user',
     },
   })
 
@@ -215,7 +218,7 @@ export default function UserForm({
             {selectedUser && (
               <UserAlertDialogDelete
                 userId={selectedUser.id}
-                name={selectedUser.name}
+                name={selectedUser.name ?? ''}
                 role={selectedUser.role}
                 setOpenNewUser={setOpenNewUser}
                 setSelectedUser={() => setSelectedUser?.(null)}

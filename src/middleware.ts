@@ -36,7 +36,7 @@ export default auth(async req => {
     return NextResponse.redirect(new URL('/signin', req.url))
   }
 
-  if (isAdminRoute && session?.user.role !== 'ADMIN') {
+  if (isAdminRoute && session?.user.role !== 'admin') {
     const redirectUrl = new URL(referer || '/', req.url)
     redirectUrl.searchParams.set('error', 'unauthorized')
 

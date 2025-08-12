@@ -75,9 +75,9 @@ export function NavUser({ user }: { user?: UserSession }) {
             <div className="grid flex-1 px-1 py-1.5 text-left text-sm leading-tight">
               <span className="truncate font-medium">{user?.name}</span>
               <span
-                className={`font-medium truncate text-xs ${user?.role === 'ADMIN' ? 'text-sidebar-primary' : 'text-sidebar-accent'}`}
+                className={`font-medium truncate text-xs ${user?.role === 'admin' ? 'text-sidebar-primary' : 'text-sidebar-accent'}`}
               >
-                {user?.role === 'ADMIN' ? 'Administrador' : 'Usuário'}
+                {user?.role === 'admin' ? 'Administrador' : 'Usuário'}
               </span>
               <span className="text-muted-foreground truncate text-xs">
                 {user?.email}

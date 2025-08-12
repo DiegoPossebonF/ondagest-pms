@@ -13,8 +13,6 @@ dayjs.extend(isBetween)
 export default async function Dashboard() {
   const res = await getUnitsUpdatedBookingsByDate(dayjs().toDate())
 
-  console.log('UNITS:', res.data)
-
   if (res.error || !res.data) {
     throw new Error(res.error)
   }
