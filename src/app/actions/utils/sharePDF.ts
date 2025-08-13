@@ -7,7 +7,7 @@ export async function shareVoucher(
   message: string,
   phone: string
 ) {
-  const linkVoucher = `${process.env.NEXT_PUBLIC_API_URL}/booking/voucher/${publicId}`
+  const linkVoucher = `${process.env.NEXT_PUBLIC_APP_URL}/booking/voucher/${publicId}`
 
   const msg = message.replace('[LINK]', linkVoucher)
 
@@ -22,7 +22,7 @@ export async function shareReceipt(
   message: string,
   phone: string
 ) {
-  const linkReceipt = `${process.env.NEXT_PUBLIC_API_URL}/booking/receipt/${paymentId}`
+  const linkReceipt = `${process.env.NEXT_PUBLIC_APP_URL}/booking/receipt/${paymentId}`
 
   const msg = message.replace('[LINK]', linkReceipt)
 
