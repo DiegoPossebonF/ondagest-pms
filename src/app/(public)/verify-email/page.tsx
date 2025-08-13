@@ -3,8 +3,10 @@ import { redirect } from 'next/navigation'
 
 export default async function VerifyEmailPage({
   searchParams,
-}: { searchParams: { token?: string } }) {
-  const token = searchParams.token
+}: {
+  searchParams: Promise<{ token?: string }>
+}) {
+  const { token } = await searchParams
 
   if (!token) {
     return <p>Token inválido.</p>
