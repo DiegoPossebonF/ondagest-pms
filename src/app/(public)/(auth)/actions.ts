@@ -1,5 +1,7 @@
 'use server'
 
+import crypto from 'node:crypto'
+import { sendVerificationEmail } from '@/app/actions/auth/send-verification-email'
 import { signIn, signOut } from '@/lib/auth'
 import db from '@/lib/db'
 import { type SignupFormData, signupSchema } from '@/schemas/sign-up-schema'
@@ -28,7 +30,8 @@ export async function signinAction(email: string, password: string) {
     if (err.type === 'CredentialsSignin' && err.code === 'EmailVerifiedError') {
       return {
         success: false,
-        error: 'Confirme seu email antes de entrar.',
+        error:
+          'Email não verificado. Verifique sua caixa de entrada do e-mail de cadastro e efetue a confirmação.',
       }
     }
 
@@ -45,19 +48,30 @@ export async function signupAction(data: SignupFormData) {
 
   if (!parsed.success) {
     return {
+      success: false,
       error: parsed.error.errors.map(e => e.message).join(', '),
     }
   }
 
-  const { name, email, password } = parsed.data
+  const { name, email, password, confirmPassword } = parsed.data
+
+  if (password !== confirmPassword) {
+    return {
+      success: false,
+      error: 'Confirmação de senha incorreta',
+    }
+  }
 
   try {
+    const token = crypto.randomBytes(32).toString('hex')
+
     const existingUser = await db.user.findUnique({
       where: { email },
     })
 
     if (existingUser) {
       return {
+        success: false,
         error: 'Email já cadastrado',
       }
     }
@@ -66,24 +80,37 @@ export async function signupAction(data: SignupFormData) {
 
     const createdUser = await db.user.create({
       data: {
-        name: name,
-        email: email,
+        name,
+        email,
         password: hashedPassword,
         emailVerified: null,
+        emailVerifyToken: token,
       },
     })
 
     if (!createdUser) {
       return {
+        success: false,
         error: 'Erro ao criar usuário',
       }
     }
 
+    const { success, error } = await sendVerificationEmail(email, name, token)
+
+    if (error) {
+      return {
+        success: false,
+        error: error,
+      }
+    }
+
     return {
+      success: 'Conta criada com sucesso',
       error: null,
     }
   } catch (error) {
     return {
+      success: false,
       error: 'Erro inesperado ao criar usuário. Tente novamente mais tarde.',
     }
   }

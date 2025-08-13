@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { auth } from './lib/auth'
 
 // rotas livres
-const publicRoutes = ['/signin', '/signup']
+const publicRoutes = ['/signin', '/signup', '/verify-email']
 
 // rotas só para autenticados
 const privateRoutes = ['/']
@@ -36,7 +36,7 @@ export default auth(async req => {
     return NextResponse.redirect(new URL('/signin', req.url))
   }
 
-  if (isAdminRoute && session?.user.role !== 'admin') {
+  if (isAdminRoute && session?.user.role !== 'ADMIN') {
     const redirectUrl = new URL(referer || '/', req.url)
     redirectUrl.searchParams.set('error', 'unauthorized')
 

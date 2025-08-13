@@ -10,12 +10,14 @@ import {
 } from '../ui/card'
 
 interface SigninCardProps {
+  verified?: boolean
   children: React.ReactNode
 }
 
-export function SigninCard({ children }: SigninCardProps) {
+export function SigninCard({ verified, children }: SigninCardProps) {
+  console.log('verified', verified)
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden max-w-4xl">
       <CardContent className="grid p-0 md:grid-cols-2">
         {/* Lado Esquerdo - Formulário */}
         <div className="flex flex-col justify-center p-4">
@@ -30,6 +32,14 @@ export function SigninCard({ children }: SigninCardProps) {
             <CardDescription className="text-lg text-center">
               Entre com seu e-mail e senha para acessar sua conta
             </CardDescription>
+            {verified && (
+              <CardDescription
+                className={`text-xs text-center border p-2 rounded-lg ${verified && 'text-green-700 border-green-700 bg-green-100'}`}
+              >
+                Seu email foi verificado com sucesso! Agora você já pode fazer o
+                primeiro acesso ao OndaGest.
+              </CardDescription>
+            )}
           </CardHeader>
 
           <CardContent>{children}</CardContent>

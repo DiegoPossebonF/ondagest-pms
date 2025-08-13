@@ -12,14 +12,17 @@ import {
 import { Input } from '@/components/ui/input'
 import { type SignupFormData, signupSchema } from '@/schemas/sign-up-schema'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { FormError } from '../FormError'
+import { LoadingSpinner } from '../LoadingSpinner'
 
-export function SignupForm() {
-  const router = useRouter()
+interface SignupFormProps {
+  setSuccess: () => void
+}
+
+export function SignupForm({ setSuccess }: SignupFormProps) {
   const [isPending, startTransition] = useTransition()
   const [serverError, setServerError] = useState<string | null>(null)
 
@@ -29,6 +32,7 @@ export function SignupForm() {
       name: '',
       email: '',
       password: '',
+      confirmPassword: '',
     },
   })
 
@@ -46,7 +50,7 @@ export function SignupForm() {
         })
         form.reset()
         setServerError(null)
-        router.push('/signin')
+        setSuccess()
       })
     })
   }
@@ -56,7 +60,7 @@ export function SignupForm() {
       <FormError errors={form.formState.errors} serverError={serverError} />
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4 max-w-sm mx-auto"
+        className="space-y-2 max-w-sm mx-auto"
       >
         <FormField
           control={form.control}
@@ -95,12 +99,23 @@ export function SignupForm() {
           )}
         />
 
-        <Button
-          type="submit"
-          disabled={form.formState.isSubmitting}
-          className="w-full"
-        >
-          {form.formState.isSubmitting ? 'Registrando...' : 'Registrar'}
+        <FormField
+          control={form.control}
+          name="confirmPassword"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel className="text-muted-foreground">
+                Confirmar Senha
+              </FormLabel>
+              <FormControl>
+                <Input type="password" {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <Button type="submit" disabled={isPending} className="w-full">
+          {isPending ? <LoadingSpinner size="sm" /> : 'Registrar'}
         </Button>
       </form>
     </Form>

@@ -1,8 +1,5 @@
 'use client'
 
-import { type Icon, IconCirclePlusFilled, IconMail } from '@tabler/icons-react'
-
-import { Button } from '@/components/ui/button'
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -11,6 +8,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
+import { type Icon, IconCirclePlusFilled } from '@tabler/icons-react'
 import { usePathname, useRouter } from 'next/navigation'
 
 export function NavMain({
@@ -54,14 +52,6 @@ export function NavMain({
               <IconCirclePlusFilled />
               <span>Reservar</span>
             </SidebarMenuButton>
-            <Button
-              size="icon"
-              className="size-8 group-data-[collapsible=icon]:opacity-0"
-              variant="outline"
-            >
-              <IconMail />
-              <span className="sr-only">Inbox</span>
-            </Button>
           </SidebarMenuItem>
         </SidebarMenu>
         <SidebarMenu>

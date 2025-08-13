@@ -1,10 +1,11 @@
 // src/actions/user.ts
 'use server'
-
+import crypto from 'node:crypto'
 import db from '@/lib/db'
 import { type UserSchema, userSchema } from '@/schemas/user-schema'
 import { hashPassword } from '@/utils/hash'
 import { revalidatePath } from 'next/cache'
+import { sendVerificationEmail } from '../auth/send-verification-email'
 
 export async function createUser(data: UserSchema) {
   const parsed = userSchema.safeParse(data)
@@ -26,21 +27,30 @@ export async function createUser(data: UserSchema) {
     return { error: 'Email já cadastrado' }
   }
 
-  if (!password || password.length < 6) {
-    return { error: 'Senha deve ter pelo menos 6 caracteres' }
+  if (!password || password.length < 8) {
+    return { error: 'Senha deve ter pelo menos 8 caracteres' }
   }
 
   const hashedPassword = await hashPassword(password)
 
   try {
+    const token = crypto.randomBytes(32).toString('hex')
+
     await db.user.create({
       data: {
         name,
         email,
         password: hashedPassword,
+        emailVerifyToken: token,
         role,
       },
     })
+
+    const { success, error } = await sendVerificationEmail(email, name, token)
+
+    if (error) {
+      return { error }
+    }
 
     revalidatePath('/settings/users')
     return { success: 'Usuário criado com sucesso!' }

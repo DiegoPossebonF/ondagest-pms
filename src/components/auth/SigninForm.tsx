@@ -56,7 +56,7 @@ export function SigninForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
         {/* Campo de E-mail */}
         <FormField
           control={form.control}
@@ -118,7 +118,7 @@ export function SigninForm() {
         <Button
           type="button"
           className="w-full"
-          variant={'ghost'}
+          variant={'outline'}
           onClick={() => router.push('/signup')}
         >
           Criar Conta
