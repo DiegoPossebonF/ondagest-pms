@@ -35,10 +35,7 @@ export interface Filters {
   image?: string
 }
 
-export type UserData = Omit<
-  User,
-  'password' | 'updatedAt' | 'emailVerified' | 'emailVerifyToken'
->
+export type UserData = Omit<User, 'password' | 'updatedAt' | 'emailVerified'>
 
 type UserFilters = {
   users: UserData[]

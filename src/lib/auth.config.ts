@@ -1,5 +1,6 @@
 import { CredentialsSignin, type NextAuthConfig } from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
+import GoogleProvider from 'next-auth/providers/google'
 
 class EmailVerifiedError extends CredentialsSignin {
   code = 'EmailVerifiedError'
@@ -15,6 +16,10 @@ export const authConfig = {
     maxAge: 60 * 60 * 24 * 7,
   },
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
     Credentials({
       credentials: {
         email: { label: 'Email', type: 'email' },
