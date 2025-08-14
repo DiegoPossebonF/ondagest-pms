@@ -1,5 +1,6 @@
 'use client'
 import { signinAction } from '@/app/(public)/(auth)/actions'
+import SignInGoogle from '@/app/actions/auth/signin-google'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -10,6 +11,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { IconBrandGoogleFilled } from '@tabler/icons-react'
 import { motion } from 'framer-motion'
 import { AlertCircle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -115,6 +117,15 @@ export function SigninForm() {
           size={'sm'}
         >
           {isPending ? <LoadingSpinner size="sm" /> : 'Entrar'}
+        </Button>
+        <Button
+          type="button"
+          className="w-full"
+          variant={'outline'}
+          size={'sm'}
+          onClick={SignInGoogle}
+        >
+          <IconBrandGoogleFilled /> Entrar com Google
         </Button>
         <Button
           type="button"

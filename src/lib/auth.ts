@@ -51,5 +51,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       return session
     },
+
+    async signIn({ user, account }) {
+      // Se quiser impedir certos logins, tratar aqui
+      return true
+    },
   },
 })
