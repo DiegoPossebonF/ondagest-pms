@@ -110,8 +110,9 @@ export function SigninForm() {
         {/* Botão de Login */}
         <Button
           type="submit"
-          className="w-full"
-          disabled={form.formState.isSubmitting}
+          className="w-full "
+          disabled={isPending}
+          size={'sm'}
         >
           {isPending ? <LoadingSpinner size="sm" /> : 'Entrar'}
         </Button>
@@ -119,6 +120,7 @@ export function SigninForm() {
           type="button"
           className="w-full"
           variant={'outline'}
+          size={'sm'}
           onClick={() => router.push('/signup')}
         >
           Criar Conta

@@ -1,11 +1,11 @@
 'use server'
-
-import crypto from 'node:crypto'
+import { randomBytes } from 'node:crypto'
 import { sendVerificationEmail } from '@/app/actions/auth/send-verification-email'
 import { signIn, signOut } from '@/lib/auth'
 import db from '@/lib/db'
 import { type SignupFormData, signupSchema } from '@/schemas/sign-up-schema'
 import { hash } from 'bcryptjs'
+import { addHours } from 'date-fns'
 
 export async function signinAction(email: string, password: string) {
   try {
@@ -63,8 +63,6 @@ export async function signupAction(data: SignupFormData) {
   }
 
   try {
-    const token = crypto.randomBytes(32).toString('hex')
-
     const existingUser = await db.user.findUnique({
       where: { email },
     })
@@ -84,7 +82,6 @@ export async function signupAction(data: SignupFormData) {
         email,
         password: hashedPassword,
         emailVerified: null,
-        emailVerifyToken: token,
       },
     })
 
@@ -94,6 +91,17 @@ export async function signupAction(data: SignupFormData) {
         error: 'Erro ao criar usuário',
       }
     }
+
+    const token = randomBytes(32).toString('hex')
+    const expires = addHours(new Date(), 2)
+    // 4. Salva token no banco
+    await db.verificationToken.create({
+      data: {
+        identifier: email,
+        token,
+        expires,
+      },
+    })
 
     const { success, error } = await sendVerificationEmail(email, name, token)
 

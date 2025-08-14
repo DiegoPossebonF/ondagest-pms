@@ -10,7 +10,7 @@ export async function sendVerificationEmail(
   token: string
 ) {
   // 3. Enviar e-mail de confirmação
-  const confirmationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/verify-email?token=${token}`
+  const verifyUrl = `${process.env.NEXT_PUBLIC_APP_URL}/verify-email?token=${token}&email=${email}`
 
   const { data, error } = await resend.emails.send({
     from: 'Ondagest PMS <onboarding@resend.dev>',
@@ -19,11 +19,9 @@ export async function sendVerificationEmail(
     html: `
       <p>Olá ${name},</p>
       <p>Obrigado por se registrar! Clique no link abaixo para confirmar seu e-mail:</p>
-      <p><a href="${confirmationUrl}">${confirmationUrl}</a></p>
+      <p><a href="${verifyUrl}">${verifyUrl}</a></p>
     `,
   })
-
-  console.log('data email', data)
 
   if (error) {
     return { success: false, error: error.message }
