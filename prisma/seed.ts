@@ -10,6 +10,9 @@ async function main() {
       email: 'admin@exemplo.com',
       password: passwordHash,
       role: 'ADMIN',
+      emailVerified: null,
+      emailVerifyToken: null,
+      image: '',
     },
   })
 

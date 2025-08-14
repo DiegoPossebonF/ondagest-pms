@@ -33,7 +33,7 @@ export const authConfig = {
           id: user.id,
           name: user.name || '',
           email: user.email,
-          role: user.role,
+          role: user.role || 'USER',
           image: user.image || '',
         }
       },

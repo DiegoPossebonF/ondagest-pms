@@ -42,9 +42,9 @@ model User {
   id               String   @id @default(cuid())
   name             String
   email            String   @unique
-  password         String
+  password         String?
   image            String?
-  role             Role     @default(USER)
+  role             Role?    @default(USER)
   emailVerified    DateTime?
   emailVerifyToken String?
   createdAt        DateTime @default(now())
