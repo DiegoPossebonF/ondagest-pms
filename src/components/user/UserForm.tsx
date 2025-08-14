@@ -216,7 +216,7 @@ export default function UserForm({
               <UserAlertDialogDelete
                 userId={selectedUser.id}
                 name={selectedUser.name ?? ''}
-                role={selectedUser.role}
+                role={selectedUser.role ?? ''}
                 setOpenNewUser={setOpenNewUser}
                 setSelectedUser={() => setSelectedUser?.(null)}
               />
