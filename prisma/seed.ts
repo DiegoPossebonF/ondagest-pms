@@ -12,7 +12,6 @@ async function main() {
       password: passwordHash,
       role: 'ADMIN',
       emailVerified: null,
-      emailVerifyToken: null,
       image: '',
     },
   })

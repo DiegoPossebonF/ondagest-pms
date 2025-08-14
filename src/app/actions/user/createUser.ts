@@ -1,9 +1,10 @@
 // src/actions/user.ts
 'use server'
-import crypto from 'node:crypto'
+import { randomBytes } from 'node:crypto'
 import db from '@/lib/db'
 import { type UserSchema, userSchema } from '@/schemas/user-schema'
 import { hashPassword } from '@/utils/hash'
+import { addHours } from 'date-fns'
 import { revalidatePath } from 'next/cache'
 import { sendVerificationEmail } from '../auth/send-verification-email'
 
@@ -34,15 +35,30 @@ export async function createUser(data: UserSchema) {
   const hashedPassword = await hashPassword(password)
 
   try {
-    const token = crypto.randomBytes(32).toString('hex')
-
-    await db.user.create({
+    const createdUser = await db.user.create({
       data: {
         name,
         email,
         password: hashedPassword,
-        emailVerifyToken: token,
         role,
+      },
+    })
+
+    if (!createdUser) {
+      return {
+        success: false,
+        error: 'Erro ao criar usuário',
+      }
+    }
+
+    const token = randomBytes(32).toString('hex')
+    const expires = addHours(new Date(), 2)
+    // 4. Salva token no banco
+    await db.verificationToken.create({
+      data: {
+        identifier: email,
+        token,
+        expires,
       },
     })
 
