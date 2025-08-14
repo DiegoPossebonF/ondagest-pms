@@ -14,7 +14,7 @@ export async function getImageBase64(imageUrl: string): Promise<string | null> {
     // Detecta o tipo da imagem com base no header ou extensão
     let ext = imageUrl.split('.').pop()?.toLowerCase() || 'jpeg'
     ext = ext.split('?')[0]
-    console.log('EXTENSION', ext)
+
     const mimeType = ext === 'png' ? 'image/png' : 'image/jpeg'
 
     return `data:${mimeType};base64,${base64}`

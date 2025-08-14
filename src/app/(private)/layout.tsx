@@ -1,3 +1,4 @@
+'use server'
 import { AppSidebar } from '@/components/dashboard/AppSidebar'
 import { auth } from '@/lib/auth'
 import db from '@/lib/db'

@@ -123,7 +123,7 @@ export default function UnitTypeForm({
                 <Textarea
                   {...field}
                   rows={4}
-                  className="bg-popover"
+                  className="bg-popover text-sm placeholder:text-xs"
                   placeholder="Informe uma descrição para o tipo de acomodação"
                 />
                 <FormDescription className="sr-only">
@@ -142,6 +142,7 @@ export default function UnitTypeForm({
                 <FormLabel>Nº de Pessoas</FormLabel>
                 <Input
                   {...field}
+                  className="text-sm placeholder:text-xs"
                   placeholder="Informe o número de pessoas para o tipo de acomodação"
                 />
                 <FormDescription className="sr-only">

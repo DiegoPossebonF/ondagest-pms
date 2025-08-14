@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 import { auth } from './lib/auth'
 
 // rotas livres
@@ -18,7 +18,7 @@ const adminRoutes = [
   '/admin/rates',
 ]
 
-export default auth(async req => {
+export default async function middleware(req: NextRequest) {
   const referer = req.headers.get('referer')
   const { pathname } = req.nextUrl
 
@@ -44,7 +44,7 @@ export default auth(async req => {
   }
 
   return NextResponse.next()
-})
+}
 
 export const config = {
   matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],

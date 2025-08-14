@@ -1,6 +1,5 @@
 import { CredentialsSignin, type NextAuthConfig } from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
-import { findUserByCredentials } from './db/actions/findUserByCredentials'
 
 class EmailVerifiedError extends CredentialsSignin {
   code = 'EmailVerifiedError'
@@ -16,26 +15,27 @@ export const authConfig = {
       authorize: async credentials => {
         if (!credentials?.email || !credentials?.password) return null
 
-        const user = await findUserByCredentials(
-          credentials.email as string,
-          credentials.password as string
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/verify-credentials`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: credentials.email,
+              password: credentials.password,
+            }),
+          }
         )
 
-        if (!user) {
-          return null
+        if (!res.ok) {
+          const data = await res.json()
+
+          if (data.error === 'CredentialsSignin') return null
+          if (data.error === 'EmailVerifiedError')
+            throw new EmailVerifiedError()
         }
 
-        if (!user.emailVerified) {
-          throw new EmailVerifiedError()
-        }
-
-        return {
-          id: user.id,
-          name: user.name || '',
-          email: user.email,
-          role: user.role || 'USER',
-          image: user.image || '',
-        }
+        return await res.json()
       },
     }),
   ],

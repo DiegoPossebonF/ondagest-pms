@@ -1,5 +1,4 @@
 'use server'
-
 import db from '@/lib/db'
 
 // 🔄 Atualiza o status da reserva com base nos pagamentos realizados

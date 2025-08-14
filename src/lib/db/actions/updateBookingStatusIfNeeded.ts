@@ -1,3 +1,4 @@
+'use server'
 import db from '@/lib/db'
 import type { BookingAllIncludes } from '@/types/booking'
 import dayjs from 'dayjs'
