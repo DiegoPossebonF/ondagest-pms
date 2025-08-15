@@ -31,6 +31,7 @@ export function SigninForm() {
   const router = useRouter()
   const [errorMessage, setErrorMessage] = useState('')
   const [isPending, startTransition] = useTransition()
+  const [isLoading, setIsLoading] = useState(false)
 
   const form = useForm<SigninFormData>({
     resolver: zodResolver(SigninSchema),
@@ -117,15 +118,21 @@ export function SigninForm() {
         >
           {isPending ? <LoadingSpinner size="sm" /> : 'Entrar'}
         </Button>
+
         <SignInGoogleButton />
+
         <Button
           type="button"
           className="w-full"
           variant={'outline'}
           size={'sm'}
-          onClick={() => router.push('/signup')}
+          onClick={() => {
+            setIsLoading(true)
+            router.push('/signup')
+          }}
+          disabled={isLoading}
         >
-          Criar Conta
+          {isLoading ? <LoadingSpinner size="sm" /> : 'Criar conta'}
         </Button>
       </form>
     </Form>

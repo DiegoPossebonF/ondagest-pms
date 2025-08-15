@@ -114,7 +114,12 @@ export function SignupForm({ setSuccess }: SignupFormProps) {
           )}
         />
 
-        <Button type="submit" disabled={isPending} className="w-full">
+        <Button
+          type="submit"
+          disabled={isPending}
+          className="w-full"
+          size={'sm'}
+        >
           {isPending ? <LoadingSpinner size="sm" /> : 'Registrar'}
         </Button>
       </form>

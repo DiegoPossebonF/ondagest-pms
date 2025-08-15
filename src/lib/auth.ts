@@ -7,14 +7,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
     signIn: '/signin',
   },
-  events: {
-    async signIn(message) {
-      console.log('EVENT signIn', message)
-    },
-    async signOut(message) {
-      console.log('EVENT signOut', message)
-    },
-  },
   callbacks: {
     jwt: async ({ token, user }) => {
       const now = Date.now()
@@ -65,20 +57,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session
     },
 
-    async signIn({ user, account, profile }) {
+    async signIn({ account, profile }) {
       if (account?.provider === 'google' && profile?.email) {
-        if (user && profile.picture) {
-          await db.user.update({
-            where: { id: user.id },
-            data: { image: profile.picture },
-          })
-        }
         // Tenta encontrar usuário existente pelo e-mail
         const existingUser = await db.user.findUnique({
           where: { email: profile.email },
         })
 
         if (existingUser) {
+          if (!existingUser?.image) {
+            await db.user.update({
+              where: { id: existingUser.id },
+              data: { image: profile.picture },
+            })
+          }
           // Verifica se já existe conta do provider
           const existingAccount = await db.account.findFirst({
             where: {
