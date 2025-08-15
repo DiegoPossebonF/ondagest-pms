@@ -1,6 +1,5 @@
 'use client'
 import { signinAction } from '@/app/(public)/(auth)/actions'
-import SignInGoogle from '@/app/actions/auth/signin-google'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -11,7 +10,6 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { IconBrandGoogleFilled } from '@tabler/icons-react'
 import { motion } from 'framer-motion'
 import { AlertCircle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -20,6 +18,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { LoadingSpinner } from '../LoadingSpinner'
 import { Label } from '../ui/label'
+import SignInGoogleButton from './SignInGoogleButton'
 
 const SigninSchema = z.object({
   email: z.string().email('E-mail inválido'),
@@ -118,15 +117,7 @@ export function SigninForm() {
         >
           {isPending ? <LoadingSpinner size="sm" /> : 'Entrar'}
         </Button>
-        <Button
-          type="button"
-          className="w-full"
-          variant={'outline'}
-          size={'sm'}
-          onClick={SignInGoogle}
-        >
-          <IconBrandGoogleFilled /> Entrar com Google
-        </Button>
+        <SignInGoogleButton />
         <Button
           type="button"
           className="w-full"

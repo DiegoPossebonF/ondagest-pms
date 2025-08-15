@@ -23,14 +23,21 @@ export default async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
 
   const session = await auth()
+  console.log('MIDDLEWARE', session)
 
   const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route))
   const isPrivateRoute = privateRoutes.some(route => pathname.startsWith(route))
   const isAdminRoute = adminRoutes.some(route => pathname.startsWith(route))
 
   if (isPublicRoute) {
+    if (session && pathname === '/signin') {
+      return NextResponse.redirect(new URL('/', req.url))
+    }
+
     return NextResponse.next()
   }
+
+  // Se já logado e tentando acessar /signin, manda pro /
 
   if (!session && isPrivateRoute) {
     return NextResponse.redirect(new URL('/signin', req.url))

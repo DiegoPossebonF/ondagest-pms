@@ -1,12 +1,15 @@
+import { PrismaAdapter } from '@auth/prisma-adapter'
 import { CredentialsSignin, type NextAuthConfig } from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
+import db from './db'
 
 class EmailVerifiedError extends CredentialsSignin {
   code = 'EmailVerifiedError'
 }
 
 export const authConfig = {
+  adapter: PrismaAdapter(db),
   session: {
     strategy: 'jwt',
     maxAge: 60 * 60 * 24 * 7,

@@ -1,8 +1,20 @@
 import NextAuth from 'next-auth'
 import { authConfig } from './auth.config'
+import db from './db'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
+  pages: {
+    signIn: '/signin',
+  },
+  events: {
+    async signIn(message) {
+      console.log('EVENT signIn', message)
+    },
+    async signOut(message) {
+      console.log('EVENT signOut', message)
+    },
+  },
   callbacks: {
     jwt: async ({ token, user }) => {
       const now = Date.now()
@@ -34,6 +46,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const data = await res.json()
 
         if (data.error) {
+          console.error('ERROR verify-user', data.error)
           return null
         }
       }
@@ -52,8 +65,45 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session
     },
 
-    async signIn({ user, account }) {
-      // Se quiser impedir certos logins, tratar aqui
+    async signIn({ user, account, profile }) {
+      if (account?.provider === 'google' && profile?.email) {
+        if (user && profile.picture) {
+          await db.user.update({
+            where: { id: user.id },
+            data: { image: profile.picture },
+          })
+        }
+        // Tenta encontrar usuário existente pelo e-mail
+        const existingUser = await db.user.findUnique({
+          where: { email: profile.email },
+        })
+
+        if (existingUser) {
+          // Verifica se já existe conta do provider
+          const existingAccount = await db.account.findFirst({
+            where: {
+              userId: existingUser.id,
+              provider: account.provider,
+            },
+          })
+
+          if (!existingAccount) {
+            // Cria automaticamente a conta OAuth vinculada
+            await db.account.create({
+              data: {
+                userId: existingUser.id,
+                provider: account.provider,
+                providerAccountId: account.providerAccountId,
+                type: account.type,
+                access_token: account.access_token,
+                refresh_token: account.refresh_token,
+                expires_at: account.expires_at,
+              },
+            })
+          }
+        }
+      }
+
       return true
     },
   },
