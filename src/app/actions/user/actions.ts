@@ -1,6 +1,7 @@
 'use server'
-import dbWithTenant from '@/lib/dbWithTenant'
+
 import { Prisma, type Role, type User } from '@prisma/client'
+import dbWithTenant from '../utils/dbWithTenant'
 
 export interface GetUsersParams {
   page: number
@@ -22,9 +23,11 @@ export async function getUsers({
   filters = {},
 }: GetUsersParams) {
   try {
-    const { db, error } = await dbWithTenant()
-    if (error) return { error: error }
-    if (!db) return { error: 'Banco de dados não disponível' }
+    const { db: dbData, error } = await dbWithTenant()
+    if (error) throw new Error(error)
+    if (!dbData) throw new Error('Banco de dados não disponível')
+
+    const db = dbData
 
     const where: Prisma.UserWhereInput = {
       name: filters.name

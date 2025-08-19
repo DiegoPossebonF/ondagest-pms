@@ -1,10 +1,17 @@
 'use server'
-import db from '@/lib/db'
+import dbDefault from '@/lib/db'
 import { type UserSchema, userSchema } from '@/schemas/user-schema'
 import { hashPassword } from '@/utils/hash'
 import { revalidatePath } from 'next/cache'
+import dbWithTenant from '../utils/dbWithTenant'
 
 export async function updateUser(id: string, data: UserSchema) {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   const parsed = userSchema.safeParse(data)
 
   if (!parsed.success) {
@@ -16,7 +23,7 @@ export async function updateUser(id: string, data: UserSchema) {
 
   const { name, email, password, role } = parsed.data
 
-  const existingEmail = await db.user.findUnique({
+  const existingEmail = await dbDefault.user.findUnique({
     where: { email, NOT: { id } },
   })
 

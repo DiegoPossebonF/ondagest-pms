@@ -1,10 +1,16 @@
 'use server'
-import db from '@/lib/db'
 import { supabase } from '@/lib/supabase/client'
 import { optimizeImageWithSharp } from '@/utils/optimizeImageWithSharp'
 import { revalidatePath } from 'next/cache'
+import dbWithTenant from '../utils/dbWithTenant'
 
 export async function updateUserAvatar(userId: string, file: File) {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   try {
     if (file.type !== 'image/png' && file.type !== 'image/jpeg')
       return { error: 'Formato inválido (apenas PNG ou JPEG).' }

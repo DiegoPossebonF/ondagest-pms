@@ -2,14 +2,20 @@
 'use server'
 import { randomBytes } from 'node:crypto'
 import dbDefault from '@/lib/db'
-import dbWithTenant from '@/lib/dbWithTenant'
 import { type UserSchema, userSchema } from '@/schemas/user-schema'
 import { hashPassword } from '@/utils/hash'
 import { addHours } from 'date-fns'
 import { revalidatePath } from 'next/cache'
 import { sendVerificationEmail } from '../auth/send-verification-email'
+import dbWithTenant from '../utils/dbWithTenant'
 
 export async function createUser(data: UserSchema) {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   const parsed = userSchema.safeParse(data)
 
   if (!parsed.success) {
@@ -36,10 +42,6 @@ export async function createUser(data: UserSchema) {
   const hashedPassword = await hashPassword(password)
 
   try {
-    const { db, error: errorDb } = await dbWithTenant()
-    if (errorDb) return { error: errorDb }
-    if (!db) return { error: 'Banco de dados não disponível' }
-
     const createdUser = await db.user.create({
       data: {
         name,
