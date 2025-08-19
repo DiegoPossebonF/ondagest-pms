@@ -1,5 +1,5 @@
 import { getBookingById } from '@/app/actions/booking/actions'
-import { getOrganization } from '@/app/actions/organization/actions'
+import { getUserAndOrg } from '@/app/actions/utils/get-user-and-org'
 import { formatCurrency } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import type { Organization, Payment } from '@prisma/client'
@@ -206,9 +206,11 @@ const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
 export default ReceiptDocument
 
 export async function generateReceiptDocument(payment: Payment) {
-  const { data, error } = await getOrganization()
-  if (error) throw new Error(error)
-  if (!data) throw new Error('Organização não encontrada')
+  const user = await getUserAndOrg()
+
+  if (!user) throw new Error('Sessão não encontrada.')
+
+  if (!user.organization) throw new Error('Organização não encontrada.')
 
   const { data: booking, error: bookingError } = await getBookingById(
     payment.bookingId
@@ -217,6 +219,10 @@ export async function generateReceiptDocument(payment: Payment) {
   if (bookingError) throw new Error(bookingError)
   if (!booking) throw new Error('Reserva não encontrada')
   return (
-    <ReceiptDocument payment={payment} organization={data} booking={booking} />
+    <ReceiptDocument
+      payment={payment}
+      organization={user.organization}
+      booking={booking}
+    />
   )
 }

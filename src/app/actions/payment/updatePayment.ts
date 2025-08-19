@@ -1,13 +1,18 @@
-// src/actions/booking.ts
-
 'use server'
-import db from '@/lib/db'
-import { updateBookingPaymentStatus } from '@/lib/db/actions/updateBookingPaymentStatus'
+
 import { type PaymentSchema, paymentSchema } from '@/schemas/payment-schema'
 import type { PaymentType } from '@prisma/client'
 import { revalidatePath } from 'next/cache'
+import { updateBookingPaymentStatus } from '../booking/updateBookingPaymentStatus'
+import dbWithTenant from '../utils/dbWithTenant'
 
 export async function updatePayment(paymentId: string, data: PaymentSchema) {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   const parsed = paymentSchema.safeParse(data)
 
   if (!parsed.success) {

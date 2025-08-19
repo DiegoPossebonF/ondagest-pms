@@ -7,6 +7,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
     signIn: '/signin',
   },
+  events: {
+    async createUser({ user }) {
+      // Checa se o usuário já tem organizationId
+      const dbUser = await db.user.findUnique({
+        where: { id: user.id },
+      })
+
+      if (dbUser && !dbUser.organizationId) {
+        await db.user.update({
+          where: { id: user.id },
+          data: { role: 'OWNER' },
+        })
+      }
+    },
+  },
   callbacks: {
     jwt: async ({ token, user }) => {
       const now = Date.now()
@@ -17,7 +32,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.email = user.email
         token.image = user.image
         token.role = user.role
-        token.lastCheck = now
+        token.organizationId = user.organizationId ?? null
       }
 
       if (
@@ -41,6 +56,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           console.error('ERROR verify-user', data.error)
           return null
         }
+
+        if (data.user) {
+          token.role = data.user.role
+          token.organizationId = data.user.organizationId ?? null
+        }
+        token.lastCheck = now
       }
 
       return token
@@ -53,6 +74,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.email = token.email as string
         session.user.image = token.image as string
         session.user.role = token.role as string
+        session.user.organizationId = token.organizationId as string
       }
       return session
     },

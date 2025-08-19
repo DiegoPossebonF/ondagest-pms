@@ -1,7 +1,6 @@
 'use server'
-
-import db from '@/lib/db'
 import { eachDayOfInterval, eachMonthOfInterval, format } from 'date-fns'
+import dbWithTenant from '../utils/dbWithTenant'
 
 type GroupBy = 'daily' | 'monthly'
 
@@ -16,6 +15,12 @@ export async function getServicesReport({
   to,
   groupBy,
 }: Params): Promise<{ date: string; total: number }[]> {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   const services = await db.service.findMany({
     where: {
       createdAt: {

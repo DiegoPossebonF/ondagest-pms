@@ -1,10 +1,17 @@
 'use server'
-import db from '@/lib/db'
-import { updateBookingPaymentStatus } from '@/lib/db/actions/updateBookingPaymentStatus'
-import { updateBookingStatusIfNeeded } from '@/lib/db/actions/updateBookingStatusIfNeeded'
+
 import { getBookingById } from '../booking/actions'
+import { updateBookingPaymentStatus } from '../booking/updateBookingPaymentStatus'
+import { updateBookingStatusIfNeeded } from '../booking/updateBookingStatusIfNeeded'
+import dbWithTenant from '../utils/dbWithTenant'
 
 export async function deletePayment(paymentId: string) {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   try {
     if (!paymentId)
       return {

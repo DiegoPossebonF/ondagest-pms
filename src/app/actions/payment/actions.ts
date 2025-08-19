@@ -1,8 +1,13 @@
 'use server'
-
-import db from '@/lib/db'
+import dbWithTenant from '../utils/dbWithTenant'
 
 export async function getPaymentById(id: string) {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   try {
     const payment = await db.payment.findUnique({
       where: { id },

@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/sidebar'
 import type * as React from 'react'
 
-import type { User } from '@prisma/client'
+import { useAppContext } from '@/contexts/AppContext'
 import {
   IconBook,
   IconBookFilled,
@@ -27,7 +27,6 @@ import {
   IconUser,
   IconUserFilled,
 } from '@tabler/icons-react'
-import { useOrganization } from '../organization/OrganizationProvider'
 import { AccessDenied } from './AccessDenied'
 import { NavSecondary } from './NavSecondary'
 import { OrganizationLogo } from './OrganizationLogo'
@@ -76,15 +75,12 @@ const data = {
   ],
 }
 
-type UserSession = Omit<User, 'createdAt' | 'updatedAt' | 'password'>
-
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   children: React.ReactNode
-  user?: UserSession
 }
 
-export function AppSidebar({ children, user, ...props }: AppSidebarProps) {
-  const { organization } = useOrganization()
+export function AppSidebar({ children, ...props }: AppSidebarProps) {
+  const { user, organization } = useAppContext()
   return (
     <SidebarProvider defaultOpen={false} className="overflow-hidden">
       <Sidebar collapsible="icon" {...props}>

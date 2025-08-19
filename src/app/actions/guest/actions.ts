@@ -1,7 +1,7 @@
 'use server'
 
-import db from '@/lib/db'
 import { type Guest, Prisma } from '@prisma/client'
+import dbWithTenant from '../utils/dbWithTenant'
 
 interface GetGuestsParams {
   page: number
@@ -27,6 +27,12 @@ export async function getGuests({
   direction = 'desc',
   filters = {},
 }: GetGuestsParams) {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   try {
     const where: Prisma.GuestWhereInput = {
       name: filters.name
@@ -116,6 +122,12 @@ export async function searchGuestName(searchTerm: string) {
     return []
   }
 
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   try {
     const guests = await db.guest.findMany({
       where: {
@@ -138,6 +150,12 @@ export async function searchGuestName(searchTerm: string) {
 }
 
 export async function getGuestById(id: string) {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   try {
     const guest = await db.guest.findUnique({
       where: { id },
@@ -161,5 +179,24 @@ export async function getGuestById(id: string) {
       error:
         'Erro ao buscar hóspede por ID - tente novamente mais tarde ou contate o suporte!',
     }
+  }
+}
+
+export async function getGuestsOrderUpdated() {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
+  try {
+    const guests = await db.guest.findMany({
+      take: 5,
+      orderBy: { updatedAt: 'desc' },
+    })
+    return guests
+  } catch (error) {
+    console.log(error)
+    return null
   }
 }

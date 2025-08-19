@@ -152,3 +152,9 @@ export function padNumber(num: number, length = 6) {
 export function formatPhoneNumber(raw: string): string {
   return raw.replace(/\D/g, '')
 }
+
+export const ROLE_LABELS = {
+  OWNER: 'Proprietário',
+  ADMIN: 'Administrador',
+  USER: 'Usuário',
+}

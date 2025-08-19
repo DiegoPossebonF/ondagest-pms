@@ -1,12 +1,12 @@
 'use client'
 import { shareReceipt } from '@/app/actions/utils/sharePDF'
+import { useAppContext } from '@/contexts/AppContext'
 import type { BookingAllIncludes } from '@/types/booking'
 import type { Payment } from '@prisma/client'
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer'
 import { IconBrandWhatsapp, IconReceipt } from '@tabler/icons-react'
 import { padStart } from 'lodash'
 import { LoadingSpinner } from '../LoadingSpinner'
-import { useOrganization } from '../organization/OrganizationProvider'
 import { Button } from '../ui/button'
 import {
   Dialog,
@@ -25,7 +25,13 @@ export default function ReceiptViewer({
   booking,
   payment,
 }: { booking: BookingAllIncludes; payment: Payment }) {
-  const { logoBase64, organization } = useOrganization()
+  const { organization } = useAppContext()
+
+  if (!organization)
+    throw new Error(
+      'Organização não localizada. Tente novamente mais tarde ou contate o suporte.'
+    )
+
   const isMobile =
     typeof window !== 'undefined' && /Mobi|Android/i.test(navigator.userAgent)
 
@@ -71,7 +77,7 @@ export default function ReceiptViewer({
                 <ReceiptDocument
                   booking={booking}
                   payment={payment}
-                  organization={{ ...organization, logoUrl: logoBase64 }}
+                  organization={organization}
                 />
               </PDFViewer>
             ) : (
@@ -97,7 +103,7 @@ export default function ReceiptViewer({
                 <ReceiptDocument
                   booking={booking}
                   payment={payment}
-                  organization={{ ...organization, logoUrl: logoBase64 }}
+                  organization={organization}
                 />
               }
               fileName={`recibo-pagamento-reserva-nr-${padStart(booking.id.toString(), 5, '0')}.pdf`}

@@ -10,7 +10,7 @@ export const userSchema = z.object({
       message: 'Senha deve ter pelo menos 8 caracteres',
     })
     .optional(), // opcional para edição
-  role: z.enum(['USER', 'ADMIN']),
+  role: z.enum(['USER', 'OWNER', 'ADMIN']),
   //image: z.string().url('URL inválida').optional(),
 })
 

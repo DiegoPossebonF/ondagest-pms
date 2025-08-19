@@ -1,5 +1,5 @@
 'use client'
-import { signinAction } from '@/app/(public)/(auth)/actions'
+import { signin } from '@/app/actions/auth/signin'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -43,10 +43,7 @@ export function SigninForm() {
 
   const onSubmit = async (values: SigninFormData) => {
     startTransition(async () => {
-      const { success, error } = await signinAction(
-        values.email,
-        values.password
-      )
+      const { success, error } = await signin(values.email, values.password)
 
       if (success) {
         router.push('/')

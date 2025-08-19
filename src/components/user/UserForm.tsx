@@ -13,6 +13,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { ROLE_LABELS } from '@/lib/utils'
 import { type UserSchema, userSchema } from '@/schemas/user-schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Role } from '@prisma/client'
@@ -190,7 +191,7 @@ export default function UserForm({
                   <SelectContent>
                     {Object.values(Role).map(role => (
                       <SelectItem key={role} value={role} className={'text-xs'}>
-                        {role === 'ADMIN' ? 'Administrador' : 'Usuário'}
+                        {ROLE_LABELS[role]}
                       </SelectItem>
                     ))}
                   </SelectContent>

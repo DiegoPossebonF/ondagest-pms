@@ -25,7 +25,6 @@ import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import { FormError } from '../FormError'
 import { LoadingSpinner } from '../LoadingSpinner'
 import {
   Select,
@@ -98,17 +97,11 @@ export function OrganizationForm({
             setServerError(null)
             router.refresh()
             closeDialog?.()
+            router.push('/')
           }
         })
       }
     })
-  }
-
-  if (!organization) {
-    setServerError('Empresa não informada!')
-    return (
-      <FormError serverError={serverError} errors={form.formState.errors} />
-    )
   }
 
   return (
@@ -119,21 +112,23 @@ export function OrganizationForm({
           className="space-y-4"
         >
           <div className="flex flex-col items-center">
-            <FormField
-              name="logo"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel className="text-left">Logo</FormLabel>
-                  <FormControl>
-                    <OrganizationLogoUpload
-                      initialImage={organization.logoUrl || undefined}
-                      organizationId={organization.id}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {organization && (
+              <FormField
+                name="logo"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel className="text-left">Logo</FormLabel>
+                    <FormControl>
+                      <OrganizationLogoUpload
+                        initialImage={organization?.logoUrl || undefined}
+                        organizationId={organization?.id || ''}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
           </div>
 
           <FormField

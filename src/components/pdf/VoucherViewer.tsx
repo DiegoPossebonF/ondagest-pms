@@ -1,11 +1,11 @@
 'use client'
 import { shareVoucher } from '@/app/actions/utils/sharePDF'
+import { useAppContext } from '@/contexts/AppContext'
 import type { BookingAllIncludes } from '@/types/booking'
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer'
 import { IconBrandWhatsapp, IconFileLike } from '@tabler/icons-react'
 import { padStart } from 'lodash'
 import { LoadingSpinner } from '../LoadingSpinner'
-import { useOrganization } from '../organization/OrganizationProvider'
 import { Button } from '../ui/button'
 import {
   Dialog,
@@ -23,7 +23,12 @@ import VoucherDocument from './VoucherDocument'
 export default function VoucherViewer({
   booking,
 }: { booking: BookingAllIncludes }) {
-  const { logoBase64, organization } = useOrganization()
+  const { organization } = useAppContext()
+
+  if (!organization)
+    throw new Error(
+      'Organização não localizada. Tente novamente mais tarde ou contate o suporte.'
+    )
 
   const isMobile =
     typeof window !== 'undefined' && /Mobi|Android/i.test(navigator.userAgent)
@@ -69,7 +74,7 @@ export default function VoucherViewer({
               >
                 <VoucherDocument
                   booking={booking}
-                  organization={{ ...organization, logoUrl: logoBase64 }}
+                  organization={organization}
                 />
               </PDFViewer>
             ) : (
@@ -94,7 +99,7 @@ export default function VoucherViewer({
               document={
                 <VoucherDocument
                   booking={booking}
-                  organization={{ ...organization, logoUrl: logoBase64 }}
+                  organization={organization}
                 />
               }
               fileName={`voucher-reserva-nr-${padStart(booking.id.toString(), 5, '0')}.pdf`}

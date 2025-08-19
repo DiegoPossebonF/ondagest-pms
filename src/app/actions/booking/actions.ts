@@ -1,9 +1,9 @@
 'use server'
 import type { SortKey } from '@/components/booking/BookingsFiltersProvider'
-import db from '@/lib/db'
 import { activeBookingStatuses } from '@/lib/db/scopes'
 import type { BookingAllIncludes } from '@/types/booking'
 import type { BookingStatus, PaymentStatus, Prisma } from '@prisma/client'
+import dbWithTenant from '../utils/dbWithTenant'
 
 interface GetBookingsParams {
   page?: number
@@ -28,6 +28,11 @@ export async function getBookings({
   sortDirection = 'asc',
   filters = {},
 }: GetBookingsParams) {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
   try {
     const where: Prisma.BookingWhereInput = {
       id: {
@@ -106,6 +111,12 @@ export async function getBookings({
 }
 
 export async function getBookingsPerPeriod(period: { from: Date; to: Date }) {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   try {
     const bookings: BookingAllIncludes[] = await db.booking.findMany({
       where: {
@@ -156,6 +167,12 @@ export async function getBookingsPerPeriod(period: { from: Date; to: Date }) {
 }
 
 export async function getBookingById(id: number) {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   try {
     const booking = await db.booking.findUnique({
       where: { id },
@@ -188,6 +205,12 @@ export async function getBookingById(id: number) {
 }
 
 export async function getBookingByPublicId(publicId: string) {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   try {
     const booking = await db.booking.findUnique({
       where: { publicId },

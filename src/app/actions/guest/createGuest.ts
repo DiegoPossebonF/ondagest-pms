@@ -1,11 +1,16 @@
-// src/actions/booking.ts
-
 'use server'
-import db from '@/lib/db'
+
 import { type GuestSchema, guestSchema } from '@/schemas/guest-schema'
 import { revalidatePath } from 'next/cache'
+import dbWithTenant from '../utils/dbWithTenant'
 
 export async function createGuest(data: GuestSchema) {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   const parsed = guestSchema.safeParse(data)
 
   if (!parsed.success) {
@@ -18,7 +23,7 @@ export async function createGuest(data: GuestSchema) {
   const { name, email, phone, cpf, city, carPlate } = parsed.data
 
   try {
-    const existingEmail = await db.guest.findUnique({
+    const existingEmail = await db.guest.findFirst({
       where: { email },
     })
 

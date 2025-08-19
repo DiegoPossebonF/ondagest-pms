@@ -1,9 +1,9 @@
 'use server'
-import db from '@/lib/db'
 import type { BookingAllIncludes } from '@/types/booking'
 import dayjs from 'dayjs'
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
+import dbWithTenant from '../utils/dbWithTenant'
 
 dayjs.extend(isSameOrBefore)
 dayjs.extend(isSameOrAfter)
@@ -11,6 +11,12 @@ dayjs.extend(isSameOrAfter)
 export async function updateBookingStatusIfNeeded(
   booking: BookingAllIncludes
 ): Promise<BookingAllIncludes> {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   const today = dayjs()
   let newStatus = booking.status
 

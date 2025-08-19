@@ -1,7 +1,8 @@
 // src/actions/user.ts
 'use server'
 import { randomBytes } from 'node:crypto'
-import db from '@/lib/db'
+import dbDefault from '@/lib/db'
+import dbWithTenant from '@/lib/dbWithTenant'
 import { type UserSchema, userSchema } from '@/schemas/user-schema'
 import { hashPassword } from '@/utils/hash'
 import { addHours } from 'date-fns'
@@ -20,7 +21,7 @@ export async function createUser(data: UserSchema) {
 
   const { name, email, password, role } = parsed.data
 
-  const existingEmail = await db.user.findUnique({
+  const existingEmail = await dbDefault.user.findUnique({
     where: { email },
   })
 
@@ -35,6 +36,10 @@ export async function createUser(data: UserSchema) {
   const hashedPassword = await hashPassword(password)
 
   try {
+    const { db, error: errorDb } = await dbWithTenant()
+    if (errorDb) return { error: errorDb }
+    if (!db) return { error: 'Banco de dados não disponível' }
+
     const createdUser = await db.user.create({
       data: {
         name,

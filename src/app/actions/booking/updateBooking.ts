@@ -1,91 +1,95 @@
-// src/actions/booking.ts
-
 'use server'
 
-import db from '@/lib/db'
-import { updateBookingStatusIfNeeded } from '@/lib/db/actions/updateBookingStatusIfNeeded'
 import { activeBookingStatuses } from '@/lib/db/scopes'
 import { type BookingSchema, bookingSchema } from '@/schemas/booking-schema'
 import { BookingStatus, PricingMode } from '@prisma/client'
 import dayjs from 'dayjs'
 import { revalidatePath } from 'next/cache'
+import dbWithTenant from '../utils/dbWithTenant'
+import { updateBookingStatusIfNeeded } from './updateBookingStatusIfNeeded'
 import validateBookingStatusChange from './validateBookingStatusChange'
 
 export async function updateBooking(id: number, data: BookingSchema) {
-  const parsed = bookingSchema.safeParse(data)
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
 
-  if (!parsed.success) {
-    return {
-      error: 'Dados inválidos',
-      issues: parsed.error.flatten().fieldErrors,
-    }
-  }
-
-  const booking = await db.booking.findUnique({
-    where: { id },
-    include: {
-      guest: true,
-      unit: {
-        include: {
-          type: { include: { rates: { include: { type: true } } } },
-        },
-      },
-      payments: true,
-      services: true,
-      discounts: true,
-      rate: { include: { type: true } },
-    },
-  })
-
-  if (!booking) {
-    return {
-      error: 'Reserva não encontrada!',
-    }
-  }
-
-  const {
-    guestId,
-    unitId,
-    rateId,
-    period,
-    numberOfPeople,
-    totalAmount,
-    pricingMode,
-    daily,
-    status,
-  } = parsed.data
-
-  const from = dayjs(period.from).startOf('day').toDate()
-  const to = dayjs(period.to).startOf('day').toDate()
-
-  // Verificar se a unit já contem reserva para o perido informado, ignorando a reserva atual
-  const existingBooking = await db.booking.findFirst({
-    where: {
-      unitId,
-      AND: [{ startDate: { lt: to } }, { endDate: { gt: from } }],
-      ...activeBookingStatuses,
-      NOT: { id },
-    },
-  })
-
-  if (existingBooking) {
-    return {
-      error: 'A unit já possui uma reserva para o período informado.',
-    }
-  }
-
-  const validation = await validateBookingStatusChange(
-    booking,
-    status as BookingStatus
-  )
-
-  if (validation.error) {
-    return {
-      error: validation.error,
-    }
-  }
+  const db = dbData
 
   try {
+    const parsed = bookingSchema.safeParse(data)
+
+    if (!parsed.success) {
+      return {
+        error: 'Dados inválidos',
+        issues: parsed.error.flatten().fieldErrors,
+      }
+    }
+
+    const booking = await db.booking.findUnique({
+      where: { id },
+      include: {
+        guest: true,
+        unit: {
+          include: {
+            type: { include: { rates: { include: { type: true } } } },
+          },
+        },
+        payments: true,
+        services: true,
+        discounts: true,
+        rate: { include: { type: true } },
+      },
+    })
+
+    if (!booking) {
+      return {
+        error: 'Reserva não encontrada!',
+      }
+    }
+
+    const {
+      guestId,
+      unitId,
+      rateId,
+      period,
+      numberOfPeople,
+      totalAmount,
+      pricingMode,
+      daily,
+      status,
+    } = parsed.data
+
+    const from = dayjs(period.from).startOf('day').toDate()
+    const to = dayjs(period.to).startOf('day').toDate()
+
+    // Verificar se a unit já contem reserva para o perido informado, ignorando a reserva atual
+    const existingBooking = await db.booking.findFirst({
+      where: {
+        unitId,
+        AND: [{ startDate: { lt: to } }, { endDate: { gt: from } }],
+        ...activeBookingStatuses,
+        NOT: { id },
+      },
+    })
+
+    if (existingBooking) {
+      return {
+        error: 'A unit já possui uma reserva para o período informado.',
+      }
+    }
+
+    const validation = await validateBookingStatusChange(
+      booking,
+      status as BookingStatus
+    )
+
+    if (validation.error) {
+      return {
+        error: validation.error,
+      }
+    }
+
     const updatedBooking = await db.booking.update({
       where: { id },
       data: {

@@ -1,6 +1,7 @@
 // src/actions/booking.ts
 
 'use server'
+import { auth } from '@/lib/auth'
 import db from '@/lib/db'
 import {
   type OrganizationSchema,
@@ -9,6 +10,21 @@ import {
 import { revalidatePath } from 'next/cache'
 
 export async function createOrganization(data: OrganizationSchema) {
+  const session = await auth()
+  console.log(session)
+
+  if (!session?.user) {
+    return { error: 'Usuário não encontrado!' }
+  }
+
+  if (session.user.role !== 'OWNER') {
+    return { error: 'Usuário sem permissão!' }
+  }
+
+  if (session.user.organizationId) {
+    return { error: 'Usuário ja possui uma organização!' }
+  }
+
   const parsed = organizationSchema.safeParse(data)
 
   if (!parsed.success) {
@@ -66,7 +82,12 @@ export async function createOrganization(data: OrganizationSchema) {
       },
     })
 
-    revalidatePath('/settings/organization')
+    await db.user.update({
+      where: { id: session.user.id },
+      data: { organizationId: organizationCreated.id },
+    })
+
+    revalidatePath('/', 'layout')
     return {
       success: 'Organização criada com sucesso!',
       data: organizationCreated,

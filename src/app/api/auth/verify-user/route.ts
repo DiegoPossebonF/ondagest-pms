@@ -22,7 +22,7 @@ export async function POST(req: Request) {
       )
     }
 
-    return NextResponse.json({ success: 'Usuário verificado' }, { status: 200 })
+    return NextResponse.json({ user: dbUser }, { status: 200 })
   } catch (error) {
     console.error(error)
     return NextResponse.json({ error: 'Erro interno' }, { status: 500 })

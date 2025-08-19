@@ -1,52 +1,57 @@
 'use server'
-
-import db from '@/lib/db'
 import { activeBookingStatuses } from '@/lib/db/scopes'
 import { type BookingSchema, bookingSchema } from '@/schemas/booking-schema'
 import { BookingStatus, PricingMode } from '@prisma/client'
 import dayjs from 'dayjs'
 import { revalidatePath } from 'next/cache'
+import dbWithTenant from '../utils/dbWithTenant'
 
 export async function createBooking(data: BookingSchema) {
-  const parsed = bookingSchema.safeParse(data)
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
 
-  if (!parsed.success) {
-    return {
-      error: 'Dados inválidos',
-      issues: parsed.error.flatten().fieldErrors,
-    }
-  }
-
-  const {
-    status,
-    guestId,
-    unitId,
-    rateId,
-    period,
-    numberOfPeople,
-    totalAmount,
-    pricingMode,
-    daily,
-  } = parsed.data
-
-  const from = dayjs(period.from).startOf('day').toDate()
-  const to = dayjs(period.to).startOf('day').toDate()
-
-  const existingBooking = await db.booking.findFirst({
-    where: {
-      unitId,
-      AND: [{ startDate: { lt: to } }, { endDate: { gt: from } }],
-      ...activeBookingStatuses,
-    },
-  })
-
-  if (existingBooking) {
-    return {
-      error: 'Acomodação já possui reserva para o período informado',
-    }
-  }
+  const db = dbData
 
   try {
+    const parsed = bookingSchema.safeParse(data)
+
+    if (!parsed.success) {
+      return {
+        error: 'Dados inválidos',
+        issues: parsed.error.flatten().fieldErrors,
+      }
+    }
+
+    const {
+      status,
+      guestId,
+      unitId,
+      rateId,
+      period,
+      numberOfPeople,
+      totalAmount,
+      pricingMode,
+      daily,
+    } = parsed.data
+
+    const from = dayjs(period.from).startOf('day').toDate()
+    const to = dayjs(period.to).startOf('day').toDate()
+
+    const existingBooking = await db.booking.findFirst({
+      where: {
+        unitId,
+        AND: [{ startDate: { lt: to } }, { endDate: { gt: from } }],
+        ...activeBookingStatuses,
+      },
+    })
+
+    if (existingBooking) {
+      return {
+        error: 'Acomodação já possui reserva para o período informado',
+      }
+    }
+
     await db.booking.create({
       data: {
         guestId: guestId,

@@ -1,0 +1,4 @@
+correções
+
+- Guest cpf deve ser unique por organization
+- Organization CNPJ/CPF dever ser unique na aplicação geral

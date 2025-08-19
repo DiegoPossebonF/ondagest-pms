@@ -1,11 +1,17 @@
 // src/actions/user.ts
 'use server'
 
-import db from '@/lib/db'
 import { type UnitSchema, unitSchema } from '@/schemas/unit-schema'
 import { revalidatePath } from 'next/cache'
+import dbWithTenant from '../utils/dbWithTenant'
 
 export async function createUnit(data: UnitSchema) {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   const parsed = unitSchema.safeParse(data)
 
   if (!parsed.success) {
@@ -18,7 +24,7 @@ export async function createUnit(data: UnitSchema) {
   const { name, typeId } = parsed.data
 
   // Verifica se a acomomodação ja existe
-  const existingUnit = await db.unit.findUnique({
+  const existingUnit = await db.unit.findFirst({
     where: { name },
   })
 

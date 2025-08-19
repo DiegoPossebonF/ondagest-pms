@@ -1,3 +1,4 @@
+import { getUserAndOrg } from '@/app/actions/utils/get-user-and-org'
 import { STATUS_LABELS, formatCurrency } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import type { Organization } from '@prisma/client'
@@ -12,8 +13,6 @@ import {
 import dayjs from 'dayjs'
 import { padStart } from 'lodash'
 import type React from 'react'
-
-import { getOrganization } from '@/app/actions/organization/actions'
 import LogoPMS from '../../../public/images/LogoOndaGest.png'
 
 const styles = StyleSheet.create({
@@ -275,8 +274,11 @@ const VoucherDocument: React.FC<VoucherDocumentProps> = ({
 export default VoucherDocument
 
 export async function generateVoucherDocument(booking: BookingAllIncludes) {
-  const { data, error } = await getOrganization()
-  if (error) throw new Error(error)
-  if (!data) throw new Error('Organização nao encontrada')
-  return <VoucherDocument booking={booking} organization={data} />
+  const user = await getUserAndOrg()
+
+  if (!user) throw new Error('Sessão não encontrada.')
+
+  if (!user.organization) throw new Error('Organização não encontrada.')
+
+  return <VoucherDocument booking={booking} organization={user.organization} />
 }

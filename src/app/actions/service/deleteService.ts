@@ -1,7 +1,13 @@
 'use server'
-import db from '@/lib/db'
+import dbWithTenant from '../utils/dbWithTenant'
 
 export async function deleteService(serviceId: string) {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   try {
     if (!serviceId)
       return {

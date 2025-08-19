@@ -1,11 +1,16 @@
 // src/actions/user.ts
 'use server'
-
-import db from '@/lib/db'
 import { type RateSchema, rateSchema } from '@/schemas/rate-schema'
 import { revalidatePath } from 'next/cache'
+import dbWithTenant from '../utils/dbWithTenant'
 
 export async function createRate(data: RateSchema) {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   const parsed = rateSchema.safeParse(data)
 
   if (!parsed.success) {

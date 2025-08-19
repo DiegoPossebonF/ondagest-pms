@@ -1,8 +1,15 @@
 'use server'
-import db from '@/lib/db'
-import { updateBookingPaymentStatus } from '@/lib/db/actions/updateBookingPaymentStatus'
+
+import { updateBookingPaymentStatus } from '../booking/updateBookingPaymentStatus'
+import dbWithTenant from '../utils/dbWithTenant'
 
 export async function deleteDiscount(discountId: string) {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   try {
     if (!discountId)
       return {

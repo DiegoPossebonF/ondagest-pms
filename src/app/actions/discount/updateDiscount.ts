@@ -1,12 +1,17 @@
-// src/actions/booking.ts
-
 'use server'
-import db from '@/lib/db'
-import { updateBookingPaymentStatus } from '@/lib/db/actions/updateBookingPaymentStatus'
+
 import { type DiscountSchema, discountSchema } from '@/schemas/discount-schema'
 import { revalidatePath } from 'next/cache'
+import { updateBookingPaymentStatus } from '../booking/updateBookingPaymentStatus'
+import dbWithTenant from '../utils/dbWithTenant'
 
 export async function updateDiscount(discountId: string, data: DiscountSchema) {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   const parsed = discountSchema.safeParse(data)
 
   if (!parsed.success) {

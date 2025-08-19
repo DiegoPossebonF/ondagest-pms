@@ -57,7 +57,9 @@ model User {
   updatedAt     DateTime @updatedAt
   accounts      Account[]
   sessions      Session[]
-  
+
+  organizationId String? // opcional no primeiro acesso
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   @@map("users")
 }
@@ -90,6 +92,17 @@ model Organization {
   rules           String?
   invoiceMessageVoucher String?  // Mensagem para o voucher
   invoiceMessageReceipt String?  // Mensagem para o recibo
+
+  users     User[]
+  guests    Guest[]
+  unitTypes UnitType[]
+  units     Unit[]
+  bookings  Booking[]
+  rates     Rate[]
+  services  Service[]
+  discounts Discount[]
+  payments  Payment[]
+  
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
@@ -97,36 +110,53 @@ model Organization {
 model Guest {
   id         String     @id @default(uuid())
   name       String
-  email      String     @unique
+  email      String     
   phone      String?
   cpf        String
   city       String?
   carPlate   String?
   bookings   Booking[]
+
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
+
+  @@unique([email, organizationId])
 }
 
 
 model UnitType {
   id             String      @id @default(uuid())
-  name           String      @unique
+  name           String      
   description    String
   numberOfPeople Int
   units          Unit[]
   rates          Rate[]
+
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
+
+  @@unique([name, organizationId])
 }
 
 model Unit {
   id         String      @id @default(uuid())
-  name       String      @unique
+  name       String      
   type       UnitType    @relation(fields: [typeId], references: [id])
   typeId     String
   bookings   Booking[]
+
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
+  @@unique([name, organizationId])
 }
 
 model Booking {
@@ -149,6 +179,10 @@ model Booking {
   paymentStatus  PaymentStatus  @default(PENDING)
   services       Service[]
   discounts      Discount[]
+
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
 }
@@ -167,8 +201,14 @@ model Rate {
   typeId         String
   bookings       Booking[]
   active         Boolean  @default(true)
+
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
+
+  @@unique([name, organizationId])
 }
 
 model Service {
@@ -177,6 +217,10 @@ model Service {
   booking    Booking  @relation(fields: [bookingId], references: [id])
   name       String   
   amount     Float
+
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
   createdAt  DateTime @default(now())
 }
 
@@ -186,6 +230,10 @@ model Discount {
   booking    Booking  @relation(fields: [bookingId], references: [id])
   reason     String   
   amount     Float  
+
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
   createdAt  DateTime @default(now())
 }
 
@@ -196,14 +244,20 @@ model Payment {
   amount       Float
   paymentType  PaymentType
   paidAt       DateTime
+
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
 }
 
 enum Role {
-  USER
-  ADMIN
+  OWNER  // dono da organização, criado junto com a organização
+  ADMIN  // administrador adicional
+  USER   // usuário padrão
 }
+
 
 enum BookingStatus {
   PENDING       // Reserva criada, aguardando pagamento

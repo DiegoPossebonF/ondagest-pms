@@ -16,6 +16,7 @@ declare module 'next-auth' {
       name: string
       email: string
       image?: string
+      organizationId?: string
     }
   }
 
@@ -25,6 +26,7 @@ declare module 'next-auth' {
     name: string
     email: string
     image?: string
+    organizationId?: string
   }
 }
 
@@ -35,5 +37,6 @@ declare module 'next-auth/jwt' {
     name: string
     email: string
     image?: string
+    organizationId?: string
   }
 }

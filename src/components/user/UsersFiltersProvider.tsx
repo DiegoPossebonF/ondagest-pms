@@ -99,10 +99,10 @@ export function UsersFiltersProvider({
           filters,
         })
 
-        if (res.error || !res.data) throw new Error(res.error)
+        if (res.error) throw new Error(res.error)
 
-        setUsers(res.data?.users)
-        setTotalPages(res.data?.totalPages)
+        setUsers(res.data?.users || [])
+        setTotalPages(res.data?.totalPages || 1)
         setError(null)
       })
     } catch (error) {

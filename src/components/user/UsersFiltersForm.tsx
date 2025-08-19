@@ -1,5 +1,6 @@
 'use client'
 import { Input } from '@/components/ui/input'
+import { ROLE_LABELS } from '@/lib/utils'
 import { Role } from '@prisma/client'
 import { ChevronsUpDown } from 'lucide-react'
 import { Button } from '../ui/button'
@@ -78,7 +79,7 @@ export function UsersFiltersForm({
                     htmlFor={`status-${key}`}
                     className="text-sm leading-none peer-disabled:cursor-not-allowed"
                   >
-                    {label === 'ADMIN' ? 'Administrador' : 'Usuário'}
+                    {ROLE_LABELS[label]}
                   </label>
                 </div>
               ))}

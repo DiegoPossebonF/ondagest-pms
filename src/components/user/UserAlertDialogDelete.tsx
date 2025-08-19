@@ -1,6 +1,7 @@
 'use client'
 import { deleteUser } from '@/app/actions/user/deleteUser'
 import { Button } from '@/components/ui/button'
+import { ROLE_LABELS } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
@@ -45,11 +46,11 @@ export function UserAlertDialogDelete({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            Excluir {role === 'ADMIN' ? 'administrador' : 'usuário'}
+            Excluir {ROLE_LABELS[role as keyof typeof ROLE_LABELS]}
           </AlertDialogTitle>
           <AlertDialogDescription>
             Tem certeza que deseja excluir o{' '}
-            {role === 'ADMIN' ? 'administrador' : 'usuário'}{' '}
+            {ROLE_LABELS[role as keyof typeof ROLE_LABELS]}
             <strong>{name}</strong>?
           </AlertDialogDescription>
         </AlertDialogHeader>

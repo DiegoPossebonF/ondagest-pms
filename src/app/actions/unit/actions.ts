@@ -1,14 +1,20 @@
 'use server'
 
-import db from '@/lib/db'
-import { updateBookingStatusIfNeeded } from '@/lib/db/actions/updateBookingStatusIfNeeded'
 import {
   activeBookingStatuses,
   dashboardBookingStatuses,
 } from '@/lib/db/scopes'
 import dayjs from 'dayjs'
+import { updateBookingStatusIfNeeded } from '../booking/updateBookingStatusIfNeeded'
+import dbWithTenant from '../utils/dbWithTenant'
 
 export async function getUnits() {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   try {
     const units = await db.unit.findMany({
       include: {
@@ -53,6 +59,12 @@ export async function getUnits() {
 }
 
 export async function getUnitById(id: string) {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   try {
     const unit = await db.unit.findUnique({
       where: { id },
@@ -100,6 +112,12 @@ export async function freeUnitsPerPeriod(
   period: { from: Date; to: Date },
   ignoreBookingId?: number
 ) {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   try {
     // 🧼 Remove hora para evitar conflitos por diferença de time
     const from = dayjs(period.from).startOf('day').toDate()
@@ -144,6 +162,12 @@ export async function freeUnitsPerPeriod(
 }
 
 export async function getUnitsWithUpdatedBookings() {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   try {
     const units = await db.unit.findMany({
       include: {
@@ -205,6 +229,12 @@ export async function getUnitsWithUpdatedBookings() {
 }
 
 export async function getUnitsUpdatedBookingsByDate(currentDate: Date) {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   try {
     const startDate = dayjs(currentDate).startOf('day').toDate()
     const endDate = dayjs(currentDate).endOf('day').toDate()

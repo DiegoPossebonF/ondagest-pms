@@ -1,9 +1,8 @@
 'use server'
-
-import db from '@/lib/db'
 import { PAYMENT_TYPE_LABELS } from '@/lib/utils'
 import dayjs from 'dayjs'
 import 'dayjs/locale/pt-br'
+import dbWithTenant from '../utils/dbWithTenant'
 
 type SortField = 'paidAt' | 'amount' | 'guestName'
 type SortDirection = 'asc' | 'desc'
@@ -25,6 +24,12 @@ export async function getPaymentsList({
   sortField = 'paidAt',
   sortDirection = 'desc',
 }: GetPaymentsListParams) {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   const skip = (page - 1) * limit
 
   const orderBy =

@@ -2,9 +2,11 @@
 import db from '@/lib/db'
 import type { Organization } from '@prisma/client'
 
-export async function getOrganization() {
+export async function getOrganizationById(organizationId: string) {
   try {
-    const organization: Organization | null = await db.organization.findFirst()
+    const organization: Organization | null = await db.organization.findUnique({
+      where: { id: organizationId },
+    })
 
     if (!organization)
       return {
@@ -14,6 +16,7 @@ export async function getOrganization() {
 
     return {
       data: organization,
+      error: null,
     }
   } catch (error) {
     console.error('Erro ao buscar os dados da organização', error)

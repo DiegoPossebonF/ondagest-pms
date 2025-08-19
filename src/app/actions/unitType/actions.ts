@@ -1,13 +1,18 @@
 'use server'
-
-import db from '@/lib/db'
 import type { Prisma } from '@prisma/client'
+import dbWithTenant from '../utils/dbWithTenant'
 
 type UnitTypeWithUnitsAndRates = Prisma.UnitTypeGetPayload<{
   include: { units: true; rates: true }
 }>
 
 export async function getUnitTypes() {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   try {
     const unitTypes: UnitTypeWithUnitsAndRates[] = await db.unitType.findMany({
       orderBy: { name: 'asc' },

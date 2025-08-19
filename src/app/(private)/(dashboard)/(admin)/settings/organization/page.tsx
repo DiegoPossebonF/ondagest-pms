@@ -1,12 +1,14 @@
-import { getOrganization } from '@/app/actions/organization/actions'
+import { getUserAndOrg } from '@/app/actions/utils/get-user-and-org'
 import { OrganizationForm } from '@/components/organization/OrganizationForm'
 
 export default async function OrganizationPage() {
-  const res = await getOrganization()
+  const user = await getUserAndOrg()
+  const organization = user?.organization
 
-  if (res.error || !res.data) {
-    throw new Error(res.error)
-  }
+  if (!organization)
+    throw new Error(
+      'Organização não localizada. Tente novamente mais tarde ou contate o suporte.'
+    )
 
   return (
     <>
@@ -17,7 +19,7 @@ export default async function OrganizationPage() {
         </p>
       </div>
       <div className="flex flex-col p-6 items-center justify-center w-full">
-        <OrganizationForm organization={res.data} />
+        <OrganizationForm organization={organization} />
       </div>
     </>
   )

@@ -22,6 +22,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
+import { ROLE_LABELS } from '@/lib/utils'
 import type { User } from '@prisma/client'
 
 type UserSession = Omit<User, 'createdAt' | 'updatedAt' | 'password'>
@@ -79,7 +80,7 @@ export function NavUser({ user }: { user?: UserSession }) {
               <span
                 className={`font-medium truncate text-xs ${user?.role === 'ADMIN' ? 'text-sidebar-primary' : 'text-sidebar-accent'}`}
               >
-                {user?.role === 'ADMIN' ? 'Administrador' : 'Usuário'}
+                {ROLE_LABELS[user?.role || 'USER']}
               </span>
               <span className="text-muted-foreground truncate text-xs">
                 {user?.email}

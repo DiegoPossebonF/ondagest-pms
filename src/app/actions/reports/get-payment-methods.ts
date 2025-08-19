@@ -1,8 +1,7 @@
 // /app/actions/reports/get-payment-methods.ts
 'use server'
-
-import db from '@/lib/db'
 import { PAYMENT_TYPE_LABELS } from '@/lib/utils'
+import dbWithTenant from '../utils/dbWithTenant'
 
 type Params = {
   from: Date
@@ -13,6 +12,12 @@ export async function getPaymentMethods({
   from,
   to,
 }: Params): Promise<{ method: string; total: number }[]> {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   const payments = await db.payment.findMany({
     where: {
       paidAt: {

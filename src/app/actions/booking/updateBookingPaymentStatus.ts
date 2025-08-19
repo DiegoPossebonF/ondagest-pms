@@ -1,10 +1,16 @@
 'use server'
-import db from '@/lib/db'
+import dbWithTenant from '../utils/dbWithTenant'
 
 // 🔄 Atualiza o status da reserva com base nos pagamentos realizados
 export async function updateBookingPaymentStatus(
   bookingId: number
 ): Promise<void> {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   const [payments, booking] = await Promise.all([
     db.payment.findMany({
       where: { bookingId },

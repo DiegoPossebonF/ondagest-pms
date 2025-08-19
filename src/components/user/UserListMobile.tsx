@@ -1,3 +1,4 @@
+import { ROLE_LABELS } from '@/lib/utils'
 import dayjs from 'dayjs'
 import { useRouter } from 'next/navigation'
 import {
@@ -67,11 +68,9 @@ export function UserListMobile({
                             {user.email || 'N/A'}
                           </p>
                           <p className="text-right border-b p-2">
-                            {user.role
-                              ? user.role === 'ADMIN'
-                                ? 'Administrador'
-                                : 'Usuário'
-                              : 'N/A'}
+                            {ROLE_LABELS[
+                              user.role as keyof typeof ROLE_LABELS
+                            ] || 'N/A'}
                           </p>
                           <div className="flex flex-row overflow-hidden">
                             <Button

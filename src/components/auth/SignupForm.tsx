@@ -1,6 +1,6 @@
 'use client'
 
-import { signupAction } from '@/app/(public)/(auth)/actions'
+import { signup } from '@/app/actions/auth/signup'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -38,7 +38,7 @@ export function SignupForm({ setSuccess }: SignupFormProps) {
 
   async function onSubmit(data: SignupFormData) {
     startTransition(() => {
-      signupAction(data).then(data => {
+      signup(data).then(data => {
         if (data.error) {
           setServerError(data.error)
           return

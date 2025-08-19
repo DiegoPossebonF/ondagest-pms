@@ -1,9 +1,15 @@
 'use server'
 
-import db from '@/lib/db'
 import { revalidatePath } from 'next/cache'
+import dbWithTenant from '../utils/dbWithTenant'
 
 export async function deleteUnit(unitId: string) {
+  const { db: dbData, error } = await dbWithTenant()
+  if (error) throw new Error(error)
+  if (!dbData) throw new Error('Banco de dados não disponível')
+
+  const db = dbData
+
   // Verificar se a acomodação existe
   const unit = await db.unit.findUnique({
     where: { id: unitId },
