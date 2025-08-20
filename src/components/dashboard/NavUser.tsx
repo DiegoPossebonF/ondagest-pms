@@ -32,8 +32,6 @@ export function NavUser({ user }: { user?: UserSession }) {
 
   const avatar = user?.image || ''
 
-  console.log('AVATAR', avatar)
-
   return (
     <SidebarMenu>
       <SidebarMenuItem>

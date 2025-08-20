@@ -2,7 +2,13 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { auth } from './lib/auth'
 
 // rotas livres
-const publicRoutes = ['/signin', '/signup', '/verify-email']
+const publicRoutes = [
+  '/signin',
+  '/signup',
+  '/verify-email',
+  '/forgot-password',
+  '/reset-password',
+]
 
 // rotas só para autenticados
 const privateRoutes = ['/']

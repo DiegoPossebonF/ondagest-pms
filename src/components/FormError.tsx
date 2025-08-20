@@ -15,7 +15,7 @@ export function FormError({ errors, serverError }: FormErrorProps) {
   }
 
   return (
-    <Alert variant="destructive" className="mb-6 bg-red-100">
+    <Alert variant="destructive" className="mb-4 bg-red-100">
       <AlertCircle className="h-4 w-4" />
       <AlertTitle>
         {hasErrors ? 'Formulário incompleto!' : 'Ocorreu um erro'}

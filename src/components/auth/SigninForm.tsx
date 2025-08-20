@@ -118,19 +118,32 @@ export function SigninForm() {
 
         <SignInGoogleButton />
 
-        <Button
-          type="button"
-          className="w-full"
-          variant={'outline'}
-          size={'sm'}
-          onClick={() => {
-            setIsLoading(true)
-            router.push('/signup')
-          }}
-          disabled={isLoading}
-        >
-          {isLoading ? <LoadingSpinner size="sm" /> : 'Criar conta'}
-        </Button>
+        <div className="flex items-center justify-between">
+          <Button
+            type="button"
+            variant={'link'}
+            size={'sm'}
+            onClick={() => {
+              setIsLoading(true)
+              router.push('/signup')
+            }}
+            disabled={isLoading}
+          >
+            {isLoading ? <LoadingSpinner size="sm" /> : 'Criar conta'}
+          </Button>
+          <Button
+            type="button"
+            variant={'link'}
+            size={'sm'}
+            onClick={() => {
+              setIsLoading(true)
+              router.push('/forgot-password')
+            }}
+            disabled={isLoading}
+          >
+            {isLoading ? <LoadingSpinner size="sm" /> : 'Esqueceu sua senha?'}
+          </Button>
+        </div>
       </form>
     </Form>
   )

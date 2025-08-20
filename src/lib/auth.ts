@@ -93,28 +93,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               data: { image: profile.picture },
             })
           }
-          // Verifica se já existe conta do provider
-          const existingAccount = await db.account.findFirst({
-            where: {
-              userId: existingUser.id,
-              provider: account.provider,
-            },
-          })
-
-          if (!existingAccount) {
-            // Cria automaticamente a conta OAuth vinculada
-            await db.account.create({
-              data: {
-                userId: existingUser.id,
-                provider: account.provider,
-                providerAccountId: account.providerAccountId,
-                type: account.type,
-                access_token: account.access_token,
-                refresh_token: account.refresh_token,
-                expires_at: account.expires_at,
-              },
-            })
-          }
         }
       }
 

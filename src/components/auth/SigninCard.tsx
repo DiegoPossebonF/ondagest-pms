@@ -1,4 +1,6 @@
 'use client'
+import { IconMailCheck } from '@tabler/icons-react'
+import { usePathname, useSearchParams } from 'next/navigation'
 import Logo from '../../../public/images/LogoOndaGestName.png'
 import ImagemLogin from '../../../public/images/wallpapper-login.webp'
 import {
@@ -10,39 +12,73 @@ import {
 } from '../ui/card'
 
 interface SigninCardProps {
-  verified?: boolean
   children: React.ReactNode
 }
 
-export function SigninCard({ verified, children }: SigninCardProps) {
-  console.log('verified', verified)
+export function SigninCard({ children }: SigninCardProps) {
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const verified = searchParams.get('verified')
+
   return (
-    <Card className="overflow-hidden max-w-4xl">
+    <Card className="overflow-hidden max-w-4xl shadow-xl">
       <CardContent className="grid p-0 md:grid-cols-2">
         {/* Lado Esquerdo - Formulário */}
         <div className="flex flex-col justify-center p-4">
-          <CardHeader>
-            <div className="flex justify-center mb-4">
+          <CardHeader className="space-y-0">
+            <div className="flex justify-center">
               <img src={Logo.src} alt="Logo" className="h-32 w-auto" />
             </div>
-
-            <CardTitle className="text-4xl text-gray-700 text-center">
-              Seja Bem-vindo!
-            </CardTitle>
-            <CardDescription className="text-lg text-center">
-              Entre com seu e-mail e senha para acessar sua conta
-            </CardDescription>
-            {verified && (
-              <CardDescription
-                className={`text-xs text-center border p-2 rounded-lg ${verified && 'text-green-700 border-green-700 bg-green-100'}`}
-              >
-                Seu email foi verificado com sucesso! Agora você já pode fazer o
-                primeiro acesso ao OndaGest.
-              </CardDescription>
+            {pathname === '/signin' && (
+              <>
+                <CardTitle className="text-2xl text-gray-700 text-center">
+                  Seja Bem-vindo!
+                </CardTitle>
+                <CardDescription className="text-base text-center">
+                  Entre com seu e-mail e senha para acessar sua conta
+                </CardDescription>
+              </>
+            )}
+            {pathname === '/forgot-password' && (
+              <>
+                <CardTitle className="text-2xl text-gray-700 text-center">
+                  Esqueceu sua senha?
+                </CardTitle>
+                <CardDescription className="text-base text-center">
+                  Informe seu e-mail para redefinir sua senha
+                </CardDescription>
+              </>
+            )}
+            {pathname === '/reset-password' && (
+              <>
+                <CardTitle className="text-2xl text-gray-700 text-center">
+                  Redefinir senha
+                </CardTitle>
+                <CardDescription className="text-base text-center">
+                  Crie uma nova senha e confirme-a para redefinir sua senha
+                </CardDescription>
+              </>
             )}
           </CardHeader>
 
-          <CardContent>{children}</CardContent>
+          <CardContent className="flex flex-col gap-4">
+            {verified && pathname !== '/forgot-password' && (
+              <Card>
+                <CardHeader className="flex flex-row p-2 space-y-0">
+                  <div className="min-w-10 flex flex-row items-center justify-center ">
+                    <IconMailCheck className="text-green-500" />
+                  </div>
+                  <CardTitle className="flex flex-row text-sm text-muted-foreground  items-center justify-center">
+                    Conta verificada com sucesso!
+                  </CardTitle>
+                  <CardDescription className="sr-only">
+                    Conta verificada com sucesso!
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            )}
+            {children}
+          </CardContent>
         </div>
 
         {/* Lado Direito - Imagem */}
