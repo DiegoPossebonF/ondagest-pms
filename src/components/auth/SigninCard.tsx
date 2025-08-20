@@ -15,7 +15,7 @@ interface SigninCardProps {
   children: React.ReactNode
 }
 
-export function SigninCard({ children }: SigninCardProps) {
+export default function SigninCard({ children }: SigninCardProps) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const verified = searchParams.get('verified')
