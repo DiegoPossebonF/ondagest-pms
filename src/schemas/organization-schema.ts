@@ -44,14 +44,14 @@ export const organizationSchema = z.object({
     .optional()
     .or(z.literal('')),
   rules: z.string().optional().or(z.literal('')),
-  invoiceMessageVoucher: z
+  sharingMessageVoucher: z
     .string()
     .min(10, 'Mensagem muito curta')
     .refine(value => value.includes('[LINK]'), {
       message:
         'Tag [LINK] não informada na mensagem do voucher. Ex: 📎Acesse aqui: [LINK]',
     }),
-  invoiceMessageReceipt: z
+  sharingMessageReceipt: z
     .string()
     .min(10, 'Mensagem muito curta')
     .refine(value => value.includes('[LINK]'), {

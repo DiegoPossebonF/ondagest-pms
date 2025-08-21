@@ -1,5 +1,6 @@
 'use server'
 import { getUnitsUpdatedBookingsByDate } from '@/app/actions/unit/actions'
+import { getUserAndOrg } from '@/app/actions/utils/get-user-and-org'
 import { StatusLegend } from '@/components/StatusLegend'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -7,10 +8,17 @@ import UnitCard from '@/components/unit/UnitCard'
 import dayjs from 'dayjs'
 import isBetween from 'dayjs/plugin/isBetween'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 
 dayjs.extend(isBetween)
 
 export default async function Dashboard() {
+  const user = await getUserAndOrg()
+
+  if (!user?.organization?.isSetupCompleted) {
+    redirect('/settings/organization')
+  }
+
   const res = await getUnitsUpdatedBookingsByDate(dayjs().toDate())
 
   if (res.error || !res.data) {

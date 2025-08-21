@@ -28,13 +28,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'EmailVerifiedError' }, { status: 401 })
     }
 
-    return NextResponse.json({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      image: user.image,
-      role: user.role,
-    })
+    return NextResponse.json({ user }, { status: 200 })
   } catch (error) {
     console.error(error)
     return NextResponse.json({ error: 'Erro interno' }, { status: 500 })

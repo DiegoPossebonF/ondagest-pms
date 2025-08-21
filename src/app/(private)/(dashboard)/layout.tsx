@@ -15,10 +15,6 @@ export default async function DashboardLayout({
 
   if (!user) redirect('/signin')
 
-  if (!user.organization) {
-    redirect('/organization/new')
-  }
-
   return (
     <AppProvider value={{ user, organization: user.organization }}>
       <AppSidebar>{children}</AppSidebar>

@@ -74,24 +74,26 @@ model VerificationToken {
 }
 
 model Organization {
-  id              String   @id @default(uuid())
-  name            String
-  logoUrl         String?
-  email           String
-  phone           String?
-  website         String?
-  facebook        String?
-  instagram       String?
-  address         String?
-  city            String?
-  state           String?
-  zipCode         String?
-  country         String?
-  cpf             String?
-  cnpj            String?
-  rules           String?
-  invoiceMessageVoucher String?  // Mensagem para o voucher
-  invoiceMessageReceipt String?  // Mensagem para o recibo
+  id                    String   @id @default(uuid())
+  name                  String
+  logoUrl               String?
+  email                 String
+  phone                 String?
+  website               String?
+  facebook              String?
+  instagram             String?
+  address               String?
+  city                  String?
+  state                 String?
+  zipCode               String?
+  country               String?
+  cpf                   String?
+  cnpj                  String?
+  rules                 String?
+  sharingMessageVoucher String?  // Mensagem para o voucher
+  sharingMessageReceipt String?  // Mensagem para o recibo
+
+  isSetupCompleted     Boolean  @default(false)
 
   users     User[]
   guests    Guest[]

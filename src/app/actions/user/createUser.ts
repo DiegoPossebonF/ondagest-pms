@@ -61,7 +61,7 @@ export async function createUser(data: UserSchema) {
     const token = randomBytes(32).toString('hex')
     const expires = addHours(new Date(), 2)
     // 4. Salva token no banco
-    await db.verificationToken.create({
+    await dbDefault.verificationToken.create({
       data: {
         identifier: email,
         token,

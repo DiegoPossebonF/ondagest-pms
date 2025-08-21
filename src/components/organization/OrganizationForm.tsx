@@ -65,41 +65,44 @@ export function OrganizationForm({
       cpf: organization?.cpf || '',
       cnpj: organization?.cnpj || '',
       rules: organization?.rules || '',
-      invoiceMessageVoucher: organization?.invoiceMessageVoucher || '',
-      invoiceMessageReceipt: organization?.invoiceMessageReceipt || '',
+      sharingMessageVoucher: organization?.sharingMessageVoucher || '',
+      sharingMessageReceipt: organization?.sharingMessageReceipt || '',
       isLegalEntity: !organization?.cpf,
     },
   })
 
   async function onSubmitHandle(values: OrganizationSchema) {
-    startTransition(() => {
+    startTransition(async () => {
       if (organization) {
-        updateOrganization(organization.id, values).then(data => {
-          if (data.error) {
-            setServerError(data.error)
-            return
-          }
-          if (data.success) {
-            toast('Sucesso', { description: data.success, icon: '✅' })
-            setServerError(null)
-            router.refresh()
-            closeDialog?.()
-          }
-        })
-      } else {
-        createOrganization(values).then(data => {
-          if (data.error) {
-            setServerError(data.error)
-            return
-          }
-          if (data.success) {
-            toast('Sucesso', { description: data.success, icon: '✅' })
-            setServerError(null)
-            router.refresh()
-            closeDialog?.()
+        const data = await updateOrganization(organization.id, values)
+        if (data.error) {
+          setServerError(data.error)
+          return
+        }
+        if (data.success) {
+          toast('Sucesso', { description: data.success, icon: '✅' })
+          setServerError(null)
+          closeDialog?.()
+          if (!organization.isSetupCompleted) {
             router.push('/')
+          } else {
+            router.refresh()
           }
-        })
+        }
+      } else {
+        const data = await createOrganization(values)
+
+        if (data.error) {
+          setServerError(data.error)
+          return
+        }
+
+        if (data.success) {
+          toast('Sucesso', { description: data.success, icon: '✅' })
+          setServerError(null)
+          closeDialog?.()
+          router.push('/')
+        }
       }
     })
   }
@@ -424,7 +427,7 @@ export function OrganizationForm({
             )}
           />
           <FormField
-            name="invoiceMessageVoucher"
+            name="sharingMessageVoucher"
             control={form.control}
             render={({ field }) => (
               <FormItem className="flex flex-col">
@@ -446,7 +449,7 @@ export function OrganizationForm({
             )}
           />
           <FormField
-            name="invoiceMessageReceipt"
+            name="sharingMessageReceipt"
             control={form.control}
             render={({ field }) => (
               <FormItem className="flex flex-col">

@@ -44,15 +44,17 @@ export const authConfig = {
           }
         )
 
-        if (!res.ok) {
-          const data = await res.json()
+        const data = await res.json()
 
+        if (!res.ok) {
           if (data.error === 'CredentialsSignin') return null
           if (data.error === 'EmailVerifiedError')
             throw new EmailVerifiedError()
         }
 
-        return await res.json()
+        console.log('data.user', data.user)
+
+        return data.user
       },
     }),
   ],

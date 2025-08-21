@@ -116,7 +116,7 @@ export default function VoucherViewer({
             onClick={async () => {
               const whatsappLink = await shareVoucher(
                 booking.publicId,
-                organization.invoiceMessageVoucher || '',
+                organization.sharingMessageVoucher || '',
                 booking.guest.phone || ''
               )
 

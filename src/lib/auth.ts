@@ -7,61 +7,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
     signIn: '/signin',
   },
-  events: {
-    async createUser({ user }) {
-      // Checa se o usuário já tem organizationId
-      const dbUser = await db.user.findUnique({
-        where: { id: user.id },
-      })
-
-      if (dbUser && !dbUser.organizationId) {
-        await db.user.update({
-          where: { id: user.id },
-          data: { role: 'OWNER' },
-        })
-      }
-    },
-  },
   callbacks: {
     jwt: async ({ token, user }) => {
-      const now = Date.now()
-
       if (user) {
         token.id = user.id
-        token.name = user.name
         token.email = user.email
+        token.name = user.name
         token.image = user.image
         token.role = user.role
-        token.organizationId = user.organizationId ?? null
-      }
-
-      if (
-        !token.lastCheck ||
-        now - (token.lastCheck as number) > 5 * 60 * 1000
-      ) {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/verify-user`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              id: token.id,
-            }),
-          }
-        )
-
-        const data = await res.json()
-
-        if (data.error) {
-          console.error('ERROR verify-user', data.error)
-          return null
-        }
-
-        if (data.user) {
-          token.role = data.user.role
-          token.organizationId = data.user.organizationId ?? null
-        }
-        token.lastCheck = now
+        token.organizationId = user.organizationId
       }
 
       return token
@@ -76,23 +30,44 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.role = token.role as string
         session.user.organizationId = token.organizationId as string
       }
+
       return session
     },
 
     async signIn({ account, profile }) {
       if (account?.provider === 'google' && profile?.email) {
         // Tenta encontrar usuário existente pelo e-mail
-        const existingUser = await db.user.findUnique({
+        let dbUser = await db.user.findUnique({
           where: { email: profile.email },
         })
 
-        if (existingUser) {
-          if (!existingUser?.image) {
+        if (dbUser) {
+          if (!dbUser?.image) {
             await db.user.update({
-              where: { id: existingUser.id },
+              where: { id: dbUser.id },
               data: { image: profile.picture },
             })
           }
+        } else {
+          // 1) Cria organização vazia
+          const org = await db.organization.create({
+            data: {
+              name: 'Nova Organização',
+              email: profile.email,
+              isSetupCompleted: false, // campo que controla o setup inicial
+            },
+          })
+
+          // 2) Cria usuário vinculado
+          dbUser = await db.user.create({
+            data: {
+              email: profile.email,
+              name: profile.name,
+              image: profile.picture,
+              role: 'OWNER',
+              organizationId: org.id,
+            },
+          })
         }
       }
 

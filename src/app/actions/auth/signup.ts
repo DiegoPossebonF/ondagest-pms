@@ -37,6 +37,15 @@ export async function signup(data: SignupFormData) {
       }
     }
 
+    // Cria organização
+
+    const organization = await db.organization.create({
+      data: {
+        name: 'Nova Empresa',
+        email,
+      },
+    })
+
     const hashedPassword = await hash(password, 10)
 
     const createdUser = await db.user.create({
@@ -46,6 +55,7 @@ export async function signup(data: SignupFormData) {
         password: hashedPassword,
         emailVerified: null,
         role: 'OWNER',
+        organizationId: organization.id,
       },
     })
 

@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import { SpeedInsights } from '@vercel/speed-insights/next'
-
 import { Toaster } from '@/components/ui/sonner'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 
 import dayjs from 'dayjs'
 import 'dayjs/locale/pt-br'

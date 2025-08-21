@@ -75,8 +75,9 @@ export async function updateOrganization(
         zipCode: organization.zipCode,
         country: organization.country,
         rules: organization.rules,
-        invoiceMessageVoucher: organization.invoiceMessageVoucher,
-        invoiceMessageReceipt: organization.invoiceMessageReceipt,
+        sharingMessageVoucher: organization.sharingMessageVoucher,
+        sharingMessageReceipt: organization.sharingMessageReceipt,
+        isSetupCompleted: true,
       },
     })
 

@@ -11,7 +11,6 @@ import { revalidatePath } from 'next/cache'
 
 export async function createOrganization(data: OrganizationSchema) {
   const session = await auth()
-  console.log(session)
 
   if (!session?.user) {
     return { error: 'Usuário não encontrado!' }
@@ -77,8 +76,8 @@ export async function createOrganization(data: OrganizationSchema) {
         zipCode: organization.zipCode,
         country: organization.country,
         rules: organization.rules,
-        invoiceMessageVoucher: organization.invoiceMessageVoucher,
-        invoiceMessageReceipt: organization.invoiceMessageReceipt,
+        sharingMessageVoucher: organization.sharingMessageVoucher,
+        sharingMessageReceipt: organization.sharingMessageReceipt,
       },
     })
 

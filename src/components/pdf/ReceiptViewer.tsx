@@ -120,7 +120,7 @@ export default function ReceiptViewer({
             onClick={async () => {
               const whatsappLink = await shareReceipt(
                 payment.id,
-                organization.invoiceMessageReceipt || '',
+                organization.sharingMessageReceipt || '',
                 booking.guest.phone || ''
               )
 
