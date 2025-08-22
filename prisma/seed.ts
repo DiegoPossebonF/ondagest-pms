@@ -8,7 +8,7 @@ async function main() {
   const admin = await db.user.create({
     data: {
       name: 'Admin',
-      email: 'admin@exemplo.com',
+      email: 'admin@ondagest.com',
       password: passwordHash,
       role: 'ADMIN',
       emailVerified: null,
@@ -29,8 +29,9 @@ async function main() {
       cpf: null,
       cnpj: '12.345.678/0001-99',
       logoUrl: '',
-      invoiceMessageVoucher: 'Agradecemos sua reserva!',
-      invoiceMessageReceipt: 'Obrigado por se hospedar conosco!',
+      sharingMessageVoucher: 'Agradecemos sua reserva!',
+      sharingMessageReceipt: 'Obrigado por se hospedar conosco!',
+      isSetupCompleted: false,
     },
   })
 

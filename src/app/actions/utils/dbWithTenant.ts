@@ -6,7 +6,6 @@ import db from '@/lib/db'
 export default async function dbWithTenant() {
   const session = await auth()
   if (!session?.user) return { db: null, error: 'Sessão inválida!' }
-  console.log(session.user)
   if (!session.user.organizationId)
     return { db: null, error: 'Usuário sem organização!' }
 
