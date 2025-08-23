@@ -7,10 +7,10 @@ export const signupSchema = z
     password: z
       .string()
       .min(8, 'Senha deve ter ao menos 8 caracteres')
-      .regex(/[A-Z]/, 'Deve conter ao menos uma letra maiúscula')
-      .regex(/[a-z]/, 'Deve conter ao menos uma letra minúscula')
-      .regex(/[0-9]/, 'Deve conter ao menos um número')
-      .regex(/[\W_]/, 'Deve conter ao menos um caractere especial'),
+      .regex(/[A-Z]/, 'Senha deve conter ao menos uma letra maiúscula')
+      .regex(/[a-z]/, 'Senha deve conter ao menos uma letra minúscula')
+      .regex(/[0-9]/, 'Senha deve conter ao menos um número')
+      .regex(/[\W_]/, 'Senha deve conter ao menos um caractere especial'),
     confirmPassword: z.string().min(1, 'Confirmação de senha é obrigatório'),
   })
   .refine(data => data.password === data.confirmPassword, {

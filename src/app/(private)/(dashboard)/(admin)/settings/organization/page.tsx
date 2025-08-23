@@ -17,6 +17,15 @@ export default async function OrganizationPage() {
         <p className="text-muted-foreground">
           Aqui voce pode gerenciar os dados da sua empresa.
         </p>
+        {!organization.isSetupCompleted && (
+          <div className="mt-4 p-2 rounded-md bg-green-100 border border-green-400 text-center shadow-md">
+            <p className="text-muted-foreground">
+              Para ter acesso a todas as funcionalidades da plataforma, é
+              precisa cadastrar uma empresa.
+            </p>
+            <p className="font-bold">Preencha os dados abaixo para começar.</p>
+          </div>
+        )}
       </div>
       <div className="flex flex-col p-6 items-center justify-center w-full">
         <OrganizationForm organization={organization} />
