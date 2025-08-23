@@ -13,7 +13,7 @@ export async function sendVerificationEmail(
   const verifyUrl = `${process.env.NEXT_PUBLIC_APP_URL}/verify-email?token=${token}&email=${email}`
 
   const { data, error } = await resend.emails.send({
-    from: 'Ondagest PMS <onboarding@resend.dev>',
+    from: `Ondagest PMS <${process.env.RESEND_FROM}>`,
     to: email,
     subject: 'Confirme seu e-mail',
     html: `
