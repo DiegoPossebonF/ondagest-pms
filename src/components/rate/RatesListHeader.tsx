@@ -1,5 +1,5 @@
 'use client'
-import { IconUserPlus } from '@tabler/icons-react'
+import { IconCurrencyReal } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
 import { ButtonTooltip } from '../ButtonTooltip'
 import RatesFilters from './RatesFilters'
@@ -16,7 +16,7 @@ export default function RatesListHeader({
   return (
     <div className="flex flex-row justify-between gap-2">
       <ButtonTooltip
-        icon={<IconUserPlus className="w-4 h-4" />}
+        icon={<IconCurrencyReal className="w-4 h-4" />}
         tooltipText="Nova tarifa"
         tooltipSide="top"
         className="self-start"

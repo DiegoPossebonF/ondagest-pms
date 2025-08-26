@@ -251,8 +251,8 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
             })
             form.reset()
             setServerError(null)
-            router.push('/bookings')
             refetch()
+            router.push('/bookings')
           }
         })
       })

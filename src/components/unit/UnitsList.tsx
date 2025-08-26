@@ -9,7 +9,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { useIsMobile } from '@/hooks/use-mobile'
-import { IconHome } from '@tabler/icons-react'
+import { IconHomePlus } from '@tabler/icons-react'
 import dayjs from 'dayjs'
 import { ArrowDown, ArrowUp } from 'lucide-react'
 import { useEffect, useState } from 'react'
@@ -84,7 +84,7 @@ export function UnitsList({
       <div className="space-y-4 mb-4">
         <div className="flex flex-row justify-between gap-2 px-6">
           <ButtonTooltip
-            icon={<IconHome className="w-4 h-4" />}
+            icon={<IconHomePlus className="w-4 h-4" />}
             tooltipText="Nova acomodação"
             tooltipSide="top"
             className="self-start"
@@ -128,7 +128,7 @@ export function UnitsList({
     <div className="p-6 space-y-4">
       <div className="flex flex-row justify-between gap-2">
         <ButtonTooltip
-          icon={<IconHome className="w-4 h-4" />}
+          icon={<IconHomePlus className="w-4 h-4" />}
           tooltipText="Nova acomodação"
           tooltipSide="top"
           className="self-start"

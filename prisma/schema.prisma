@@ -125,6 +125,7 @@ model Guest {
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
 
+  @@unique([cpf, organizationId])
   @@unique([email, organizationId])
 }
 
@@ -210,7 +211,7 @@ model Rate {
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
 
-  @@unique([name, organizationId])
+  @@unique([name, numberOfPeople, typeId, organizationId])
 }
 
 model Service {

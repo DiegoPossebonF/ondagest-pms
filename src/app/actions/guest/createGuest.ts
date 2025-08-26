@@ -31,6 +31,14 @@ export async function createGuest(data: GuestSchema) {
       return { error: 'Email já cadastrado' }
     }
 
+    const existingCpf = await db.guest.findFirst({
+      where: { cpf },
+    })
+
+    if (existingCpf) {
+      return { error: 'CPF já cadastrado' }
+    }
+
     await db.guest.create({
       data: {
         name: name,

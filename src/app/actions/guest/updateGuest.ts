@@ -24,6 +24,40 @@ export async function updateGuest(id: string, data: GuestSchema) {
   const { name, email, phone, cpf, city, carPlate } = parsed.data
 
   try {
+    // Verifica se o hóspede existe
+    const guest = await db.guest.findUnique({
+      where: { id },
+    })
+
+    if (!guest) {
+      return {
+        error: 'Hóspede não encontrado!',
+      }
+    }
+
+    // Verifica se o email ja foi cadastrado, exceto para o hóspede atual
+    const existingEmail = await db.guest.findFirst({
+      where: { email, NOT: { id } },
+    })
+
+    if (existingEmail) {
+      return {
+        error: 'Email já cadastrado',
+      }
+    }
+
+    // Verifica se o CPF ja foi cadastrado, exceto para o hóspede atual
+    const existingCpf = await db.guest.findFirst({
+      where: { cpf, NOT: { id } },
+    })
+
+    if (existingCpf) {
+      return {
+        error: 'CPF já cadastrado',
+      }
+    }
+
+    // Atualiza o hóspede
     await db.guest.update({
       where: { id },
       data: {

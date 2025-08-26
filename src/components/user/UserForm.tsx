@@ -189,11 +189,37 @@ export default function UserForm({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {Object.values(Role).map(role => (
-                      <SelectItem key={role} value={role} className={'text-xs'}>
-                        {ROLE_LABELS[role]}
-                      </SelectItem>
-                    ))}
+                    {Object.values(Role).map(role => {
+                      // se selectedUser.role for OWNER, só dar opção OWNER para selecionar. Se não for OWNER, dar opções de USER e ADMIN.
+                      if (selectedUser?.role === 'OWNER') {
+                        if (role === 'OWNER') {
+                          return (
+                            <SelectItem
+                              key={role}
+                              value={role}
+                              className={'text-xs'}
+                            >
+                              {ROLE_LABELS[role]}
+                            </SelectItem>
+                          )
+                        }
+                        return null
+                      }
+
+                      if (role === 'OWNER') {
+                        return null
+                      }
+
+                      return (
+                        <SelectItem
+                          key={role}
+                          value={role}
+                          className={'text-xs'}
+                        >
+                          {ROLE_LABELS[role]}
+                        </SelectItem>
+                      )
+                    })}
                   </SelectContent>
                 </Select>
                 <FormDescription className="sr-only">

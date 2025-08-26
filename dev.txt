@@ -1,4 +1,13 @@
-correções
+CORREÇÕES A FAZER
+
+- Ao criar uma reserva, o botão de criar não sai do LoadingSpinner
+
+TESTAR
 
 - Guest cpf deve ser unique por organization
 - Organization CNPJ/CPF dever ser unique na aplicação geral
+- Corrigir model Rate, pois pode ter mais de Rate com o mesmo nome, mas com quantidade de pessoas diferentes. @@unique([name, organizationId])
+
+- Cadastrar acomodações - alterar icone para HomePlus
+- Cadastrar usuários - remover alteração de função para proprietario
+- Cadastrar usuários - Não possibilitar criação de usuário proprietario

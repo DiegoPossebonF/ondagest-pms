@@ -21,22 +21,20 @@ export async function updateRate(rateId: string, data: RateSchema) {
 
   const { name, typeId, value, numberOfPeople } = parsed.data
 
-  // Verifica se já tem uma tarifa com o mesmo nome e quantidade de pessoas, mas ignora a tarifa atual
+  // Verifica se já existe rate com os mesmos critérios, mas ignora a tarifa atual
   const existingRate = await db.rate.findFirst({
     where: {
-      AND: [
-        {
-          name,
-          numberOfPeople,
-        },
-        { name, typeId },
-      ],
+      name,
+      numberOfPeople,
+      typeId,
       NOT: { id: rateId },
     },
   })
 
   if (existingRate) {
-    return { error: 'Tarifa já cadastrada com a mesma quantidade de pessoas!' }
+    return {
+      error: `Já existe uma tarifa "${name}" para ${numberOfPeople} pessoas nesse tipo de acomodação.`,
+    }
   }
 
   try {
