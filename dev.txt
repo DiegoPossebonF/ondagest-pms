@@ -1,6 +1,8 @@
 CORREÇÕES A FAZER
 
 - Ao criar uma reserva, o botão de criar não sai do LoadingSpinner
+- Melhorar carregamento Combox Guest ao criar reserva
+
 
 TESTAR
 
@@ -11,3 +13,5 @@ TESTAR
 - Cadastrar acomodações - alterar icone para HomePlus
 - Cadastrar usuários - remover alteração de função para proprietario
 - Cadastrar usuários - Não possibilitar criação de usuário proprietario
+
+- Erro ao criar reserva com data inicial na mesma data da saida de outra reserva.

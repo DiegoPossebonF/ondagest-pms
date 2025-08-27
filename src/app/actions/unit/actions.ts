@@ -119,7 +119,6 @@ export async function freeUnitsPerPeriod(
   const db = dbData
 
   try {
-    // 🧼 Remove hora para evitar conflitos por diferença de time
     const from = dayjs(period.from).startOf('day').toDate()
     const to = dayjs(period.to).startOf('day').toDate()
 
@@ -129,22 +128,12 @@ export async function freeUnitsPerPeriod(
           bookings: {
             some: {
               ...activeBookingStatuses,
+              id: ignoreBookingId ? { not: ignoreBookingId } : undefined,
               AND: [
                 {
-                  // Permite reservas cuja entrada é exatamente no último dia do período informado
-                  NOT: {
-                    startDate: to,
-                  },
+                  startDate: { lt: to }, // começa antes do fim
+                  endDate: { gt: from }, // termina depois do início
                 },
-                {
-                  OR: [
-                    {
-                      startDate: { lt: to },
-                      endDate: { gt: from },
-                    },
-                  ],
-                },
-                ignoreBookingId ? { id: { not: ignoreBookingId } } : {},
               ],
             },
           },

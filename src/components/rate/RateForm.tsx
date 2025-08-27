@@ -20,6 +20,7 @@ import { CurrencyInput } from '../CurrencyInput'
 import { FormError } from '../FormError'
 import { LoadingSpinner } from '../LoadingSpinner'
 import { UnitTypesCombobox } from '../unit-type/UnitTypesCombobox'
+import { useRatesFilters } from './RatesFiltersProvider'
 import { ToggleActiveRateButton } from './ToggleActiveRateButton'
 
 interface RateFormProps {
@@ -35,6 +36,8 @@ export default function RateForm({
 }: RateFormProps) {
   const [serverError, setServerError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
+
+  const { refetch } = useRatesFilters()
 
   const form = useForm<RateSchema>({
     resolver: zodResolver(rateSchema),
@@ -64,6 +67,7 @@ export default function RateForm({
             setServerError(null)
             setSelectedRate(null)
             setOpenNewRate(false)
+            refetch()
           }
         })
       })
@@ -84,6 +88,7 @@ export default function RateForm({
             setServerError(null)
             setSelectedRate(null)
             setOpenNewRate(false)
+            refetch()
           }
         })
       })
@@ -167,10 +172,12 @@ export default function RateForm({
             <Button type="submit" className="w-full" size={'sm'}>
               {isPending ? <LoadingSpinner /> : 'Salvar'}
             </Button>
-            <ToggleActiveRateButton
-              rateId={selectedRate?.id ?? ''}
-              isActive={selectedRate?.active ?? false}
-            />
+            {selectedRate && (
+              <ToggleActiveRateButton
+                rateId={selectedRate?.id ?? ''}
+                isActive={selectedRate?.active ?? false}
+              />
+            )}
           </div>
         </form>
       </Form>
