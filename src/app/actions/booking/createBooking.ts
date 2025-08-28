@@ -1,5 +1,4 @@
 'use server'
-import dayjs from '@/lib/dayjs'
 import { activeBookingStatuses } from '@/lib/db/scopes'
 import { type BookingSchema, bookingSchema } from '@/schemas/booking-schema'
 import { BookingStatus, PricingMode } from '@prisma/client'
@@ -35,13 +34,13 @@ export async function createBooking(data: BookingSchema) {
       daily,
     } = parsed.data
 
-    const from = dayjs(period.from).startOf('day').toDate()
-    const to = dayjs(period.to).startOf('day').toDate()
-
     const existingBooking = await db.booking.findFirst({
       where: {
         unitId,
-        AND: [{ startDate: { lt: to } }, { endDate: { gt: from } }],
+        AND: [
+          { startDate: { lt: period.to } },
+          { endDate: { gt: period.from } },
+        ],
         ...activeBookingStatuses,
       },
     })
