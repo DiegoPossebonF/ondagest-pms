@@ -60,7 +60,7 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
   const searchParams = useSearchParams()
   const unitIdParam = searchParams.get('unitId')
   const startDateParam = searchParams.get('startDate')
-    ? dayjs(searchParams.get('startDate')).utc().toDate()
+    ? dayjs(searchParams.get('startDate')).toDate()
     : null
 
   const router = useRouter()
@@ -88,12 +88,12 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
       status: booking?.status || 'PENDING',
       guestId: booking?.guestId || '',
       period: {
-        from: booking?.startDate || startDateParam || dayjs().utc().toDate(),
+        from: booking?.startDate || startDateParam || dayjs().toDate(),
         to: booking
           ? booking.endDate
           : startDateParam
-            ? dayjs(startDateParam).utc().add(1, 'day').toDate()
-            : dayjs().add(1, 'day').utc().toDate(),
+            ? dayjs(startDateParam).add(1, 'day').toDate()
+            : dayjs().add(1, 'day').toDate(),
       },
       unitId: booking?.unitId || unitIdParam || '',
       numberOfPeople: booking?.numberOfPeople || 1,
@@ -110,12 +110,12 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
       status: booking?.status || 'PENDING',
       guestId: booking?.guestId || '',
       period: {
-        from: booking?.startDate || startDateParam || dayjs().utc().toDate(),
+        from: booking?.startDate || startDateParam || dayjs().toDate(),
         to: booking
           ? booking.endDate
           : startDateParam
-            ? dayjs(startDateParam).utc().add(1, 'day').toDate()
-            : dayjs().utc().add(1, 'day').toDate(),
+            ? dayjs(startDateParam).add(1, 'day').toDate()
+            : dayjs().add(1, 'day').toDate(),
       },
       unitId: booking?.unitId || unitIdParam || '',
       numberOfPeople: booking?.numberOfPeople || 1,
@@ -208,7 +208,7 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
     form.setValue(
       'totalAmount',
       watchDaily *
-        dayjs(watchPeriod.to).utc().diff(dayjs(watchPeriod.from).utc(), 'day')
+        dayjs(watchPeriod.to).diff(dayjs(watchPeriod.from).utc(), 'day')
     )
   }, [watchDaily, watchPeriod])
 
@@ -329,7 +329,7 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
                   <FormDescription>
                     Quantidade de dias:
                     {field.value.from && field.value.to
-                      ? ` ${dayjs(field.value.to).utc().diff(field.value.from, 'day')}`
+                      ? ` ${dayjs(field.value.to).diff(field.value.from, 'day')}`
                       : 0}
                   </FormDescription>
                   <FormDescription className="sr-only">

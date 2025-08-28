@@ -75,7 +75,7 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
     status,
   } = booking
 
-  const days = dayjs(endDate).utc().diff(dayjs(startDate), 'day')
+  const days = dayjs(endDate).diff(dayjs(startDate), 'day')
 
   const totalPaid = payments.reduce((acc, p) => acc + p.amount, 0)
   const totalServices = services.reduce((acc, s) => acc + s.amount, 0)
@@ -246,7 +246,7 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
                         Data de Entrada
                       </TableCell>
                       <TableCell className="text-right pr-4">
-                        {dayjs(startDate).utc().format('DD/MM/YYYY')}
+                        {dayjs(startDate).format('DD/MM/YYYY')}
                       </TableCell>
                     </TableRow>
                     <TableRow>
@@ -254,7 +254,7 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
                         Data de Saída
                       </TableCell>
                       <TableCell className="text-right pr-4">
-                        {dayjs(endDate).utc().format('DD/MM/YYYY')}
+                        {dayjs(endDate).format('DD/MM/YYYY')}
                       </TableCell>
                     </TableRow>
                     <TableRow>

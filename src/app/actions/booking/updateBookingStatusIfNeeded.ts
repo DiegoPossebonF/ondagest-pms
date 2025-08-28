@@ -20,22 +20,22 @@ export async function updateBookingStatusIfNeeded(
 
   if (
     booking.status === 'CONFIRMED' &&
-    dayjs(booking.startDate).utc().isSameOrBefore(today, 'day')
+    dayjs(booking.startDate).isSameOrBefore(today, 'day')
   ) {
     newStatus = 'CHECKED_IN'
   } else if (
     booking.status === 'IN_PROGRESS' &&
-    dayjs(booking.endDate).utc().isSameOrBefore(today, 'day')
+    dayjs(booking.endDate).isSameOrBefore(today, 'day')
   ) {
     newStatus = 'CHECKED_OUT'
   } else if (
     booking.status === 'CHECKED_OUT' &&
-    dayjs(booking.endDate).utc().isAfter(today, 'day')
+    dayjs(booking.endDate).isAfter(today, 'day')
   ) {
     newStatus = 'IN_PROGRESS'
   }
 
-  if (totalPaid === 0 && dayjs().utc().isBefore(startDate)) {
+  if (totalPaid === 0 && dayjs().isBefore(startDate)) {
     // Volta para PENDING
     newStatus = 'PENDING'
   }

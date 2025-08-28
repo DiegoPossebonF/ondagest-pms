@@ -71,8 +71,7 @@ export function UnitListMobile({
                         </div>
 
                         <span>
-                          {dayjs(unit.createdAt).utc().format('DD/MM/YYYY') ||
-                            'N/A'}
+                          {dayjs(unit.createdAt).format('DD/MM/YYYY') || 'N/A'}
                         </span>
                       </div>
                     </AccordionTrigger>

@@ -33,7 +33,7 @@ export function UnitsGanttView() {
   const [units, setUnits] = useState<UnitWithType[]>([])
   const [bookings, setBookings] = useState<BookingAllIncludes[]>([])
   const [startDate, setStartDate] = useState<Date>(
-    dayjs().utc().startOf('day').toDate()
+    dayjs().startOf('day').toDate()
   )
 
   const [error, setError] = useState<string | null>(null)
@@ -71,9 +71,9 @@ export function UnitsGanttView() {
   }, [startDate])
 
   const dates = Array.from({ length: DAYS_RANGE }).map((_, index) => ({
-    week: dayjs(startDate).utc().add(index, 'day').format('ddd'),
-    day: dayjs(startDate).utc().add(index, 'day').format('DD/MM'),
-    fullDate: dayjs(startDate).utc().add(index, 'day'),
+    week: dayjs(startDate).add(index, 'day').format('ddd'),
+    day: dayjs(startDate).add(index, 'day').format('DD/MM'),
+    fullDate: dayjs(startDate).add(index, 'day'),
   }))
 
   if (error) return <AlertErrorGlobal message={error} />
@@ -89,7 +89,7 @@ export function UnitsGanttView() {
             !startDate && 'text-muted-foreground'
           )}
           onClick={() => {
-            setStartDate(dayjs(startDate).utc().subtract(30, 'day').toDate())
+            setStartDate(dayjs(startDate).subtract(30, 'day').toDate())
           }}
         >
           <IconRewindBackward30 className="h-5 w-5" />
@@ -102,7 +102,7 @@ export function UnitsGanttView() {
           )}
           size={'icon'}
           onClick={() => {
-            setStartDate(dayjs(startDate).utc().subtract(5, 'day').toDate())
+            setStartDate(dayjs(startDate).subtract(5, 'day').toDate())
           }}
         >
           <IconRewindBackward5 className="h-5 w-5" />
@@ -120,7 +120,7 @@ export function UnitsGanttView() {
               {startDate ? (
                 <div className="text-xs">
                   <span className="font-semibold">
-                    {dayjs(startDate).utc().format('DD/MM/YYYY')}
+                    {dayjs(startDate).format('DD/MM/YYYY')}
                   </span>
                 </div>
               ) : (
@@ -151,7 +151,7 @@ export function UnitsGanttView() {
           )}
           size={'icon'}
           onClick={() => {
-            setStartDate(dayjs(startDate).utc().add(5, 'day').toDate())
+            setStartDate(dayjs(startDate).add(5, 'day').toDate())
           }}
         >
           <IconRewindForward5 className="h-5 w-5" />
@@ -164,7 +164,7 @@ export function UnitsGanttView() {
           )}
           size={'icon'}
           onClick={() => {
-            setStartDate(dayjs(startDate).utc().add(30, 'day').toDate())
+            setStartDate(dayjs(startDate).add(30, 'day').toDate())
           }}
         >
           <IconRewindForward30 className="h-5 w-5" />
@@ -235,7 +235,7 @@ export function UnitsGanttView() {
                         const start = dayjs(booking.startDate)
                           .utc()
                           .startOf('day')
-                        const end = dayjs(booking.endDate).utc().startOf('day')
+                        const end = dayjs(booking.endDate).startOf('day')
                         const checkDate = dayjs(date.fullDate, 'YYYY-MM-DD')
                           .utc()
                           .startOf('day') // Certifica que é um objeto dayjs válido

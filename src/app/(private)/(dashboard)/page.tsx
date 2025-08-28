@@ -16,7 +16,7 @@ export default async function Dashboard() {
     redirect('/settings/organization')
   }
 
-  const res = await getUnitsUpdatedBookingsByDate(dayjs().utc().toDate())
+  const res = await getUnitsUpdatedBookingsByDate(dayjs().toDate())
 
   if (res.error || !res.data) {
     throw new Error(res.error)

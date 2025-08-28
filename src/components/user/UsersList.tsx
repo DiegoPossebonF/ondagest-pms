@@ -126,7 +126,7 @@ export function UsersList() {
                     {ROLE_LABELS[user.role || 'USER']}
                   </TableCell>
                   <TableCell className="px-4 py-2 text-right whitespace-nowrap">
-                    {dayjs(user.createdAt).utc().format('DD/MM/YYYY')}
+                    {dayjs(user.createdAt).format('DD/MM/YYYY')}
                   </TableCell>
                 </TableRow>
               ))

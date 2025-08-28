@@ -80,7 +80,7 @@ export function PaymentAlertDialogDelete({
           <div className="flex gap-4">
             <div className="flex items-center gap-2">
               <IconCalendarCheck className="w-4 h-4" />
-              {dayjs(payment.paidAt).utc().format('DD/MM/YYYY')}
+              {dayjs(payment.paidAt).format('DD/MM/YYYY')}
             </div>
             <div className="flex items-center gap-2">
               <Icon className="w-4 h-4" />

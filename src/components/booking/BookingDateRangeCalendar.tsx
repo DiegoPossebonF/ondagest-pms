@@ -48,7 +48,7 @@ export function BookingDateRangeCalendar({
           disabled={disabled}
         >
           {period?.from && period?.to
-            ? `${dayjs(period.from).utc().format('DD/MM/YYYY')} - ${dayjs(period.to).utc().format('DD/MM/YYYY')}`
+            ? `${dayjs(period.from).format('DD/MM/YYYY')} - ${dayjs(period.to).format('DD/MM/YYYY')}`
             : 'Selecione o período da reserva'}
           <ChevronsUpDown className="opacity-50" />
         </Button>

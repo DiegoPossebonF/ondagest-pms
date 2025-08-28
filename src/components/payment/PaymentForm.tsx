@@ -63,7 +63,7 @@ export function PaymentForm({
       bookingId: booking.id.toString(),
       amount: payment?.amount || 0,
       paymentType: payment?.paymentType || 'PIX',
-      paidAt: payment?.paidAt || dayjs().utc().toDate(),
+      paidAt: payment?.paidAt || dayjs().toDate(),
     },
   })
 
@@ -180,7 +180,7 @@ export function PaymentForm({
                         )}
                       >
                         {field.value ? (
-                          dayjs(field.value).utc().format('DD/MM/YYYY')
+                          dayjs(field.value).format('DD/MM/YYYY')
                         ) : (
                           <span>Selecione uma data</span>
                         )}

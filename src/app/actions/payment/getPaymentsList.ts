@@ -77,7 +77,7 @@ export async function getPaymentsList({
 
   const formatted = payments.map(p => ({
     id: p.id,
-    date: dayjs(p.paidAt).utc().format('DD/MM/YYYY'),
+    date: dayjs(p.paidAt).format('DD/MM/YYYY'),
     guest: p.booking?.guest?.name ?? '-',
     unit: p.booking?.unit?.name
       ? `${p.booking.unit.name} - ${p.booking.unit.type.name}`

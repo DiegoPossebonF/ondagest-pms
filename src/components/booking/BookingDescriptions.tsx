@@ -54,13 +54,13 @@ export function BookingDescriptions({ booking }: BookingDescriptionsProps) {
           title="Data de entrada"
         >
           <MageCalendarUploadFill className={`w-4 h-4 `} />
-          {dayjs(booking?.startDate).utc().format('DD/MM/YYYY')}
+          {dayjs(booking?.startDate).format('DD/MM/YYYY')}
         </div>
         <div className="flex flex-row items-center gap-2" title="Data de saída">
           <MageCalendarDownloadFill
             className={`w-4 h-4  ml-[1.95px] mr-[-1.95px]`}
           />
-          {dayjs(booking?.endDate).utc().format('DD/MM/YYYY')}
+          {dayjs(booking?.endDate).format('DD/MM/YYYY')}
         </div>
         <div className="flex flex-row items-center gap-2" title="Valor total">
           <MageDollarFill className={`w-4 h-4 `} />

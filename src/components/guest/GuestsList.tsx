@@ -103,7 +103,7 @@ export function GuestsList() {
                     {guest.city}
                   </TableCell>
                   <TableCell className="px-4 py-2 text-right whitespace-nowrap">
-                    {dayjs(guest.createdAt).utc().format('DD/MM/YYYY')}
+                    {dayjs(guest.createdAt).format('DD/MM/YYYY')}
                   </TableCell>
                 </TableRow>
               ))

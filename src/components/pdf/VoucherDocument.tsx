@@ -172,8 +172,8 @@ const VoucherDocument: React.FC<VoucherDocumentProps> = ({
           <View style={styles.section}>
             <Text style={styles.label}>Período:</Text>
             <Text>
-              {dayjs(booking.startDate).utc().format('DD/MM/YYYY')} até{' '}
-              {dayjs(booking.endDate).utc().format('DD/MM/YYYY')}
+              {dayjs(booking.startDate).format('DD/MM/YYYY')} até{' '}
+              {dayjs(booking.endDate).format('DD/MM/YYYY')}
             </Text>
             <Text>
               {`Total de ${dayjs(booking.endDate)
@@ -261,7 +261,7 @@ const VoucherDocument: React.FC<VoucherDocumentProps> = ({
             <View style={{ flexDirection: 'column', alignItems: 'flex-end' }}>
               <Text style={styles.small}>Ondagest PMS</Text>
               <Text style={styles.small}>
-                Documento criado em: {dayjs().utc().format('DD/MM/YYYY')}
+                Documento criado em: {dayjs().format('DD/MM/YYYY')}
               </Text>
             </View>
             <Image style={styles.footerLogo} src={LogoPMS.src} />

@@ -110,8 +110,8 @@ export function BookingsList() {
                     {booking.unit.name}
                   </TableCell>
                   <TableCell className="px-4 py-2 whitespace-nowrap">
-                    {dayjs(booking.startDate).utc().format('DD/MM/YYYY')} -{' '}
-                    {dayjs(booking.endDate).utc().format('DD/MM/YYYY')}
+                    {dayjs(booking.startDate).format('DD/MM/YYYY')} -{' '}
+                    {dayjs(booking.endDate).format('DD/MM/YYYY')}
                   </TableCell>
                   <TableCell className="px-4 py-2">
                     {booking.numberOfPeople}

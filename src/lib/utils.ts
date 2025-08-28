@@ -24,7 +24,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function getDifferenceInDays(period: DateRange) {
-  return dayjs(period.to).utc().diff(dayjs(period.from).utc(), 'day')
+  return dayjs(period.to).diff(dayjs(period.from).utc(), 'day')
 }
 
 export const STATUS_LABELS = {

@@ -187,7 +187,7 @@ export function UnitTypesList({
                     {type.numberOfPeople}
                   </TableCell>
                   <TableCell className="px-4 py-2 text-right whitespace-nowrap">
-                    {dayjs(type.createdAt).utc().format('DD/MM/YYYY')}
+                    {dayjs(type.createdAt).format('DD/MM/YYYY')}
                   </TableCell>
                 </TableRow>
               ))

@@ -139,7 +139,7 @@ export function RatesList() {
                     )}
                   </TableCell>
                   <TableCell className="px-4 py-2 text-right whitespace-nowrap">
-                    {dayjs(rate.createdAt).utc().format('DD/MM/YYYY')}
+                    {dayjs(rate.createdAt).format('DD/MM/YYYY')}
                   </TableCell>
                 </TableRow>
               ))
