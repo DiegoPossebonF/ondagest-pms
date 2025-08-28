@@ -4,7 +4,8 @@ import {
   activeBookingStatuses,
   dashboardBookingStatuses,
 } from '@/lib/db/scopes'
-import dayjs from 'dayjs'
+
+import dayjs from '@/lib/dayjs'
 import { updateBookingStatusIfNeeded } from '../booking/updateBookingStatusIfNeeded'
 import dbWithTenant from '../utils/dbWithTenant'
 
