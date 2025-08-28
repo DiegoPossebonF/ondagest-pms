@@ -5,16 +5,17 @@ import { updateBooking } from '@/app/actions/booking/updateBooking'
 import { groupedByRateNamePerUnit } from '@/app/actions/rate/actions'
 import { getUnitById } from '@/app/actions/unit/actions'
 import { Button } from '@/components/ui/button'
-import dayjs from '@/lib/dayjs'
 import { padNumber } from '@/lib/utils'
 import { type BookingSchema, bookingSchema } from '@/schemas/booking-schema'
 import type { BookingAllIncludes } from '@/types/booking'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { Rate, Unit, UnitType } from '@prisma/client'
+
+import dayjs from '@/lib/dayjs'
 import type { Dictionary } from 'lodash'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState, useTransition } from 'react'
-import { useForm } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import AlertErrorGlobal from '../AlertErrorGlobal'
 import { LoadingSpinner } from '../LoadingSpinner'
@@ -28,7 +29,6 @@ import {
   CardTitle,
 } from '../ui/card'
 import {
-  Form,
   FormDescription,
   FormField,
   FormItem,
@@ -134,6 +134,14 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
   const watchRateId = form.watch('rateId')
 
   useEffect(() => {
+    if (!selectedUnit) {
+      form.setValue('unitId', '')
+      return
+    }
+    form.setValue('unitId', selectedUnit.id)
+  }, [selectedUnit, form.setValue])
+
+  useEffect(() => {
     if (!unitIdParam) return
     async function getUnit(id: string) {
       try {
@@ -207,8 +215,7 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
     form.setValue('daily', watchDaily)
     form.setValue(
       'totalAmount',
-      watchDaily *
-        dayjs(watchPeriod.to).diff(dayjs(watchPeriod.from).utc(), 'day')
+      watchDaily * dayjs(watchPeriod.to).diff(dayjs(watchPeriod.from), 'day')
     )
   }, [watchDaily, watchPeriod])
 
@@ -275,7 +282,7 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
           errors={form.formState.errors}
           serverError={serverError}
         />
-        <Form {...form}>
+        <FormProvider {...form}>
           <form className="w-full space-y-4">
             <FormField
               control={form.control}
@@ -350,7 +357,6 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
                     selectedUnit={selectedUnit}
                     setSelectedUnit={setSelectedUnit}
                     onChange={field.onChange}
-                    period={form.watch('period')}
                   />
                   <FormDescription className="sr-only">
                     Selecione a acomodação da reserva
@@ -468,7 +474,7 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
               )}
             />
           </form>
-        </Form>
+        </FormProvider>
       </CardContent>
       <Separator />
       <CardFooter className="flex flex-row py-4 px-6 justify-end">

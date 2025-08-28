@@ -1,12 +1,9 @@
 CORREÇÕES A FAZER
 
-- Ao criar uma reserva, o botão de criar não sai do LoadingSpinner
-- Melhorar carregamento Combox Guest ao criar reserva
-- Inserir LoadingSpinner ao clicar nos botões
-- Erro ao criar reserva com data inicial na mesma data da saida de outra reserva
-    ** (POSSIVEL PROBLEMA timestamp with time zone no BANCO)
-- corrigir erro no form booking, quando mudar a data e tiver uma unit selecionada, deve deixar null para gerar nova busca de units livres
 
+- Inserir LoadingSpinner ao clicar nos botões
+- Atualizar status da reserva sempre que entrar na pagina /map
+- Melhorar layout pagina criar usuários
 
 TESTAR
 
@@ -17,4 +14,10 @@ TESTAR
 - Cadastrar acomodações - alterar icone para HomePlus
 - Cadastrar usuários - remover alteração de função para proprietario
 - Cadastrar usuários - Não possibilitar criação de usuário proprietario
+
+- Erro ao criar reserva com data inicial na mesma data da saida de outra reserva
+    ** (POSSIVEL PROBLEMA timestamp with time zone no BANCO)
+
+- Melhorar carregamento Combox Guest ao criar reserva
+- Corrigir erro no form booking, quando mudar a data e tiver uma unit selecionada, deve deixar null para gerar nova busca de units livres
 

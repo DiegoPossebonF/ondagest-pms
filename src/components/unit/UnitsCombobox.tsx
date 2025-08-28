@@ -20,6 +20,7 @@ import { cn } from '@/lib/utils'
 import type { Unit, UnitType } from '@prisma/client'
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { type Dispatch, type SetStateAction, useEffect, useState } from 'react'
+import { useFormContext, useWatch } from 'react-hook-form'
 import { LoadingSpinner } from '../LoadingSpinner'
 
 interface UnitWithType extends Unit {
@@ -30,10 +31,6 @@ interface UnitsComboboxProps {
   bookingId?: number
   selectedUnit: UnitWithType | null
   setSelectedUnit: Dispatch<SetStateAction<UnitWithType | null>>
-  period: {
-    from: Date
-    to: Date
-  }
   onChange: (value: string) => void
   disabled?: boolean
 }
@@ -42,7 +39,6 @@ export function UnitsCombobox({
   bookingId,
   selectedUnit,
   setSelectedUnit,
-  period,
   onChange,
   disabled,
 }: UnitsComboboxProps) {
@@ -50,18 +46,30 @@ export function UnitsCombobox({
   const [units, setUnits] = useState<UnitWithType[] | null>([])
   const [open, setOpen] = useState(false)
 
+  const { control } = useFormContext()
+  const bookingPeriod = useWatch({ control, name: 'period' })
+
   useEffect(() => {
-    if (!open) return
     async function handleGetUnits() {
       setLoading(true)
       const availableUnits = await freeUnitsPerPeriod(
-        period,
+        bookingPeriod,
         bookingId // 👈 passa aqui o ID da unidade atual
       )
+      // verificar se a selectedUnit atual esta disponivel
+      if (selectedUnit && availableUnits) {
+        const isAvailable = availableUnits.some(
+          unit => unit.id === selectedUnit.id
+        )
+        if (!isAvailable) {
+          setSelectedUnit(null)
+        }
+      }
+
       setUnits(availableUnits)
     }
     handleGetUnits().then(() => setLoading(false))
-  }, [period, bookingId, open])
+  }, [bookingId, setSelectedUnit, selectedUnit, bookingPeriod])
 
   useEffect(() => {
     if (open) {

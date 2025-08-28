@@ -20,7 +20,14 @@ import type { Guest } from '@prisma/client'
 import { IconUserPlus } from '@tabler/icons-react'
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { type Dispatch, type SetStateAction, useEffect, useState } from 'react'
+import {
+  type Dispatch,
+  type SetStateAction,
+  useEffect,
+  useState,
+  useTransition,
+} from 'react'
+import { LoadingSpinner } from '../LoadingSpinner'
 
 interface GuestComboboxProps {
   selectedGuestName: string | null
@@ -36,14 +43,17 @@ export function GuestCombobox({
   disabled,
 }: GuestComboboxProps) {
   const router = useRouter()
+  const [isPending, startTransition] = useTransition()
   const [open, setOpen] = useState(false)
   const [searchValue, setSearchValue] = useState('')
   const [guests, setGuests] = useState<Guest[] | null>([])
 
   useEffect(() => {
     const fetchGuests = async () => {
-      const data = await searchGuestName(searchValue)
-      setGuests(data)
+      startTransition(async () => {
+        const data = await searchGuestName(searchValue)
+        setGuests(data)
+      })
     }
 
     if (!searchValue && !selectedGuestName) {
@@ -90,13 +100,17 @@ export function GuestCombobox({
             <CommandList>
               <CommandEmpty>
                 {searchValue.length > 2 ? (
-                  <div className="px-4">
-                    <p>Nenhum hóspede encontrado.</p>
-                    <span className="font-bold">
-                      {' '}
-                      Crie um novo clicando no botão ao lado.
-                    </span>
-                  </div>
+                  isPending ? (
+                    <LoadingSpinner size="sm" />
+                  ) : (
+                    <div className="px-4">
+                      <p>Nenhum hóspede encontrado.</p>
+                      <span className="font-bold">
+                        {' '}
+                        Crie um novo clicando no botão ao lado.
+                      </span>
+                    </div>
+                  )
                 ) : (
                   'Minimo 3 caracteres para buscar.'
                 )}
