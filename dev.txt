@@ -4,6 +4,7 @@ CORREÇÕES A FAZER
 - Melhorar carregamento Combox Guest ao criar reserva
 - Inserir LoadingSpinner ao clicar nos botões
 - Erro ao criar reserva com data inicial na mesma data da saida de outra reserva.
+- corrigir erro no form booking, quando mudar a data e tiver uma unit selecionada, deve deixar null para gerar nova busca de units livres
 
 
 TESTAR

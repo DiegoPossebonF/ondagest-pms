@@ -123,6 +123,9 @@ export async function freeUnitsPerPeriod(
     const from = dayjs(period.from).startOf('day').toDate()
     const to = dayjs(period.to).startOf('day').toDate()
 
+    console.log('from', from)
+    console.log('to', to)
+
     const units = await db.unit.findMany({
       where: {
         NOT: {
