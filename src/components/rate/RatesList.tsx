@@ -60,10 +60,10 @@ export function RatesList() {
           <SheetContent side="right" className="sm:w-[450px] w-[80%]">
             <SheetHeader>
               <SheetTitle className="text-xl font-semibold mb-4">
-                {'Editar tarifa'}
+                {selectedRate ? 'Editar tarifa' : 'Nova tarifa'}
               </SheetTitle>
               <SheetDescription className="text-muted-foreground sr-only">
-                {'Edite os dados da tarifa'}
+                {selectedRate ? 'Editar tarifa' : 'Nova tarifa'}
               </SheetDescription>
             </SheetHeader>
             <RateForm
@@ -169,10 +169,10 @@ export function RatesList() {
         <SheetContent side="right" className="sm:w-[450px] w-[80%]">
           <SheetHeader>
             <SheetTitle className="text-xl font-semibold mb-4">
-              {'Editar tipo de unidade'}
+              {selectedRate ? 'Editar tarifa' : 'Nova tarifa'}
             </SheetTitle>
             <SheetDescription className="text-muted-foreground sr-only">
-              {'Edite o tipo de unidade'}
+              {selectedRate ? 'Editar tarifa' : 'Nova tarifa'}
             </SheetDescription>
           </SheetHeader>
           <RateForm

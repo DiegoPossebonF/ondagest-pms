@@ -113,10 +113,14 @@ export function UnitTypesList({
           <SheetContent side="right" className="sm:w-[450px] w-[80%]">
             <SheetHeader>
               <SheetTitle className="text-xl font-semibold mb-4">
-                {'Editar tipo de unidade'}
+                {selectedUnitType
+                  ? 'Editar tipo de unidade'
+                  : 'Novo tipo de unidade'}
               </SheetTitle>
               <SheetDescription className="text-muted-foreground sr-only">
-                {'Edite o tipo de unidade'}
+                {selectedUnitType
+                  ? 'Editar tipo de unidade'
+                  : 'Novo tipo de unidade'}
               </SheetDescription>
             </SheetHeader>
             <UnitTypeForm
@@ -208,10 +212,14 @@ export function UnitTypesList({
         <SheetContent side="right" className="sm:w-[450px] w-[80%]">
           <SheetHeader>
             <SheetTitle className="text-xl font-semibold mb-4">
-              {'Editar tipo de unidade'}
+              {selectedUnitType
+                ? 'Editar tipo de unidade'
+                : 'Novo tipo de unidade'}
             </SheetTitle>
             <SheetDescription className="text-muted-foreground sr-only">
-              {'Edite o tipo de unidade'}
+              {selectedUnitType
+                ? 'Editar tipo de unidade'
+                : 'Novo tipo de unidade'}
             </SheetDescription>
           </SheetHeader>
           <UnitTypeForm

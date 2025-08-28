@@ -107,10 +107,10 @@ export function UnitsList({
           <SheetContent side="right" className="sm:w-[450px] w-[80%]">
             <SheetHeader>
               <SheetTitle className="text-xl font-semibold mb-4">
-                {'Editar tipo de unidade'}
+                {selectedUnit ? 'Editar acomodação' : 'Nova acomodação'}
               </SheetTitle>
               <SheetDescription className="text-muted-foreground sr-only">
-                {'Edite o tipo de unidade'}
+                {selectedUnit ? 'Editar acomodação' : 'Nova acomodação'}
               </SheetDescription>
             </SheetHeader>
             <UnitForm

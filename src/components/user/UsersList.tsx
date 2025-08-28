@@ -60,10 +60,10 @@ export function UsersList() {
           <SheetContent side="right" className="sm:w-[450px] w-[80%]">
             <SheetHeader>
               <SheetTitle className="text-xl font-semibold mb-4">
-                {'Editar usuário'}
+                {selectedUser ? 'Editar usuário' : 'Novo usuário'}
               </SheetTitle>
               <SheetDescription className="text-muted-foreground sr-only">
-                {'Edite os dados do usuário'}
+                {selectedUser ? 'Editar usuário' : 'Novo usuário'}
               </SheetDescription>
             </SheetHeader>
             <UserForm
@@ -156,10 +156,10 @@ export function UsersList() {
         <SheetContent side="right" className="sm:w-[450px] w-[80%]">
           <SheetHeader>
             <SheetTitle className="text-xl font-semibold mb-4">
-              {'Editar usuário'}
+              {selectedUser ? 'Editar usuário' : 'Novo usuário'}
             </SheetTitle>
             <SheetDescription className="text-muted-foreground sr-only">
-              {'Edite os dados do usuário'}
+              {selectedUser ? 'Editar usuário' : 'Novo usuário'}
             </SheetDescription>
           </SheetHeader>
           <UserForm
