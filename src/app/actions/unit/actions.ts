@@ -131,8 +131,8 @@ export async function freeUnitsPerPeriod(
               id: ignoreBookingId ? { not: ignoreBookingId } : undefined,
               AND: [
                 {
-                  startDate: { lt: to }, // começa antes do fim
-                  endDate: { gt: from }, // termina depois do início
+                  startDate: { lt: to }, // começa antes do fim do período
+                  endDate: { gt: from }, // termina depois do início do período
                 },
               ],
             },
