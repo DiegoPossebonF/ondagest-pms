@@ -120,11 +120,11 @@ export async function freeUnitsPerPeriod(
   const db = dbData
 
   try {
-    const from = dayjs(period.from).startOf('day').toDate()
-    const to = dayjs(period.to).startOf('day').toDate()
+    //const from = dayjs(period.from).startOf('day').toDate()
+    //const to = dayjs(period.to).startOf('day').toDate()
 
-    console.log('from', from)
-    console.log('to', to)
+    //console.log('from', from)
+    //console.log('to', to)
 
     const units = await db.unit.findMany({
       where: {
@@ -135,8 +135,8 @@ export async function freeUnitsPerPeriod(
               id: ignoreBookingId ? { not: ignoreBookingId } : undefined,
               AND: [
                 {
-                  startDate: { lt: to }, // começa antes do fim do período
-                  endDate: { gt: from }, // termina depois do início do período
+                  startDate: { lt: period.to }, // começa antes do fim do período
+                  endDate: { gt: period.from }, // termina depois do início do período
                 },
               ],
             },

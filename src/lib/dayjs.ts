@@ -13,7 +13,7 @@ dayjs.extend(isBetween)
 dayjs.extend(isSameOrBefore)
 dayjs.extend(isSameOrAfter)
 
-// Configura locale e fuso horário padrão (ex: São Paulo)
+// Configura locale e fuso horário padrão
 dayjs.locale('pt-br')
 dayjs.tz.setDefault('America/Sao_Paulo')
 
