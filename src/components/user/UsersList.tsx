@@ -8,8 +8,8 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { useIsMobile } from '@/hooks/use-mobile'
+import dayjs from '@/lib/dayjs'
 import { ROLE_LABELS } from '@/lib/utils'
-import dayjs from 'dayjs'
 import { useState } from 'react'
 import AlertErrorGlobal from '../AlertErrorGlobal'
 import { LoadingSpinner } from '../LoadingSpinner'
@@ -126,7 +126,7 @@ export function UsersList() {
                     {ROLE_LABELS[user.role || 'USER']}
                   </TableCell>
                   <TableCell className="px-4 py-2 text-right whitespace-nowrap">
-                    {dayjs(user.createdAt).format('DD/MM/YYYY')}
+                    {dayjs(user.createdAt).utc().format('DD/MM/YYYY')}
                   </TableCell>
                 </TableRow>
               ))

@@ -9,8 +9,8 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { useIsMobile } from '@/hooks/use-mobile'
+import dayjs from '@/lib/dayjs'
 import { IconHomePlus } from '@tabler/icons-react'
-import dayjs from 'dayjs'
 import { ArrowDown, ArrowUp } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { ButtonTooltip } from '../ButtonTooltip'
@@ -181,7 +181,7 @@ export function UnitsList({
                     {unit.type.numberOfPeople}
                   </TableCell>
                   <TableCell className="px-4 py-2 text-right whitespace-nowrap">
-                    {dayjs(unit.createdAt).format('DD/MM/YYYY')}
+                    {dayjs(unit.createdAt).utc().format('DD/MM/YYYY')}
                   </TableCell>
                 </TableRow>
               ))

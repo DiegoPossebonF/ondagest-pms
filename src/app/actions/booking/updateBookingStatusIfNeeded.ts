@@ -1,12 +1,7 @@
 'use server'
+import dayjs from '@/lib/dayjs'
 import type { BookingAllIncludes } from '@/types/booking'
-import dayjs from 'dayjs'
-import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
-import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import dbWithTenant from '../utils/dbWithTenant'
-
-dayjs.extend(isSameOrBefore)
-dayjs.extend(isSameOrAfter)
 
 export async function updateBookingStatusIfNeeded(
   booking: BookingAllIncludes
@@ -17,30 +12,30 @@ export async function updateBookingStatusIfNeeded(
 
   const db = dbData
 
-  const today = dayjs()
+  const today = dayjs().utc()
   let newStatus = booking.status
 
   const totalPaid = booking.payments.reduce((acc, p) => acc + p.amount, 0)
-  const startDate = dayjs(booking.startDate)
+  const startDate = dayjs(booking.startDate).utc()
 
   if (
     booking.status === 'CONFIRMED' &&
-    dayjs(booking.startDate).isSameOrBefore(today, 'day')
+    dayjs(booking.startDate).utc().isSameOrBefore(today, 'day')
   ) {
     newStatus = 'CHECKED_IN'
   } else if (
     booking.status === 'IN_PROGRESS' &&
-    dayjs(booking.endDate).isSameOrBefore(today, 'day')
+    dayjs(booking.endDate).utc().isSameOrBefore(today, 'day')
   ) {
     newStatus = 'CHECKED_OUT'
   } else if (
     booking.status === 'CHECKED_OUT' &&
-    dayjs(booking.endDate).isAfter(today, 'day')
+    dayjs(booking.endDate).utc().isAfter(today, 'day')
   ) {
     newStatus = 'IN_PROGRESS'
   }
 
-  if (totalPaid === 0 && dayjs().isBefore(startDate)) {
+  if (totalPaid === 0 && dayjs().utc().isBefore(startDate)) {
     // Volta para PENDING
     newStatus = 'PENDING'
   }

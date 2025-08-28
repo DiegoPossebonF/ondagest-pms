@@ -9,9 +9,9 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { useIsMobile } from '@/hooks/use-mobile'
+import dayjs from '@/lib/dayjs'
 import { formatCurrency } from '@/lib/utils'
 import { IconEye, IconEyeOff } from '@tabler/icons-react'
-import dayjs from 'dayjs'
 import { useState } from 'react'
 import AlertErrorGlobal from '../AlertErrorGlobal'
 import { LoadingSpinner } from '../LoadingSpinner'
@@ -139,7 +139,7 @@ export function RatesList() {
                     )}
                   </TableCell>
                   <TableCell className="px-4 py-2 text-right whitespace-nowrap">
-                    {dayjs(rate.createdAt).format('DD/MM/YYYY')}
+                    {dayjs(rate.createdAt).utc().format('DD/MM/YYYY')}
                   </TableCell>
                 </TableRow>
               ))

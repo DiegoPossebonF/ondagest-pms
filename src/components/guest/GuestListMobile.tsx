@@ -1,5 +1,5 @@
+import dayjs from '@/lib/dayjs'
 import { IconBrandWhatsappFilled } from '@tabler/icons-react'
-import dayjs from 'dayjs'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { LoadingSpinner } from '../LoadingSpinner'
@@ -56,8 +56,9 @@ export function GuestsListMobile() {
                             {guest.name || 'N/A'}
                           </span>
                           <span>
-                            {dayjs(guest.createdAt).format('DD/MM/YYYY') ||
-                              'N/A'}
+                            {dayjs(guest.createdAt)
+                              .utc()
+                              .format('DD/MM/YYYY') || 'N/A'}
                           </span>
                         </div>
                       </AccordionTrigger>

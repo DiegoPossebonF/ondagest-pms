@@ -120,8 +120,8 @@ export async function freeUnitsPerPeriod(
   const db = dbData
 
   try {
-    const from = dayjs(period.from).startOf('day').toDate()
-    const to = dayjs(period.to).startOf('day').toDate()
+    const from = dayjs(period.from).utc().startOf('day').toDate()
+    const to = dayjs(period.to).utc().startOf('day').toDate()
 
     console.log('from', from)
     console.log('to', to)

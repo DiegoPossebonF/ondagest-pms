@@ -7,8 +7,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import dayjs from '@/lib/dayjs'
 import { ptBR } from 'date-fns/locale'
-import dayjs from 'dayjs'
 import { ChevronsUpDown } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
@@ -48,7 +48,7 @@ export function BookingDateRangeCalendar({
           disabled={disabled}
         >
           {period?.from && period?.to
-            ? `${dayjs(period.from).format('DD/MM/YYYY')} - ${dayjs(period.to).format('DD/MM/YYYY')}`
+            ? `${dayjs(period.from).utc().format('DD/MM/YYYY')} - ${dayjs(period.to).utc().format('DD/MM/YYYY')}`
             : 'Selecione o período da reserva'}
           <ChevronsUpDown className="opacity-50" />
         </Button>

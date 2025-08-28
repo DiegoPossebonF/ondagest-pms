@@ -1,12 +1,11 @@
 'use client'
-import type { BookingAllIncludes } from '@/types/booking'
-import type { UnitWithType } from '@/types/unit'
-import dayjs from 'dayjs'
-import 'dayjs/locale/pt-br'
 import { getBookingsPerPeriod } from '@/app/actions/booking/actions'
 import { getUnits } from '@/app/actions/unit/actions'
 import { useIsMobile } from '@/hooks/use-mobile'
+import dayjs from '@/lib/dayjs'
 import { cn } from '@/lib/utils'
+import type { BookingAllIncludes } from '@/types/booking'
+import type { UnitWithType } from '@/types/unit'
 import {
   IconCalendarWeekFilled,
   IconPlus,
@@ -15,7 +14,6 @@ import {
   IconRewindForward5,
   IconRewindForward30,
 } from '@tabler/icons-react'
-import isBetween from 'dayjs/plugin/isBetween'
 import Link from 'next/link'
 import { useEffect, useState, useTransition } from 'react'
 import AlertErrorGlobal from '../AlertErrorGlobal'
@@ -24,9 +22,6 @@ import { Button } from '../ui/button'
 import { Calendar } from '../ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import { UnitBookingCardView } from './UnitBookingCardView'
-
-dayjs.locale('pt-br')
-dayjs.extend(isBetween)
 
 const DAYS_RANGE = 30
 const COLUMN_WIDTH = 48
@@ -38,7 +33,7 @@ export function UnitsGanttView() {
   const [units, setUnits] = useState<UnitWithType[]>([])
   const [bookings, setBookings] = useState<BookingAllIncludes[]>([])
   const [startDate, setStartDate] = useState<Date>(
-    dayjs().startOf('day').toDate()
+    dayjs().utc().startOf('day').toDate()
   )
 
   const [error, setError] = useState<string | null>(null)
@@ -47,6 +42,7 @@ export function UnitsGanttView() {
     const period = {
       from: startDate,
       to: dayjs(startDate)
+        .utc()
         .add(DAYS_RANGE - 1, 'day')
         .toDate(),
     }
@@ -75,9 +71,9 @@ export function UnitsGanttView() {
   }, [startDate])
 
   const dates = Array.from({ length: DAYS_RANGE }).map((_, index) => ({
-    week: dayjs(startDate).add(index, 'day').format('ddd'),
-    day: dayjs(startDate).add(index, 'day').format('DD/MM'),
-    fullDate: dayjs(startDate).add(index, 'day'),
+    week: dayjs(startDate).utc().add(index, 'day').format('ddd'),
+    day: dayjs(startDate).utc().add(index, 'day').format('DD/MM'),
+    fullDate: dayjs(startDate).utc().add(index, 'day'),
   }))
 
   if (error) return <AlertErrorGlobal message={error} />
@@ -93,7 +89,7 @@ export function UnitsGanttView() {
             !startDate && 'text-muted-foreground'
           )}
           onClick={() => {
-            setStartDate(dayjs(startDate).subtract(30, 'day').toDate())
+            setStartDate(dayjs(startDate).utc().subtract(30, 'day').toDate())
           }}
         >
           <IconRewindBackward30 className="h-5 w-5" />
@@ -106,7 +102,7 @@ export function UnitsGanttView() {
           )}
           size={'icon'}
           onClick={() => {
-            setStartDate(dayjs(startDate).subtract(5, 'day').toDate())
+            setStartDate(dayjs(startDate).utc().subtract(5, 'day').toDate())
           }}
         >
           <IconRewindBackward5 className="h-5 w-5" />
@@ -124,7 +120,7 @@ export function UnitsGanttView() {
               {startDate ? (
                 <div className="text-xs">
                   <span className="font-semibold">
-                    {dayjs(startDate).format('DD/MM/YYYY')}
+                    {dayjs(startDate).utc().format('DD/MM/YYYY')}
                   </span>
                 </div>
               ) : (
@@ -155,7 +151,7 @@ export function UnitsGanttView() {
           )}
           size={'icon'}
           onClick={() => {
-            setStartDate(dayjs(startDate).add(5, 'day').toDate())
+            setStartDate(dayjs(startDate).utc().add(5, 'day').toDate())
           }}
         >
           <IconRewindForward5 className="h-5 w-5" />
@@ -168,7 +164,7 @@ export function UnitsGanttView() {
           )}
           size={'icon'}
           onClick={() => {
-            setStartDate(dayjs(startDate).add(30, 'day').toDate())
+            setStartDate(dayjs(startDate).utc().add(30, 'day').toDate())
           }}
         >
           <IconRewindForward30 className="h-5 w-5" />
@@ -218,7 +214,7 @@ export function UnitsGanttView() {
               {dates.map((date, index) => (
                 <div
                   key={date.day}
-                  className={`${dates.length === index + 1 ? 'border-b' : 'border-r border-b'} ${date.fullDate.isSame(dayjs(), 'day') ? 'bg-primary/50' : 'bg-sidebar/80'} min-w-12 h-10 p-2 flex flex-col items-center justify-center text-xs`}
+                  className={`${dates.length === index + 1 ? 'border-b' : 'border-r border-b'} ${date.fullDate.isSame(dayjs().utc(), 'day') ? 'bg-primary/50' : 'bg-sidebar/80'} min-w-12 h-10 p-2 flex flex-col items-center justify-center text-xs`}
                 >
                   <span className="text-xs font-semibold">{date.day}</span>
                   <span className="text-xs font-semibold text-primary">
@@ -236,12 +232,13 @@ export function UnitsGanttView() {
                   <div className="relative flex w-full">
                     {dates.map((date, index) => {
                       const isDateInBooking = bookings.some(booking => {
-                        const start = dayjs(booking.startDate).startOf('day')
-                        const end = dayjs(booking.endDate).startOf('day')
-                        const checkDate = dayjs(
-                          date.fullDate,
-                          'YYYY-MM-DD'
-                        ).startOf('day') // Certifica que é um objeto dayjs válido
+                        const start = dayjs(booking.startDate)
+                          .utc()
+                          .startOf('day')
+                        const end = dayjs(booking.endDate).utc().startOf('day')
+                        const checkDate = dayjs(date.fullDate, 'YYYY-MM-DD')
+                          .utc()
+                          .startOf('day') // Certifica que é um objeto dayjs válido
 
                         return (
                           checkDate.isBetween(start, end, 'day', '()') && // '[]' inclui os extremos
@@ -251,18 +248,18 @@ export function UnitsGanttView() {
 
                       const isStartDate = bookings.some(
                         booking =>
-                          dayjs(date.fullDate).isSame(
-                            dayjs(booking.startDate),
-                            'day'
-                          ) && booking.unitId === unit.id
+                          dayjs(date.fullDate)
+                            .utc()
+                            .isSame(dayjs(booking.startDate).utc(), 'day') &&
+                          booking.unitId === unit.id
                       )
 
                       const isEndDate = bookings.some(
                         booking =>
-                          dayjs(date.fullDate).isSame(
-                            dayjs(booking.endDate),
-                            'day'
-                          ) && booking.unitId === unit.id
+                          dayjs(date.fullDate)
+                            .utc()
+                            .isSame(dayjs(booking.endDate).utc(), 'day') &&
+                          booking.unitId === unit.id
                       )
 
                       const plusAlignment = isStartDate
@@ -274,7 +271,7 @@ export function UnitsGanttView() {
                       return (
                         <div
                           key={date.day}
-                          className={`${date.fullDate.isSame(dayjs(), 'day') ? 'bg-primary/30' : ''} ${dates.length === index + 1 ? 'border-b' : 'border-r border-b'} ${date.week === 'dom' || date.week === 'sáb' ? 'bg-sidebar' : 'bg-card'} flex items-center min-w-12 w-full h-8`}
+                          className={`${date.fullDate.isSame(dayjs().utc(), 'day') ? 'bg-primary/30' : ''} ${dates.length === index + 1 ? 'border-b' : 'border-r border-b'} ${date.week === 'dom' || date.week === 'sáb' ? 'bg-sidebar' : 'bg-card'} flex items-center min-w-12 w-full h-8`}
                         >
                           {!isDateInBooking && (
                             <Link
@@ -300,10 +297,12 @@ export function UnitsGanttView() {
                     {bookings
                       .filter(booking => booking.unitId === unit.id)
                       .map(booking => {
-                        const start = dayjs(booking.startDate).format(
-                          'YYYY-MM-DD'
-                        )
-                        const end = dayjs(booking.endDate).format('YYYY-MM-DD')
+                        const start = dayjs(booking.startDate)
+                          .utc()
+                          .format('YYYY-MM-DD')
+                        const end = dayjs(booking.endDate)
+                          .utc()
+                          .format('YYYY-MM-DD')
 
                         let left = 0
                         let width = 0
@@ -355,7 +354,9 @@ export function UnitsGanttView() {
 
                         if (
                           startIndex === 0 &&
-                          !dayjs(startDate).isSame(booking.startDate, 'day')
+                          !dayjs(startDate)
+                            .utc()
+                            .isSame(booking.startDate, 'day')
                         ) {
                           left = left - 15
                           width = width - 32

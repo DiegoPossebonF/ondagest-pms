@@ -1,9 +1,8 @@
 'use client'
 
 import { Badge } from '@/components/ui/badge'
-import dayjs from 'dayjs'
-import 'dayjs/locale/pt-br'
 import { useIsMobile } from '@/hooks/use-mobile'
+import dayjs from '@/lib/dayjs'
 import {
   STATUS_COLORS,
   STATUS_LABELS,
@@ -12,8 +11,6 @@ import {
   formatCurrency,
   padNumber,
 } from '@/lib/utils'
-import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
-import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import { useRouter } from 'next/navigation'
 import AlertErrorGlobal from '../AlertErrorGlobal'
 import { LoadingSpinner } from '../LoadingSpinner'
@@ -29,9 +26,6 @@ import { useBookingFilters } from './BookingsFiltersProvider'
 import BookingsListFooter from './BookingsListFooter'
 import BookingsListHeader from './BookingsListHeader'
 import { BookingsListMobile } from './BoookingListMobile'
-dayjs.extend(isSameOrAfter)
-dayjs.extend(isSameOrBefore)
-dayjs.locale('pt-br')
 
 export function BookingsList() {
   const router = useRouter()
@@ -116,8 +110,8 @@ export function BookingsList() {
                     {booking.unit.name}
                   </TableCell>
                   <TableCell className="px-4 py-2 whitespace-nowrap">
-                    {dayjs(booking.startDate).format('DD/MM/YYYY')} -{' '}
-                    {dayjs(booking.endDate).format('DD/MM/YYYY')}
+                    {dayjs(booking.startDate).utc().format('DD/MM/YYYY')} -{' '}
+                    {dayjs(booking.endDate).utc().format('DD/MM/YYYY')}
                   </TableCell>
                   <TableCell className="px-4 py-2">
                     {booking.numberOfPeople}

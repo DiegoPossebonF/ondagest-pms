@@ -8,7 +8,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { useIsMobile } from '@/hooks/use-mobile'
-import dayjs from 'dayjs'
+import dayjs from '@/lib/dayjs'
 import { useRouter } from 'next/navigation'
 import AlertErrorGlobal from '../AlertErrorGlobal'
 import { LoadingSpinner } from '../LoadingSpinner'
@@ -103,7 +103,7 @@ export function GuestsList() {
                     {guest.city}
                   </TableCell>
                   <TableCell className="px-4 py-2 text-right whitespace-nowrap">
-                    {dayjs(guest.createdAt).format('DD/MM/YYYY')}
+                    {dayjs(guest.createdAt).utc().format('DD/MM/YYYY')}
                   </TableCell>
                 </TableRow>
               ))

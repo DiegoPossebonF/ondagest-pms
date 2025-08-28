@@ -1,5 +1,5 @@
 import type { UnitWithTypeAndBookings } from '@/app/(private)/(dashboard)/(admin)/settings/units/page'
-import dayjs from 'dayjs'
+import dayjs from '@/lib/dayjs'
 import type { JSX } from 'react'
 import {
   Accordion,
@@ -71,7 +71,8 @@ export function UnitListMobile({
                         </div>
 
                         <span>
-                          {dayjs(unit.createdAt).format('DD/MM/YYYY') || 'N/A'}
+                          {dayjs(unit.createdAt).utc().format('DD/MM/YYYY') ||
+                            'N/A'}
                         </span>
                       </div>
                     </AccordionTrigger>

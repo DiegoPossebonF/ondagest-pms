@@ -1,7 +1,6 @@
 'use server'
+import dayjs from '@/lib/dayjs'
 import { PAYMENT_TYPE_LABELS } from '@/lib/utils'
-import dayjs from 'dayjs'
-import 'dayjs/locale/pt-br'
 import dbWithTenant from '../utils/dbWithTenant'
 
 type SortField = 'paidAt' | 'amount' | 'guestName'
@@ -78,7 +77,7 @@ export async function getPaymentsList({
 
   const formatted = payments.map(p => ({
     id: p.id,
-    date: dayjs(p.paidAt).locale('pt-br').format('DD/MM/YYYY'),
+    date: dayjs(p.paidAt).utc().format('DD/MM/YYYY'),
     guest: p.booking?.guest?.name ?? '-',
     unit: p.booking?.unit?.name
       ? `${p.booking.unit.name} - ${p.booking.unit.type.name}`

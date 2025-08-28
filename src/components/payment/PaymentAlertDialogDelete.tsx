@@ -1,5 +1,6 @@
 'use client'
 import { deletePayment } from '@/app/actions/payment/deletePayment'
+import dayjs from '@/lib/dayjs'
 import {
   PAYMENT_TYPE_ICONS,
   PAYMENT_TYPE_LABELS,
@@ -7,7 +8,6 @@ import {
 } from '@/lib/utils'
 import type { Payment } from '@prisma/client'
 import { IconCalendarCheck } from '@tabler/icons-react'
-import dayjs from 'dayjs'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import {
@@ -80,7 +80,7 @@ export function PaymentAlertDialogDelete({
           <div className="flex gap-4">
             <div className="flex items-center gap-2">
               <IconCalendarCheck className="w-4 h-4" />
-              {dayjs(payment.paidAt).format('DD/MM/YYYY')}
+              {dayjs(payment.paidAt).utc().format('DD/MM/YYYY')}
             </div>
             <div className="flex items-center gap-2">
               <Icon className="w-4 h-4" />

@@ -3,11 +3,6 @@ import './globals.css'
 import { Toaster } from '@/components/ui/sonner'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 
-import dayjs from 'dayjs'
-import 'dayjs/locale/pt-br'
-
-dayjs.locale('pt-br')
-
 export const metadata: Metadata = {
   icons: {
     icon: '/favicon.ico',

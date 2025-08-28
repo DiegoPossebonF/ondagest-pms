@@ -1,9 +1,6 @@
 'use client'
 import type { BookingAllIncludes } from '@/types/booking'
-import dayjs from 'dayjs'
-import 'dayjs/locale/pt-br'
 
-dayjs.locale('pt-br')
 import {
   STATUS_COLORS,
   STATUS_COLORS_TEXT,

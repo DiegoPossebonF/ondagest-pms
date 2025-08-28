@@ -1,4 +1,5 @@
 import { getUserAndOrg } from '@/app/actions/utils/get-user-and-org'
+import dayjs from '@/lib/dayjs'
 import { STATUS_LABELS, formatCurrency } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import type { Organization } from '@prisma/client'
@@ -10,7 +11,6 @@ import {
   Text,
   View,
 } from '@react-pdf/renderer'
-import dayjs from 'dayjs'
 import { padStart } from 'lodash'
 import type React from 'react'
 import LogoPMS from '../../../public/images/LogoOndaGest.png'
@@ -172,14 +172,13 @@ const VoucherDocument: React.FC<VoucherDocumentProps> = ({
           <View style={styles.section}>
             <Text style={styles.label}>Período:</Text>
             <Text>
-              {dayjs(booking.startDate).format('DD/MM/YYYY')} até{' '}
-              {dayjs(booking.endDate).format('DD/MM/YYYY')}
+              {dayjs(booking.startDate).utc().format('DD/MM/YYYY')} até{' '}
+              {dayjs(booking.endDate).utc().format('DD/MM/YYYY')}
             </Text>
             <Text>
-              {`Total de ${dayjs(booking.endDate).diff(
-                booking.startDate,
-                'days'
-              )} diária(s).`}
+              {`Total de ${dayjs(booking.endDate)
+                .utc()
+                .diff(booking.startDate, 'days')} diária(s).`}
             </Text>
             <Text>Status: {STATUS_LABELS[booking.status]}</Text>
           </View>
@@ -189,10 +188,12 @@ const VoucherDocument: React.FC<VoucherDocumentProps> = ({
             <Text style={styles.label}>Resumo Financeiro:</Text>
             <View style={styles.row}>
               <Text>Hospedagem:</Text>
-              <Text>{`${dayjs(booking.endDate).diff(
-                booking.startDate,
-                'days'
-              )} diária(s) x ${formatCurrency(booking.daily || 0)} = ${formatCurrency(
+              <Text>{`${dayjs(booking.endDate)
+                .utc()
+                .diff(
+                  booking.startDate,
+                  'days'
+                )} diária(s) x ${formatCurrency(booking.daily || 0)} = ${formatCurrency(
                 booking.totalAmount
               )}`}</Text>
             </View>
@@ -260,7 +261,7 @@ const VoucherDocument: React.FC<VoucherDocumentProps> = ({
             <View style={{ flexDirection: 'column', alignItems: 'flex-end' }}>
               <Text style={styles.small}>Ondagest PMS</Text>
               <Text style={styles.small}>
-                Documento criado em: {dayjs().format('DD/MM/YYYY')}
+                Documento criado em: {dayjs().utc().format('DD/MM/YYYY')}
               </Text>
             </View>
             <Image style={styles.footerLogo} src={LogoPMS.src} />

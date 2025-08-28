@@ -1,3 +1,4 @@
+import dayjs from '@/lib/dayjs'
 import {
   STATUS_COLORS,
   STATUS_LABELS,
@@ -5,7 +6,6 @@ import {
   STATUS_PAYMENT_LABELS,
   padNumber,
 } from '@/lib/utils'
-import dayjs from 'dayjs'
 import { useRouter } from 'next/navigation'
 import { LoadingSpinner } from '../LoadingSpinner'
 import {
@@ -78,7 +78,9 @@ export function BookingsListMobile() {
                             <span>{booking.guest?.name || 'N/A'}</span>
                           </div>
                           <span>
-                            {dayjs(booking.startDate).format('DD/MM/YYYY')}
+                            {dayjs(booking.startDate)
+                              .utc()
+                              .format('DD/MM/YYYY')}
                           </span>
                         </div>
                       </AccordionTrigger>
@@ -103,8 +105,13 @@ export function BookingsListMobile() {
                           </div>
                           <div className="w-full flex flex-col">
                             <p className="text-right border-b p-2">
-                              {dayjs(booking.startDate).format('DD/MM/YYYY')} -{' '}
-                              {dayjs(booking.endDate).format('DD/MM/YYYY')}
+                              {dayjs(booking.startDate)
+                                .utc()
+                                .format('DD/MM/YYYY')}{' '}
+                              -{' '}
+                              {dayjs(booking.endDate)
+                                .utc()
+                                .format('DD/MM/YYYY')}
                             </p>
                             <p className="text-right border-b p-2">
                               {booking.numberOfPeople || 0}

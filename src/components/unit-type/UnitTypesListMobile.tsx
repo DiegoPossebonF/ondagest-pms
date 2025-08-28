@@ -1,5 +1,6 @@
+'use client'
+import dayjs from '@/lib/dayjs'
 import type { UnitType } from '@prisma/client'
-import dayjs from 'dayjs'
 import type { JSX } from 'react'
 import {
   Accordion,
@@ -61,7 +62,8 @@ export function UnitTypesListMobile({
                           {type.name || 'N/A'}
                         </span>
                         <span>
-                          {dayjs(type.createdAt).format('DD/MM/YYYY') || 'N/A'}
+                          {dayjs(type.createdAt).utc().format('DD/MM/YYYY') ||
+                            'N/A'}
                         </span>
                       </div>
                     </AccordionTrigger>

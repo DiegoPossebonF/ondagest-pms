@@ -15,16 +15,16 @@ import {
   IconConfetti,
 } from '@tabler/icons-react'
 import { type ClassValue, clsx } from 'clsx'
-import dayjs from 'dayjs'
 import type { DateRange } from 'react-day-picker'
 import { twMerge } from 'tailwind-merge'
+import dayjs from './dayjs'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
 export function getDifferenceInDays(period: DateRange) {
-  return dayjs(period.to).diff(dayjs(period.from), 'day')
+  return dayjs(period.to).utc().diff(dayjs(period.from).utc(), 'day')
 }
 
 export const STATUS_LABELS = {

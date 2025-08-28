@@ -1,5 +1,6 @@
 import { getBookingById } from '@/app/actions/booking/actions'
 import { getUserAndOrg } from '@/app/actions/utils/get-user-and-org'
+import dayjs from '@/lib/dayjs'
 import { formatCurrency } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import type { Organization, Payment } from '@prisma/client'
@@ -11,7 +12,6 @@ import {
   Text,
   View,
 } from '@react-pdf/renderer'
-import dayjs from 'dayjs'
 import { padStart } from 'lodash'
 import type React from 'react'
 import LogoPMS from '../../../public/images/LogoOndaGest.png'
@@ -150,7 +150,9 @@ const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
           <View style={styles.section}>
             <Text style={styles.label}>Detalhes do Pagamento:</Text>
             <Text>Valor: {formatCurrency(payment.amount)}</Text>
-            <Text>Data: {dayjs(payment.paidAt).format('DD/MM/YYYY')}</Text>
+            <Text>
+              Data: {dayjs(payment.paidAt).utc().format('DD/MM/YYYY')}
+            </Text>
             <Text>Forma: {payment.paymentType}</Text>
             <Text>
               Referente à reserva #{padStart(booking.id.toString(), 5, '0')}
@@ -160,7 +162,8 @@ const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
           {/* Assinatura */}
           <View style={styles.signature}>
             <Text>
-              {organization.city}, {dayjs(payment.paidAt).format('DD/MM/YYYY')}
+              {organization.city},{' '}
+              {dayjs(payment.paidAt).utc().format('DD/MM/YYYY')}
             </Text>
             <Text style={{ marginTop: 24 }}>Assinatura do responsável</Text>
           </View>
@@ -192,7 +195,7 @@ const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
             <View style={{ flexDirection: 'column', alignItems: 'flex-end' }}>
               <Text style={{ fontSize: 9 }}>Ondagest PMS</Text>
               <Text style={{ fontSize: 9 }}>
-                Documento gerado em: {dayjs().format('DD/MM/YYYY')}
+                Documento gerado em: {dayjs().utc().format('DD/MM/YYYY')}
               </Text>
             </View>
             <Image style={styles.footerLogo} src={LogoPMS.src} />

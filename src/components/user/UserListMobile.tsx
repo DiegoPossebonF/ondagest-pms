@@ -1,5 +1,6 @@
+'use client'
+import dayjs from '@/lib/dayjs'
 import { ROLE_LABELS } from '@/lib/utils'
-import dayjs from 'dayjs'
 import { useRouter } from 'next/navigation'
 import {
   Accordion,
@@ -49,7 +50,8 @@ export function UserListMobile({
                           {user.name || 'N/A'}
                         </span>
                         <span>
-                          {dayjs(user.createdAt).format('DD/MM/YYYY') || 'N/A'}
+                          {dayjs(user.createdAt).utc().format('DD/MM/YYYY') ||
+                            'N/A'}
                         </span>
                       </div>
                     </AccordionTrigger>

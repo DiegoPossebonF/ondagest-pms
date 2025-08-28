@@ -12,6 +12,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import dayjs from '@/lib/dayjs'
 import {
   PAYMENT_TYPE_ICONS,
   PAYMENT_TYPE_LABELS,
@@ -23,7 +24,6 @@ import type { BookingAllIncludes } from '@/types/booking'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { type Payment, PaymentType } from '@prisma/client'
 import { IconDeviceFloppy } from '@tabler/icons-react'
-import dayjs from 'dayjs'
 import { CalendarIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
@@ -63,7 +63,7 @@ export function PaymentForm({
       bookingId: booking.id.toString(),
       amount: payment?.amount || 0,
       paymentType: payment?.paymentType || 'PIX',
-      paidAt: payment?.paidAt || dayjs().toDate(),
+      paidAt: payment?.paidAt || dayjs().utc().toDate(),
     },
   })
 
@@ -180,7 +180,7 @@ export function PaymentForm({
                         )}
                       >
                         {field.value ? (
-                          dayjs(field.value).format('DD/MM/YYYY')
+                          dayjs(field.value).utc().format('DD/MM/YYYY')
                         ) : (
                           <span>Selecione uma data</span>
                         )}

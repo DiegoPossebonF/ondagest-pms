@@ -5,12 +5,9 @@ import { StatusLegend } from '@/components/StatusLegend'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import UnitCard from '@/components/unit/UnitCard'
-import dayjs from 'dayjs'
-import isBetween from 'dayjs/plugin/isBetween'
+import dayjs from '@/lib/dayjs'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-
-dayjs.extend(isBetween)
 
 export default async function Dashboard() {
   const user = await getUserAndOrg()
@@ -19,7 +16,7 @@ export default async function Dashboard() {
     redirect('/settings/organization')
   }
 
-  const res = await getUnitsUpdatedBookingsByDate(dayjs().toDate())
+  const res = await getUnitsUpdatedBookingsByDate(dayjs().utc().toDate())
 
   if (res.error || !res.data) {
     throw new Error(res.error)
