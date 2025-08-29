@@ -4,6 +4,23 @@ import { Toaster } from '@/components/ui/sonner'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 
 export const metadata: Metadata = {
+  openGraph: {
+    title: 'Ondagest PMS',
+    description:
+      'OndaGest PMS é uma aplicação de gestão de hospedagens desenvolvida para facilitar o controle de reservas, pagamentos, serviços e descontos. Ideal para pequenas pousadas e casas de temporada, a plataforma oferece uma interface moderna, clara e eficiente para o gestor acompanhar toda a jornada do hóspede.',
+    url: 'https://www.ondagest.com.br',
+    siteName: 'Ondagest PMS',
+    images: [
+      {
+        url: 'https://www.ondagest.com.br/LogoOndaGest.png', // 👈 precisa ser uma imagem hospedada
+        width: 1000,
+        height: 1000,
+        alt: 'Ondagest PMS',
+      },
+    ],
+    locale: 'pt_BR',
+    type: 'website',
+  },
   icons: {
     icon: '/favicon.ico',
   },

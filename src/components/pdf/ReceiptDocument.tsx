@@ -1,7 +1,7 @@
 import { getBookingById } from '@/app/actions/booking/actions'
 import { getUserAndOrg } from '@/app/actions/utils/get-user-and-org'
 import dayjs from '@/lib/dayjs'
-import { formatCurrency } from '@/lib/utils'
+import { PAYMENT_TYPE_LABELS, formatCurrency } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import type { Organization, Payment } from '@prisma/client'
 import {
@@ -151,7 +151,7 @@ const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
             <Text style={styles.label}>Detalhes do Pagamento:</Text>
             <Text>Valor: {formatCurrency(payment.amount)}</Text>
             <Text>Data: {dayjs(payment.paidAt).format('DD/MM/YYYY')}</Text>
-            <Text>Forma: {payment.paymentType}</Text>
+            <Text>Forma: {PAYMENT_TYPE_LABELS[payment.paymentType]}</Text>
             <Text>
               Referente à reserva #{padStart(booking.id.toString(), 5, '0')}
             </Text>
