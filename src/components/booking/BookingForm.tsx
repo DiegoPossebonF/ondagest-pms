@@ -164,11 +164,13 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
     if (!watchUnit) return
     async function getRates() {
       try {
-        const res = await groupedByRateNamePerUnit(watchUnit)
+        startTransition(async () => {
+          const res = await groupedByRateNamePerUnit(watchUnit)
 
-        if (res.error || !res.data) throw new Error(res.error)
-        setRates(res.data)
-        setError(null)
+          if (res.error || !res.data) throw new Error(res.error)
+          setRates(res.data)
+          setError(null)
+        })
       } catch (error) {
         setRates(null)
         setError((error as Error).message)
@@ -409,6 +411,7 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
                     selectedRateName={selectedRateName}
                     setSelectedRateName={setSelectedRateName}
                     setValue={form.setValue}
+                    disabled={isPending}
                   />
                   <FormDescription className="sr-only">
                     Selecione uma tarifa para a reserva
@@ -487,6 +490,7 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
               onClick={() => {
                 form.handleSubmit(onSubmit)()
               }}
+              disabled={isPending}
             >
               {isPending ? <LoadingSpinner size="sm" /> : 'Atualizar'}
             </Button>
@@ -500,6 +504,7 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
             onClick={() => {
               form.handleSubmit(onSubmit)()
             }}
+            disabled={isPending}
           >
             {isPending ? <LoadingSpinner size="sm" /> : 'Nova reserva'}
           </Button>
