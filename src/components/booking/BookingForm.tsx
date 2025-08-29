@@ -236,33 +236,33 @@ export default function BookingForm({ bookingData }: BookingFormProps) {
             return
           }
           if (data.success && data.booking) {
+            setBooking(data.booking)
+            setServerError(null)
+            refetch()
+            router.refresh()
             toast('Sucesso', {
               description: data.success,
               duration: 5000,
               icon: '✅',
             })
-            setBooking(data.booking)
-            setServerError(null)
-            router.refresh()
-            refetch()
           }
         })
       })
     } else {
       startTransition(() => {
-        createBooking(values).then(data => {
+        createBooking(values).then(async data => {
           if (data.error) {
             setServerError(data.error)
             return
           }
           if (data.success) {
+            form.reset()
+            setServerError(null)
+            await refetch()
+            router.push('/bookings')
             toast('Sucesso', {
               description: data.success,
             })
-            form.reset()
-            setServerError(null)
-            refetch()
-            router.push('/bookings')
           }
         })
       })

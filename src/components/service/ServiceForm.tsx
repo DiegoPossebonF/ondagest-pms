@@ -16,7 +16,7 @@ import { type ServiceSchema, serviceSchema } from '@/schemas/service-schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { Service } from '@prisma/client'
 import { useRouter } from 'next/navigation'
-import { useState, useTransition } from 'react'
+import { type TransitionStartFunction, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { LoadingSpinner } from '../LoadingSpinner'
@@ -26,16 +26,19 @@ interface ServiceFormProps {
   bookingId: number
   service?: Service
   closeDialog?: () => void
+  startTransition: TransitionStartFunction
+  isPending: boolean
 }
 
 export function ServiceForm({
   bookingId,
   service,
   closeDialog,
+  startTransition,
+  isPending,
 }: ServiceFormProps) {
   const [openPopover, setOpenPopover] = useState(false)
   const router = useRouter()
-  const [isPending, startTransition] = useTransition()
   const [serverError, setServerError] = useState<string | null>(null)
 
   const form = useForm<ServiceSchema>({

@@ -16,7 +16,7 @@ import { type DiscountSchema, discountSchema } from '@/schemas/discount-schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { Discount } from '@prisma/client'
 import { useRouter } from 'next/navigation'
-import { useState, useTransition } from 'react'
+import { type TransitionStartFunction, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { DiscountAlertDialogDelete } from './DiscountAlertDialogDelete'
@@ -25,16 +25,19 @@ interface DiscountFormProps {
   bookingId: number
   discount?: Discount
   closeDialog?: () => void
+  startTransition: TransitionStartFunction
+  isPending: boolean
 }
 
 export function DiscountForm({
   bookingId,
   discount,
   closeDialog,
+  startTransition,
+  isPending,
 }: DiscountFormProps) {
   const [openPopover, setOpenPopover] = useState(false)
   const router = useRouter()
-  const [isPending, startTransition] = useTransition()
   const [serverError, setServerError] = useState<string | null>(null)
 
   const form = useForm<DiscountSchema>({

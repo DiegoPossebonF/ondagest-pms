@@ -17,7 +17,7 @@ import {
   IconMoneybagMinus,
   IconTool,
 } from '@tabler/icons-react'
-import { useEffect, useState } from 'react'
+import { type TransitionStartFunction, useEffect, useState } from 'react'
 import { DiscountForm } from '../discount/DiscountForm'
 import { PaymentForm } from '../payment/PaymentForm'
 import { ServiceForm } from '../service/ServiceForm'
@@ -30,6 +30,8 @@ interface BookingActionsSheetProps {
   editAction?: 'payment' | 'discount' | 'service'
   editObject?: Payment | Discount | Service
   booking: BookingAllIncludes
+  startTransition: TransitionStartFunction
+  isPending: boolean
 }
 
 export function BookingActionsSheet({
@@ -38,6 +40,8 @@ export function BookingActionsSheet({
   editAction,
   editObject,
   booking,
+  startTransition,
+  isPending,
 }: BookingActionsSheetProps) {
   const [action, setAction] = useState<'payment' | 'discount' | 'service'>(
     editAction || 'payment'
@@ -62,6 +66,7 @@ export function BookingActionsSheet({
                 variant="default"
                 title="Lançar pagamento"
                 onClick={() => setAction('payment')}
+                disabled={isPending}
               >
                 <IconCashRegister className="h-4 w-4" />
                 <span className="sr-only">Lançar pagamento</span>
@@ -82,6 +87,7 @@ export function BookingActionsSheet({
                 variant="default"
                 title="Adicionar Desconto"
                 onClick={() => setAction('discount')}
+                disabled={isPending}
               >
                 <IconMoneybagMinus className="h-4 w-4" />
                 <span className="sr-only">Adicionar Desconto</span>
@@ -102,6 +108,7 @@ export function BookingActionsSheet({
                 variant="default"
                 title="Adicionar Serviço"
                 onClick={() => setAction('service')}
+                disabled={isPending}
               >
                 <IconTool className="h-4 w-4" />
                 <span className="sr-only">Adicionar Serviço</span>
@@ -172,6 +179,8 @@ export function BookingActionsSheet({
             booking={booking}
             payment={editObject as Payment}
             closeDialog={() => setOpenSheet(false)}
+            isPending={isPending}
+            startTransition={startTransition}
           />
         )}
         {action === 'discount' && (
@@ -179,6 +188,8 @@ export function BookingActionsSheet({
             bookingId={booking.id}
             discount={editObject as Discount}
             closeDialog={() => setOpenSheet(false)}
+            startTransition={startTransition}
+            isPending={isPending}
           />
         )}
         {action === 'service' && (
@@ -186,6 +197,8 @@ export function BookingActionsSheet({
             bookingId={booking.id}
             service={editObject as Service}
             closeDialog={() => setOpenSheet(false)}
+            startTransition={startTransition}
+            isPending={isPending}
           />
         )}
       </SheetContent>

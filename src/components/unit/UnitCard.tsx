@@ -12,11 +12,13 @@ import type { BookingAllIncludes } from '@/types/booking'
 import type { UnitWithTypeAndBookings } from '@/types/unit'
 import { BookingStatus } from '@prisma/client'
 import { IconCalendarPlus, IconHome } from '@tabler/icons-react'
+import dayjs from 'dayjs'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
+import { LoadingSpinner } from '../LoadingSpinner'
 import { BookingActionsSheet } from '../booking/BookingActionsSheet'
 import { BookingDescriptions } from '../booking/BookingDescriptions'
 import FluentDoor16Filled from '../icons/fluent-ui/FluentDoor16Filled'
@@ -128,6 +130,7 @@ function getRelevantBooking(
 }
 
 export default function UnitCard({ unit, index }: UnitCardProps) {
+  const [isPending, startTransition] = useTransition()
   const [openSheet, setOpenSheet] = useState(false)
   const router = useRouter()
   const relevantBooking = getRelevantBooking(unit.bookings)
@@ -144,37 +147,41 @@ export default function UnitCard({ unit, index }: UnitCardProps) {
   }
 
   const handleFinalizeBooking = async (booking: BookingAllIncludes) => {
-    canFinalizeBooking(booking)
-      ? await updateBookingStatus(booking.id, 'FINALIZED').then(() => {
-          toast.success('Reserva finalizada', {
-            description: 'A reserva foi finalizada com sucesso.',
+    startTransition(async () => {
+      canFinalizeBooking(booking)
+        ? await updateBookingStatus(booking.id, 'FINALIZED').then(() => {
+            toast.success('Reserva finalizada', {
+              description: 'A reserva foi finalizada com sucesso.',
+            })
+            router.refresh()
           })
-          router.refresh()
-        })
-      : toast.error('Pagamento pendente', {
-          description: `Ainda faltam ${formatCurrency(calculateBookingValues(booking).totalAll - calculateBookingValues(booking).totalPayment)} para finalizar a reserva.`,
-        })
+        : toast.error('Pagamento pendente', {
+            description: `Ainda faltam ${formatCurrency(calculateBookingValues(booking).totalAll - calculateBookingValues(booking).totalPayment)} para finalizar a reserva.`,
+          })
+    })
   }
 
   const handleCheckIn = async (booking: BookingAllIncludes) => {
-    await updateBookingStatus(booking.id, 'IN_PROGRESS').then(() => {
-      toast('Check-in realizado', {
-        description: 'O check-in foi realizado com sucesso.',
+    startTransition(async () => {
+      await updateBookingStatus(booking.id, 'IN_PROGRESS').then(() => {
+        toast('Check-in realizado', {
+          description: 'O check-in foi realizado com sucesso.',
+        })
+        router.refresh()
       })
-      router.refresh()
     })
   }
 
   async function handleConfirmWithoutPayment(bookingId: number) {
     try {
-      await updateBookingStatus(bookingId, 'CONFIRMED').then(() => {
-        toast('Confirmado', {
-          description: 'A reserva foi confirmada com sucesso.',
+      startTransition(async () => {
+        await updateBookingStatus(bookingId, 'CONFIRMED').then(() => {
+          toast('Confirmado', {
+            description: 'A reserva foi confirmada com sucesso.',
+          })
+          router.refresh()
         })
-        router.refresh()
       })
-
-      // Atualizar estado ou refetch
     } catch (error) {
       toast('Erro ao confirmar', {
         description: 'Ocorreu um erro ao confirmar a reserva.',
@@ -227,7 +234,9 @@ export default function UnitCard({ unit, index }: UnitCardProps) {
           )}
         </CardHeader>
         <CardContent className="px-6 py-2">
-          {booking ? (
+          {isPending ? (
+            <LoadingSpinner />
+          ) : booking ? (
             <BookingDescriptions booking={booking} />
           ) : (
             <CardDescription className="flex flex-col justify-center items-center gap-2 text-sm font-semibold text-center">
@@ -248,6 +257,7 @@ export default function UnitCard({ unit, index }: UnitCardProps) {
                       className={`size-8 group-data-[collapsible=icon]:opacity-0`}
                       variant="default"
                       title="Ir para reserva"
+                      disabled={isPending}
                     >
                       <IconHome className="h-4 w-4" />
                       <span className="sr-only">Ir para reserva</span>
@@ -263,6 +273,8 @@ export default function UnitCard({ unit, index }: UnitCardProps) {
                 booking={booking}
                 openSheet={openSheet}
                 setOpenSheet={setOpenSheet}
+                startTransition={startTransition}
+                isPending={isPending}
               />
 
               {managerAction && booking.status === 'PENDING' && (
@@ -274,6 +286,7 @@ export default function UnitCard({ unit, index }: UnitCardProps) {
                           size="icon"
                           className={`size-8 group-data-[collapsible=icon]:opacity-0 ${STATUS_COLORS_TEXT[booking.status]}`}
                           variant="outline"
+                          disabled={isPending}
                         >
                           {StatusIcon && <StatusIcon className="h-4 w-4" />}
                           <span className="sr-only">
@@ -316,6 +329,7 @@ export default function UnitCard({ unit, index }: UnitCardProps) {
                       variant="outline"
                       onClick={() => handleCheckIn(booking)}
                       className={`size-8 group-data-[collapsible=icon]:opacity-0 ${STATUS_COLORS_TEXT[booking.status]}`}
+                      disabled={isPending}
                     >
                       {StatusIcon && <StatusIcon className="h-4 w-4" />}
                       <span className="sr-only">Fazer check-in</span>
@@ -334,6 +348,7 @@ export default function UnitCard({ unit, index }: UnitCardProps) {
                       variant="outline"
                       onClick={() => handleFinalizeBooking(booking)}
                       className={`size-8 group-data-[collapsible=icon]:opacity-0 ${STATUS_COLORS_TEXT[booking.status]}`}
+                      disabled={isPending}
                     >
                       {StatusIcon && <StatusIcon className="h-4 w-4" />}
                       <span className="sr-only">Fazer check-out</span>
@@ -348,11 +363,14 @@ export default function UnitCard({ unit, index }: UnitCardProps) {
           ) : (
             <Tooltip>
               <TooltipTrigger asChild>
-                <Link href={`/bookings/new`}>
+                <Link
+                  href={`/bookings/new?unitId=${unit.id}&unitName=${unit.name}-${unit.type.name}&startDate=${dayjs().format('YYYY-MM-DD')}`}
+                >
                   <Button
                     size="icon"
                     variant="outline"
                     className={`size-8 group-data-[collapsible=icon]:opacity-0`}
+                    disabled={isPending}
                   >
                     <IconCalendarPlus className="w-4 h-4" />
                     <span className="sr-only">Fazer reserva</span>

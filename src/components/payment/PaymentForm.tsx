@@ -26,7 +26,7 @@ import { type Payment, PaymentType } from '@prisma/client'
 import { IconDeviceFloppy } from '@tabler/icons-react'
 import { CalendarIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useState, useTransition } from 'react'
+import { type TransitionStartFunction, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { Calendar } from '../ui/calendar'
@@ -44,16 +44,19 @@ interface PaymentFormProps {
   booking: BookingAllIncludes
   payment?: Payment
   closeDialog?: () => void
+  startTransition: TransitionStartFunction
+  isPending: boolean
 }
 
 export function PaymentForm({
   booking,
   payment,
   closeDialog,
+  startTransition,
+  isPending,
 }: PaymentFormProps) {
   const [openPopover, setOpenPopover] = useState(false)
   const router = useRouter()
-  const [isPending, startTransition] = useTransition()
   const [serverError, setServerError] = useState<string | null>(null)
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
 
