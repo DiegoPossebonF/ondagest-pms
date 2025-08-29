@@ -1,9 +1,6 @@
 CORREÇÕES A FAZER
 
-
-- Inserir LoadingSpinner ao clicar nos botões
-- Atualizar status da reserva sempre que entrar na pagina /map
-- Melhorar layout pagina criar usuários
+??
 
 TESTAR
 
@@ -20,4 +17,6 @@ TESTAR
 
 - Melhorar carregamento Combox Guest ao criar reserva
 - Corrigir erro no form booking, quando mudar a data e tiver uma unit selecionada, deve deixar null para gerar nova busca de units livres
-
+- Inserir LoadingSpinner ao clicar nos botões
+- Atualizar status da reserva sempre que entrar na pagina /map
+- Melhorar layout pagina criar usuários

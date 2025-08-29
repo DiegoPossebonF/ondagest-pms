@@ -4,6 +4,7 @@ import { activeBookingStatuses } from '@/lib/db/scopes'
 import type { BookingAllIncludes } from '@/types/booking'
 import type { BookingStatus, PaymentStatus, Prisma } from '@prisma/client'
 import dbWithTenant from '../utils/dbWithTenant'
+import { updateBookingStatusIfNeeded } from './updateBookingStatusIfNeeded'
 
 interface GetBookingsParams {
   page?: number
@@ -155,7 +156,11 @@ export async function getBookingsPerPeriod(period: { from: Date; to: Date }) {
       },
     })
 
-    return { data: bookings }
+    const updatedBookings = await Promise.all(
+      bookings.map(booking => updateBookingStatusIfNeeded(booking))
+    )
+
+    return { data: updatedBookings }
   } catch (error) {
     console.error('Erro ao buscar reservas por período', error)
     return {

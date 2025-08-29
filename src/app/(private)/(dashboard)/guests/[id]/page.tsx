@@ -15,8 +15,10 @@ export default async function GuestId({
   }
 
   return (
-    <div className="p-6 overflow-auto">
-      <GuestForm guest={res.data} />
+    <div className="flex flex-col justify-center items-center p-6">
+      <div className="w-full md:w-1/2">
+        <GuestForm guest={res.data} />
+      </div>
     </div>
   )
 }

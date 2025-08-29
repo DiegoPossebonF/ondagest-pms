@@ -10,8 +10,9 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
-import type { Icon } from '@tabler/icons-react'
+import { type Icon, IconLoader } from '@tabler/icons-react'
 import { usePathname, useRouter } from 'next/navigation'
+import { useState, useTransition } from 'react'
 
 export function NavSecondary({
   items,
@@ -28,6 +29,8 @@ export function NavSecondary({
   const router = useRouter()
   const pathname = usePathname()
   const segments = pathname.split('/').filter(Boolean)
+  const [isPending, startTransition] = useTransition()
+  const [clickedUrl, setClickedUrl] = useState<string | null>(null)
 
   const active = (url: string) => {
     return segments[0] === url.replace('/', '')
@@ -38,9 +41,14 @@ export function NavSecondary({
   }
 
   const handleNavigate = (href: string) => {
-    router.push(href)
-    isMobile && setOpenMobile(false) // Fecha o sidebar ao navegar
+    setClickedUrl(href)
+    startTransition(() => {
+      router.push(href)
+      isMobile && setOpenMobile(false) // Fecha o sidebar ao navegar
+    })
   }
+
+  const isButtonLoading = (href: string) => isPending && clickedUrl === href
 
   return (
     <SidebarGroup {...props}>
@@ -50,11 +58,19 @@ export function NavSecondary({
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton
                 tooltip={item.title}
-                className={`${active(item.url)}`}
+                className={`${!isButtonLoading(item.url) && active(item.url)}`}
                 onClick={() => handleNavigate(item.url)}
+                disabled={isPending}
               >
-                {active(item.url) && item.iconFilled && <item.iconFilled />}
-                {!active(item.url) && item.icon && <item.icon />}
+                {!isButtonLoading(item.url) &&
+                  active(item.url) &&
+                  item.iconFilled && <item.iconFilled />}
+                {!isButtonLoading(item.url) &&
+                  !active(item.url) &&
+                  item.icon && <item.icon />}
+                {isButtonLoading(item.url) && (
+                  <IconLoader className={'animate-spin duration-1000'} />
+                )}
                 <span>{item.title}</span>
               </SidebarMenuButton>
             </SidebarMenuItem>

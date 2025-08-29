@@ -3,6 +3,8 @@
 import { createGuest } from '@/app/actions/guest/createGuest'
 import { updateGuest } from '@/app/actions/guest/updateGuest'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
 import { type GuestSchema, guestSchema } from '@/schemas/guest-schema'
 import { cpfMask, phoneMask } from '@/utils/masks'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -91,166 +93,172 @@ export default function GuestForm({ guest }: GuestFormProps) {
   }
 
   return (
-    <>
-      <GuestFormError
-        errors={form.formState.errors}
-        serverError={serverError}
-      />
+    <Card className="flex flex-col w-full h-full bg-sidebar dark:bg-muted">
+      <CardHeader className="space-y-2 shrink-0">
+        <CardTitle>Novo Hóspede</CardTitle>
+      </CardHeader>
+      <Separator />
+      <CardContent className="flex-1 overflow-auto space-y-4 p-6">
+        <GuestFormError
+          errors={form.formState.errors}
+          serverError={serverError}
+        />
 
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full space-y-4"
-        >
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Nome completo</FormLabel>
-                <Input
-                  {...field}
-                  placeholder="Digite o nome completo"
-                  disabled={isDisabled}
-                />
-                <FormDescription className="sr-only">
-                  Informe o nome completo do hóspede
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="w-full space-y-4"
+          >
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Nome completo</FormLabel>
+                  <Input
+                    {...field}
+                    placeholder="Digite o nome completo"
+                    disabled={isDisabled}
+                  />
+                  <FormDescription className="sr-only">
+                    Informe o nome completo do hóspede
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="cpf"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>CPF</FormLabel>
-                <Input
-                  {...field}
-                  value={cpfMask(field.value)}
-                  onChange={e => {
-                    const raw = e.target.value.replace(/\D/g, '').slice(0, 11)
-                    field.onChange(raw)
-                  }}
-                  placeholder="000.000.000-00"
-                  disabled={isDisabled}
-                />
-                <FormDescription className="sr-only">
-                  Informe o CPF do hóspede
-                </FormDescription>
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="cpf"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>CPF</FormLabel>
+                  <Input
+                    {...field}
+                    value={cpfMask(field.value)}
+                    onChange={e => {
+                      const raw = e.target.value.replace(/\D/g, '').slice(0, 11)
+                      field.onChange(raw)
+                    }}
+                    placeholder="000.000.000-00"
+                    disabled={isDisabled}
+                  />
+                  <FormDescription className="sr-only">
+                    Informe o CPF do hóspede
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>E-mail</FormLabel>
-                <Input
-                  {...field}
-                  type="email"
-                  placeholder="Digite o e-mail"
-                  disabled={isDisabled}
-                />
-                <FormDescription className="sr-only">
-                  Informe o e-mail do hóspede
-                </FormDescription>
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>E-mail</FormLabel>
+                  <Input
+                    {...field}
+                    type="email"
+                    placeholder="Digite o e-mail"
+                    disabled={isDisabled}
+                  />
+                  <FormDescription className="sr-only">
+                    Informe o e-mail do hóspede
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="phone"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Telefone</FormLabel>
-                <Input
-                  {...field}
-                  value={phoneMask(field.value || '')}
-                  onChange={e => {
-                    const raw = e.target.value.replace(/\D/g, '').slice(0, 11)
-                    field.onChange(raw)
-                  }}
-                  placeholder="(00) 90000-0000"
-                  disabled={isDisabled}
-                />
-                <FormDescription className="sr-only">
-                  Informe o telefone do hóspede
-                </FormDescription>
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Telefone</FormLabel>
+                  <Input
+                    {...field}
+                    value={phoneMask(field.value || '')}
+                    onChange={e => {
+                      const raw = e.target.value.replace(/\D/g, '').slice(0, 11)
+                      field.onChange(raw)
+                    }}
+                    placeholder="(00) 90000-0000"
+                    disabled={isDisabled}
+                  />
+                  <FormDescription className="sr-only">
+                    Informe o telefone do hóspede
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="city"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Cidade</FormLabel>
-                <Input
-                  {...field}
-                  placeholder="Digite a cidade"
-                  disabled={isDisabled}
-                />
-                <FormDescription className="sr-only">
-                  Informe a cidade do hóspede
-                </FormDescription>
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="city"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Cidade</FormLabel>
+                  <Input
+                    {...field}
+                    placeholder="Digite a cidade"
+                    disabled={isDisabled}
+                  />
+                  <FormDescription className="sr-only">
+                    Informe a cidade do hóspede
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="carPlate"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Placa do carro</FormLabel>
-                <Input
-                  {...field}
-                  placeholder="Digite a placa do carro"
-                  disabled={isDisabled}
-                />
-                <FormDescription className="sr-only">
-                  Informe a placa do carro do hóspede
-                </FormDescription>
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="carPlate"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Placa do carro</FormLabel>
+                  <Input
+                    {...field}
+                    placeholder="Digite a placa do carro"
+                    disabled={isDisabled}
+                  />
+                  <FormDescription className="sr-only">
+                    Informe a placa do carro do hóspede
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
 
-          {guest ? (
-            isDisabled ? (
-              <div className="flex gap-2">
-                <Button
-                  type="button"
-                  className="w-full"
-                  onClick={e => {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    setIsDisabled(false)
-                  }}
-                  size={'sm'}
-                >
-                  Editar
+            {guest ? (
+              isDisabled ? (
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    className="w-full"
+                    onClick={e => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      setIsDisabled(false)
+                    }}
+                    size={'sm'}
+                  >
+                    Editar
+                  </Button>
+                  <GuestDeleteAlertDialog guestId={guest.id} />
+                </div>
+              ) : (
+                <Button type="submit" className="w-full" size={'sm'}>
+                  {isPending ? 'Atualizando...' : 'Atualizar'}
                 </Button>
-                <GuestDeleteAlertDialog guestId={guest.id} />
-              </div>
+              )
             ) : (
               <Button type="submit" className="w-full" size={'sm'}>
-                {isPending ? 'Atualizando...' : 'Atualizar'}
+                {isPending ? 'Criando...' : 'Novo hóspede'}
               </Button>
-            )
-          ) : (
-            <Button type="submit" className="w-full" size={'sm'}>
-              {isPending ? 'Criando...' : 'Novo hóspede'}
-            </Button>
-          )}
-        </form>
-      </Form>
-    </>
+            )}
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   )
 }
