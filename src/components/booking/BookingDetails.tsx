@@ -40,7 +40,8 @@ import {
   IconTool,
   IconUser,
 } from '@tabler/icons-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useTransition } from 'react'
+import { LoadingSpinner } from '../LoadingSpinner'
 import VoucherViewer from '../pdf/VoucherViewer'
 import { Table, TableBody, TableCell, TableRow } from '../ui/table'
 import { BookingActionsSheet } from './BookingActionsSheet'
@@ -50,6 +51,7 @@ interface BookingDetailsProps {
 }
 
 export function BookingDetails({ booking }: BookingDetailsProps) {
+  const [isPending, startTransition] = useTransition()
   const [editAction, setEditAction] = useState<
     'payment' | 'discount' | 'service' | null
   >(null)
@@ -551,14 +553,22 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
       <Separator />
 
       <CardFooter className="flex justify-center px-6 py-4 gap-2">
-        <BookingActionsSheet
-          openSheet={openSheet}
-          setOpenSheet={setOpenSheet}
-          booking={booking}
-          editAction={editAction ? editAction : undefined}
-          editObject={editObject ? editObject : undefined}
-        />
-        <VoucherViewer booking={booking} />
+        {isPending ? (
+          <LoadingSpinner size="sm" />
+        ) : (
+          <>
+            <BookingActionsSheet
+              openSheet={openSheet}
+              setOpenSheet={setOpenSheet}
+              booking={booking}
+              editAction={editAction ? editAction : undefined}
+              editObject={editObject ? editObject : undefined}
+              isPending={isPending}
+              startTransition={startTransition}
+            />
+            <VoucherViewer booking={booking} />
+          </>
+        )}
       </CardFooter>
     </Card>
   )
