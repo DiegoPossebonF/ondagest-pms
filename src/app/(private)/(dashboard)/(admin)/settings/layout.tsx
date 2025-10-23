@@ -1,8 +1,14 @@
 import { auth } from '@/lib/auth'
 import { redirect } from 'next/navigation'
-import ReportsClient from './ReportsClient'
+import type { ReactNode } from 'react'
 
-export default async function ReportsPage() {
+interface SettingsLayoutProps {
+  children: ReactNode
+}
+
+export default async function SettingsLayout({
+  children,
+}: SettingsLayoutProps) {
   const session = await auth()
   if (
     !session ||
@@ -11,5 +17,5 @@ export default async function ReportsPage() {
     redirect('/?error=unauthorized')
   }
 
-  return <ReportsClient />
+  return <>{children}</>
 }

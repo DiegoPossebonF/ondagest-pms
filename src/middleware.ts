@@ -1,7 +1,7 @@
-import { type NextRequest, NextResponse } from 'next/server'
-import { auth } from './lib/auth'
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 
-// rotas livres
+// Rotas públicas (sem login)
 const publicRoutes = [
   '/signin',
   '/signup',
@@ -10,10 +10,10 @@ const publicRoutes = [
   '/reset-password',
 ]
 
-// rotas só para autenticados
+// Rotas privadas (exigem login)
 const privateRoutes = ['/']
 
-// rotas só para ADMIN
+// Rotas somente para ADMIN / OWNER
 const adminRoutes = [
   '/reports',
   '/settings',
@@ -24,37 +24,46 @@ const adminRoutes = [
   '/admin/rates',
 ]
 
-export default async function middleware(req: NextRequest) {
-  const referer = req.headers.get('referer')
+// ⚙️ Função auxiliar — checa se o usuário está autenticado
+function hasAuthCookie(req: NextRequest): boolean {
+  const cookies = req.cookies
+  // Auth.js usa cookies diferentes dependendo do ambiente
+  return Boolean(
+    cookies.get('__Secure-authjs.session-token') ||
+      cookies.get('authjs.session-token') ||
+      cookies.get('__Secure-next-auth.session-token') ||
+      cookies.get('next-auth.session-token')
+  )
+}
+
+export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
+  const referer = req.headers.get('referer')
 
-  const session = await auth()
+  const isPublic = publicRoutes.some(r => pathname.startsWith(r))
+  const isPrivate = privateRoutes.some(r => pathname.startsWith(r))
+  const isAdmin = adminRoutes.some(r => pathname.startsWith(r))
 
-  const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route))
-  const isPrivateRoute = privateRoutes.some(route => pathname.startsWith(route))
-  const isAdminRoute = adminRoutes.some(route => pathname.startsWith(route))
+  const isLoggedIn = hasAuthCookie(req)
 
-  // Se rota pública
-  if (isPublicRoute) {
-    // Impede usuário logado de voltar para login
-    if (session && pathname === '/signin') {
+  // 🔓 Se rota pública
+  if (isPublic) {
+    // Usuário logado não deve acessar /signin
+    if (isLoggedIn && pathname === '/signin') {
       return NextResponse.redirect(new URL('/', req.url))
     }
     return NextResponse.next()
   }
 
-  // Se não estiver logado e for rota privada → vai pro login
-  if (!session && isPrivateRoute) {
+  // 🔐 Se rota privada e não logado
+  if (isPrivate && !isLoggedIn) {
     return NextResponse.redirect(new URL('/signin', req.url))
   }
 
-  // Proteção para rotas admin
-  if (
-    isAdminRoute &&
-    session?.user.role !== 'ADMIN' &&
-    session?.user.role !== 'OWNER'
-  ) {
-    const redirectUrl = new URL(referer || '/', req.url)
+  // ⚠️ Proteção básica de rota admin
+  // Como o cookie não carrega `role`, a checagem completa será feita no servidor
+  if (isAdmin && !isLoggedIn) {
+    const redirectUrl = new URL('/signin', req.url)
     redirectUrl.searchParams.set('error', 'unauthorized')
     return NextResponse.redirect(redirectUrl)
   }
@@ -62,6 +71,7 @@ export default async function middleware(req: NextRequest) {
   return NextResponse.next()
 }
 
+// 🔧 Configuração: aplica a todas as rotas (exceto estáticos / APIs)
 export const config = {
   matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
 }

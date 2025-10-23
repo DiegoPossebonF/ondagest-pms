@@ -13,7 +13,7 @@ import {
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 
-export default function SettingsPage() {
+export default function SettingsClient() {
   const settingsOptions = [
     {
       title: 'Organização',
