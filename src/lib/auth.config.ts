@@ -9,7 +9,8 @@ class EmailVerifiedError extends CredentialsSignin {
 }
 
 export const authConfig = {
-  adapter: PrismaAdapter(db),
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  adapter: PrismaAdapter(db) as any,
   session: {
     strategy: 'jwt',
     maxAge: 60 * 60 * 24 * 7,

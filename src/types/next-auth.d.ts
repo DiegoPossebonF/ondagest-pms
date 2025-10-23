@@ -1,12 +1,6 @@
-// biome-ignore lint/correctness/noUnusedImports: <explanation>
-import NextAuth from 'next-auth'
-import type { Session } from 'next-auth'
+// types/next-auth.d.ts
 
-declare module 'next/server' {
-  interface NextRequest {
-    auth: Session | null
-  }
-}
+import type { DefaultSession } from 'next-auth'
 
 declare module 'next-auth' {
   interface Session {
@@ -17,7 +11,7 @@ declare module 'next-auth' {
       email: string
       image?: string
       organizationId?: string
-    }
+    } & DefaultSession['user']
   }
 
   interface User {

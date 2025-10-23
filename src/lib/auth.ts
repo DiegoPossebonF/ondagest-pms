@@ -2,13 +2,14 @@ import NextAuth from 'next-auth'
 import { authConfig } from './auth.config'
 import db from './db'
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+const authOptions = {
   ...authConfig,
   pages: {
     signIn: '/signin',
   },
   callbacks: {
-    jwt: async ({ token, user }) => {
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    jwt: async ({ token, user }: any) => {
       if (user) {
         token.id = user.id
         token.email = user.email
@@ -21,7 +22,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return token
     },
 
-    session: async ({ session, token }) => {
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    session: async ({ session, token }: any) => {
       if (session.user && token) {
         session.user.id = token.id as string
         session.user.name = token.name as string
@@ -34,7 +36,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session
     },
 
-    async signIn({ account, profile }) {
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    signIn: async ({ account, profile }: any) => {
       if (account?.provider === 'google' && profile?.email) {
         // Tenta encontrar usuário existente pelo e-mail
         let dbUser = await db.user.findUnique({
@@ -74,4 +77,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return true
     },
   },
-})
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+} as any
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export const { handlers, signIn, signOut, auth } = NextAuth(authOptions) as any
