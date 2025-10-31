@@ -14,6 +14,7 @@ import {
   IconRewindForward5,
   IconRewindForward30,
 } from '@tabler/icons-react'
+import { ptBR } from 'date-fns/locale'
 import Link from 'next/link'
 import { useEffect, useState, useTransition } from 'react'
 import AlertErrorGlobal from '../AlertErrorGlobal'
@@ -131,6 +132,7 @@ export function UnitsGanttView() {
           <PopoverContent className="w-auto p-0">
             <Calendar
               mode="single"
+              locale={ptBR}
               selected={startDate}
               onSelect={date => {
                 if (date) {
@@ -138,7 +140,7 @@ export function UnitsGanttView() {
                 }
                 setOpen(false)
               }}
-              month={startDate} // <- força a visualização começar no mês da data
+              defaultMonth={startDate} // <- força a visualização começar no mês da data
               initialFocus
             />
           </PopoverContent>

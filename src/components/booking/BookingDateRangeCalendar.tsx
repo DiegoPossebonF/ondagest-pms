@@ -57,13 +57,15 @@ export function BookingDateRangeCalendar({
         <Calendar
           mode="range"
           locale={ptBR}
-          captionLayout="dropdown"
+          defaultMonth={period.from}
+          //captionLayout="dropdown"
           selected={period}
           onSelect={range => {
             if (range?.from && range.to) {
               onChange({ from: range.from, to: range.to })
             }
           }}
+          numberOfMonths={2}
         />
       </PopoverContent>
     </Popover>
