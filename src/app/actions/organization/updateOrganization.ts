@@ -7,11 +7,20 @@ import {
   organizationSchema,
 } from '@/schemas/organization-schema'
 import { revalidatePath } from 'next/cache'
+import { getSessionUser } from '../utils/get-session-user'
 
-export async function updateOrganization(
-  organizationId: string,
-  data: OrganizationSchema
-) {
+export async function updateOrganization(data: OrganizationSchema) {
+  const sessionUser = await getSessionUser()
+  const organizationId = sessionUser?.organizationId
+
+  if (!sessionUser || !organizationId) {
+    return { error: 'Usuário sem organização!' }
+  }
+
+  if (sessionUser.role !== 'ADMIN' && sessionUser.role !== 'OWNER') {
+    return { error: 'Usuário sem permissão!' }
+  }
+
   const parsed = organizationSchema.safeParse(data)
 
   if (!parsed.success) {

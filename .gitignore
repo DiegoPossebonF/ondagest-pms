@@ -10,6 +10,9 @@ pnpm-lock.yaml
 out/
 .vercel/
 
+# TypeScript
+*.tsbuildinfo
+
 # Prisma
 *.sqlite
 *.db

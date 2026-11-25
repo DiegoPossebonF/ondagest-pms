@@ -10,14 +10,10 @@ import { toast } from 'sonner'
 import { Input } from './ui/input'
 
 interface ImageUploadProps {
-  organizationId: string
   initialImage?: string
 }
 
-export function ImageUpload({
-  organizationId,
-  initialImage,
-}: ImageUploadProps) {
+export function ImageUpload({ initialImage }: ImageUploadProps) {
   const router = useRouter()
   const [preview, setPreview] = useState<string | null>(initialImage || null)
   const [file, setFile] = useState<File | null>(null)
@@ -46,7 +42,7 @@ export function ImageUpload({
     setLoading(true)
 
     try {
-      const response = await updateOrganizationLogo(organizationId, file)
+      const response = await updateOrganizationLogo(file)
 
       if (response?.error) {
         toast.error(response.error)

@@ -7,6 +7,7 @@ import { addHours } from 'date-fns'
 import { revalidatePath } from 'next/cache'
 import { sendVerificationEmail } from '../auth/send-verification-email'
 import dbWithTenant from '../utils/dbWithTenant'
+import { getSessionUser } from '../utils/get-session-user'
 
 export async function updateUser(id: string, data: UserSchema) {
   const { db: dbData, error } = await dbWithTenant()
@@ -14,6 +15,14 @@ export async function updateUser(id: string, data: UserSchema) {
   if (!dbData) throw new Error('Banco de dados não disponível')
 
   const db = dbData
+
+  const sessionUser = await getSessionUser()
+  if (
+    !sessionUser ||
+    (sessionUser.role !== 'ADMIN' && sessionUser.role !== 'OWNER')
+  ) {
+    return { error: 'Você não tem permissão para editar usuários.' }
+  }
 
   const parsed = userSchema.safeParse(data)
 
@@ -35,6 +44,27 @@ export async function updateUser(id: string, data: UserSchema) {
 
     if (!user) {
       return { error: 'Usuário não encontrado.' }
+    }
+
+    const currentRole = user.role ?? 'USER'
+
+    // Proteções de papel (não permite escalação nem alterar o proprietário)
+    if (currentRole === 'OWNER' && sessionUser.role !== 'OWNER') {
+      return { error: 'Apenas o proprietário pode editar o proprietário.' }
+    }
+
+    if (role !== currentRole) {
+      if (role === 'OWNER') {
+        return { error: 'Não é possível definir a função de proprietário.' }
+      }
+      if (currentRole === 'OWNER') {
+        return { error: 'Não é possível alterar a função do proprietário.' }
+      }
+      if (role === 'ADMIN' && sessionUser.role !== 'OWNER') {
+        return {
+          error: 'Apenas o proprietário pode promover a administrador.',
+        }
+      }
     }
 
     // verifica se email foi alterado

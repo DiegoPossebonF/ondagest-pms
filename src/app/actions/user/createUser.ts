@@ -8,6 +8,7 @@ import { addHours } from 'date-fns'
 import { revalidatePath } from 'next/cache'
 import { sendVerificationEmail } from '../auth/send-verification-email'
 import dbWithTenant from '../utils/dbWithTenant'
+import { getSessionUser } from '../utils/get-session-user'
 
 export async function createUser(data: UserSchema) {
   const { db: dbData, error } = await dbWithTenant()
@@ -15,6 +16,14 @@ export async function createUser(data: UserSchema) {
   if (!dbData) throw new Error('Banco de dados não disponível')
 
   const db = dbData
+
+  const sessionUser = await getSessionUser()
+  if (
+    !sessionUser ||
+    (sessionUser.role !== 'ADMIN' && sessionUser.role !== 'OWNER')
+  ) {
+    return { error: 'Você não tem permissão para criar usuários.' }
+  }
 
   const parsed = userSchema.safeParse(data)
 
@@ -26,6 +35,14 @@ export async function createUser(data: UserSchema) {
   }
 
   const { name, email, password, role } = parsed.data
+
+  if (role === 'OWNER') {
+    return { error: 'Não é possível criar um proprietário.' }
+  }
+
+  if (role === 'ADMIN' && sessionUser.role !== 'OWNER') {
+    return { error: 'Apenas o proprietário pode criar administradores.' }
+  }
 
   const existingEmail = await dbDefault.user.findUnique({
     where: { email },

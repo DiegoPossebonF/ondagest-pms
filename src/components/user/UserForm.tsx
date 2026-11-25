@@ -2,6 +2,7 @@
 
 import { createUser } from '@/app/actions/user/createUser'
 import { updateUser } from '@/app/actions/user/updateUser'
+import { useAppContext } from '@/contexts/AppContext'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -45,6 +46,7 @@ export default function UserForm({
   const [serverError, setServerError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
+  const { user: currentUser } = useAppContext()
   const { refetch } = useUsersFilters()
 
   const form = useForm<UserSchema>({
@@ -110,12 +112,14 @@ export default function UserForm({
           onSubmit={form.handleSubmit(onSubmit)}
           className="w-full space-y-4"
         >
-          <div className="flex flex-row w-full justify-center">
-            <UserAvatarUpload
-              userId={selectedUser?.id ?? ''}
-              initialImage={selectedUser?.image ?? ''}
-            />
-          </div>
+          {selectedUser && selectedUser.id === currentUser.id && (
+            <div className="flex flex-row w-full justify-center">
+              <UserAvatarUpload
+                userId={selectedUser.id}
+                initialImage={selectedUser.image ?? ''}
+              />
+            </div>
+          )}
 
           <FormField
             control={form.control}

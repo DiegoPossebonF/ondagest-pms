@@ -68,7 +68,7 @@ export function UserAlertDialogDelete({
             size={'sm'}
             onClick={() => {
               startTransition(async () => {
-                const res = await deleteUser(userId, role)
+                const res = await deleteUser(userId)
                 if (res.error) {
                   toast('Erro', { description: res.error, icon: '🚨' })
                   setOpen(false)

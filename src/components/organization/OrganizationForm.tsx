@@ -74,7 +74,7 @@ export function OrganizationForm({
   async function onSubmitHandle(values: OrganizationSchema) {
     startTransition(async () => {
       if (organization) {
-        const data = await updateOrganization(organization.id, values)
+        const data = await updateOrganization(values)
         if (data.error) {
           setServerError(data.error)
           return
@@ -124,7 +124,6 @@ export function OrganizationForm({
                     <FormControl>
                       <OrganizationLogoUpload
                         initialImage={organization?.logoUrl || undefined}
-                        organizationId={organization?.id || ''}
                       />
                     </FormControl>
                     <FormMessage />

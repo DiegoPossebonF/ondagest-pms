@@ -1,8 +1,9 @@
 'use server'
-import { supabase } from '@/lib/supabase/client'
+import { supabaseAdmin } from '@/lib/supabase/admin'
 import { optimizeImageWithSharp } from '@/utils/optimizeImageWithSharp'
 import { revalidatePath } from 'next/cache'
 import dbWithTenant from '../utils/dbWithTenant'
+import { getSessionUser } from '../utils/get-session-user'
 
 export async function updateUserAvatar(userId: string, file: File) {
   const { db: dbData, error } = await dbWithTenant()
@@ -11,14 +12,25 @@ export async function updateUserAvatar(userId: string, file: File) {
 
   const db = dbData
 
+  const sessionUser = await getSessionUser()
+  if (!sessionUser) {
+    return { error: 'Sessão inválida.' }
+  }
+
+  // Só permite alterar o avatar do próprio usuário logado
+  if (userId !== sessionUser.id) {
+    return { error: 'Você só pode alterar o seu próprio avatar.' }
+  }
+
   try {
     if (file.type !== 'image/png' && file.type !== 'image/jpeg')
       return { error: 'Formato inválido (apenas PNG ou JPEG).' }
 
-    const path = `avatar/${userId}.${file.type.split('/')[1]}`
+    // Usa o id da sessão (não o informado pelo cliente)
+    const path = `avatar/${sessionUser.id}.${file.type.split('/')[1]}`
 
-    // 🔸 Tenta remover o logo anterior
-    await supabase.storage.from('public-media').remove([path])
+    // 🔸 Tenta remover o avatar anterior
+    await supabaseAdmin.storage.from('public-media').remove([path])
 
     const buffer = Buffer.from(await file.arrayBuffer())
 
@@ -31,7 +43,7 @@ export async function updateUserAvatar(userId: string, file: File) {
     })
 
     // 🔸 Tenta fazer o upload
-    const { data, error: uploadError } = await supabase.storage
+    const { data, error: uploadError } = await supabaseAdmin.storage
       .from('public-media')
       .upload(path, optimizedBuffer, {
         upsert: false,
@@ -49,7 +61,7 @@ export async function updateUserAvatar(userId: string, file: File) {
 
     // 🔸 Atualiza no banco de dados
     await db.user.update({
-      where: { id: userId },
+      where: { id: sessionUser.id },
       data: { image: publicUrl },
     })
 

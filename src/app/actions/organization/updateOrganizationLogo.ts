@@ -1,18 +1,25 @@
 'use server'
 import db from '@/lib/db'
-import { supabase } from '@/lib/supabase/client'
+import { supabaseAdmin } from '@/lib/supabase/admin'
 import { optimizeImageWithSharp } from '@/utils/optimizeImageWithSharp'
 import { revalidatePath } from 'next/cache'
+import { getSessionUser } from '../utils/get-session-user'
 
-export async function updateOrganizationLogo(orgId: string, file: File) {
+export async function updateOrganizationLogo(file: File) {
+  const sessionUser = await getSessionUser()
+  const organizationId = sessionUser?.organizationId
+  if (!sessionUser || !organizationId) {
+    return { error: 'Usuário sem organização.' }
+  }
+
   try {
     if (file.type !== 'image/png' && file.type !== 'image/jpeg')
       return { error: 'Formato inválido (apenas PNG ou JPEG).' }
 
-    const path = `logos/${orgId}.${file.type.split('/')[1]}`
+    const path = `logos/${organizationId}.${file.type.split('/')[1]}`
 
     // 🔸 Tenta remover o logo anterior
-    await supabase.storage.from('public-media').remove([path])
+    await supabaseAdmin.storage.from('public-media').remove([path])
 
     const buffer = Buffer.from(await file.arrayBuffer())
 
@@ -25,7 +32,7 @@ export async function updateOrganizationLogo(orgId: string, file: File) {
     })
 
     // 🔸 Tenta fazer o upload
-    const { data, error: uploadError } = await supabase.storage
+    const { data, error: uploadError } = await supabaseAdmin.storage
       .from('public-media')
       .upload(path, optimizedBuffer, {
         upsert: false,
@@ -41,9 +48,9 @@ export async function updateOrganizationLogo(orgId: string, file: File) {
     // 🔸 Gera URL com versionamento para forçar cache refresh
     const publicUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/public-media/${path}?v=${Date.now()}`
 
-    // 🔸 Atualiza no banco de dados
+    // 🔸 Atualiza no banco de dados usando o organizationId da sessão
     await db.organization.update({
-      where: { id: orgId },
+      where: { id: organizationId },
       data: { logoUrl: publicUrl },
     })
 
