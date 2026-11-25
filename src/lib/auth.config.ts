@@ -53,8 +53,6 @@ export const authConfig = {
             throw new EmailVerifiedError()
         }
 
-        console.log('data.user', data.user)
-
         return data.user
       },
     }),
