@@ -1,4 +1,5 @@
 import { PrismaAdapter } from '@auth/prisma-adapter'
+import bcrypt from 'bcryptjs'
 import { CredentialsSignin, type NextAuthConfig } from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
@@ -33,27 +34,26 @@ export const authConfig = {
       authorize: async credentials => {
         if (!credentials?.email || !credentials?.password) return null
 
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/verify-credentials`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              email: credentials.email,
-              password: credentials.password,
-            }),
-          }
+        const email = String(credentials.email)
+        const user = await db.user.findUnique({ where: { email } })
+        if (!user || !user.password) return null
+
+        const isValid = await bcrypt.compare(
+          String(credentials.password),
+          user.password
         )
+        if (!isValid) return null
 
-        const data = await res.json()
+        if (!user.emailVerified) throw new EmailVerifiedError()
 
-        if (!res.ok) {
-          if (data.error === 'CredentialsSignin') return null
-          if (data.error === 'EmailVerifiedError')
-            throw new EmailVerifiedError()
+        return {
+          id: user.id,
+          name: user.name ?? '',
+          email: user.email ?? email,
+          image: user.image ?? undefined,
+          role: user.role ?? 'USER',
+          organizationId: user.organizationId ?? undefined,
         }
-
-        return data.user
       },
     }),
   ],
