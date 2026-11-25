@@ -27,3 +27,7 @@ notes.txt
 
 # GITHUB
 .github
+
+# Agente (OpenCode) — memória/contexto local, não versionar
+AGENTS.md
+PROJECT.md
