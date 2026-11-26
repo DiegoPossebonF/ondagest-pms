@@ -1,8 +1,25 @@
 'use server'
 import db from '@/lib/db'
+import {
+  checkRateLimit,
+  getClientIp,
+  resetPasswordLimiter,
+} from '@/lib/rate-limit'
 import bcrypt from 'bcryptjs'
 
 export async function POST(req: Request) {
+  const ip = await getClientIp(req.headers)
+  const { success: allowed } = await checkRateLimit(
+    resetPasswordLimiter,
+    `reset:${ip}`
+  )
+  if (!allowed) {
+    return Response.json(
+      { error: 'Muitas solicitações. Tente novamente mais tarde.' },
+      { status: 429 }
+    )
+  }
+
   const { token, email, password, confirmPassword } = await req.json()
 
   if (!token || !email || !password || !confirmPassword) {

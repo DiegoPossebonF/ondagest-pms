@@ -3,8 +3,25 @@
 import { randomUUID } from 'node:crypto'
 import { sendVerificationResetPassword } from '@/app/actions/auth/send-verification-reset-password'
 import db from '@/lib/db'
+import {
+  checkRateLimit,
+  forgotPasswordLimiter,
+  getClientIp,
+} from '@/lib/rate-limit'
 
 export async function POST(req: Request) {
+  const ip = await getClientIp(req.headers)
+  const { success: allowed } = await checkRateLimit(
+    forgotPasswordLimiter,
+    `forgot:${ip}`
+  )
+  if (!allowed) {
+    return Response.json(
+      { error: 'Muitas solicitações. Tente novamente mais tarde.' },
+      { status: 429 }
+    )
+  }
+
   const { email } = await req.json()
 
   const user = await db.user.findUnique({ where: { email } })

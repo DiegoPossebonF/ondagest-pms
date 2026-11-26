@@ -46,6 +46,8 @@
     "@supabase/supabase-js": "^2.52.1",
     "@tabler/icons-react": "^3.33.0",
     "@types/bcryptjs": "^2.4.6",
+    "@upstash/ratelimit": "^2.2.2",
+    "@upstash/redis": "^1.41.1",
     "@vercel/speed-insights": "^1.2.0",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.1",

@@ -1,7 +1,17 @@
 'use server'
 import { signIn } from '@/lib/auth'
+import { checkRateLimit, getClientIp, loginLimiter } from '@/lib/rate-limit'
 
 export async function signin(email: string, password: string) {
+  const ip = await getClientIp()
+  const { success: allowed } = await checkRateLimit(loginLimiter, `login:${ip}`)
+  if (!allowed) {
+    return {
+      success: false,
+      error: 'Muitas tentativas de login. Tente novamente mais tarde.',
+    }
+  }
+
   try {
     const res = await signIn('credentials', {
       redirect: false,

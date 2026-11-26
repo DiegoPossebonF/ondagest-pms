@@ -1,12 +1,25 @@
 'use server'
 import { randomBytes } from 'node:crypto'
 import db from '@/lib/db'
+import { checkRateLimit, getClientIp, signupLimiter } from '@/lib/rate-limit'
 import { type SignupFormData, signupSchema } from '@/schemas/sign-up-schema'
 import { hash } from 'bcryptjs'
 import { addHours } from 'date-fns/addHours'
 import { sendVerificationEmail } from './send-verification-email'
 
 export async function signup(data: SignupFormData) {
+  const ip = await getClientIp()
+  const { success: allowed } = await checkRateLimit(
+    signupLimiter,
+    `signup:${ip}`
+  )
+  if (!allowed) {
+    return {
+      success: false,
+      error: 'Muitas tentativas de cadastro. Tente novamente mais tarde.',
+    }
+  }
+
   const parsed = signupSchema.safeParse(data)
 
   if (!parsed.success) {
