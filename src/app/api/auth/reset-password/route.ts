@@ -25,8 +25,6 @@ export async function POST(req: Request) {
     },
   })
 
-  console.log(record)
-
   if (!record || record.expires < new Date()) {
     return Response.json(
       { error: 'Token inválido ou expirado' },
