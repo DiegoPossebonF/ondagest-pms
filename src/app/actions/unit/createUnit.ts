@@ -33,6 +33,16 @@ export async function createUnit(data: UnitSchema) {
   }
 
   try {
+    // Garante que o tipo de acomodação pertence à organização da sessão
+    const unitType = await db.unitType.findUnique({
+      where: { id: typeId },
+      select: { id: true },
+    })
+
+    if (!unitType) {
+      return { error: 'Tipo de acomodação não encontrado.' }
+    }
+
     await db.unit.create({
       data: {
         name,

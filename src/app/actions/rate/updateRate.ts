@@ -21,6 +21,16 @@ export async function updateRate(rateId: string, data: RateSchema) {
 
   const { name, typeId, value, numberOfPeople } = parsed.data
 
+  // Garante que o tipo de acomodação pertence à organização da sessão
+  const unitType = await db.unitType.findUnique({
+    where: { id: typeId },
+    select: { id: true },
+  })
+
+  if (!unitType) {
+    return { error: 'Tipo de acomodação não encontrado.' }
+  }
+
   // Verifica se já existe rate com os mesmos critérios, mas ignora a tarifa atual
   const existingRate = await db.rate.findFirst({
     where: {

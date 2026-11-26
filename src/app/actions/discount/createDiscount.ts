@@ -23,6 +23,16 @@ export async function createDiscount(data: DiscountSchema) {
   const discount = parsed.data
 
   try {
+    // Garante que a reserva pertence à organização da sessão
+    const booking = await db.booking.findUnique({
+      where: { id: Number(discount.bookingId) },
+      select: { id: true },
+    })
+
+    if (!booking) {
+      return { error: 'Reserva não encontrada.' }
+    }
+
     const discountCreated = await db.discount.create({
       data: {
         bookingId: Number(discount.bookingId),

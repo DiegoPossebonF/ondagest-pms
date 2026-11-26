@@ -34,6 +34,36 @@ export async function createBooking(data: BookingSchema) {
       daily,
     } = parsed.data
 
+    // Garante que as relações pertencem à organização da sessão
+    const [guest, unit, rate] = await Promise.all([
+      db.guest.findUnique({
+        where: { id: guestId },
+        select: { id: true },
+      }),
+      db.unit.findUnique({
+        where: { id: unitId },
+        select: { id: true },
+      }),
+      rateId
+        ? db.rate.findUnique({
+            where: { id: rateId },
+            select: { id: true },
+          })
+        : Promise.resolve(null),
+    ])
+
+    if (!guest) {
+      return { error: 'Hóspede não encontrado.' }
+    }
+
+    if (!unit) {
+      return { error: 'Acomodação não encontrada.' }
+    }
+
+    if (rateId && !rate) {
+      return { error: 'Tarifa não encontrada.' }
+    }
+
     const existingBooking = await db.booking.findFirst({
       where: {
         unitId,

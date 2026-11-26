@@ -23,6 +23,16 @@ export async function createService(data: ServiceSchema) {
   const service = parsed.data
 
   try {
+    // Garante que a reserva pertence à organização da sessão
+    const booking = await db.booking.findUnique({
+      where: { id: Number(service.bookingId) },
+      select: { id: true },
+    })
+
+    if (!booking) {
+      return { error: 'Reserva não encontrada.' }
+    }
+
     const serviceCreated = await db.service.create({
       data: {
         bookingId: Number(service.bookingId),
