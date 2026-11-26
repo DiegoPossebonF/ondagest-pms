@@ -32,5 +32,6 @@ declare module 'next-auth/jwt' {
     email: string
     image?: string
     organizationId?: string
+    roleCheckedAt?: number
   }
 }

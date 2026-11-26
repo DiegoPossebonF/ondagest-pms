@@ -18,6 +18,31 @@ const authOptions = {
         token.image = user.image
         token.role = user.role
         token.organizationId = user.organizationId
+        token.roleCheckedAt = Date.now()
+      } else if (token.id) {
+        // Re-sincroniza o papel (e dados básicos) do banco a cada ~5 min,
+        // para que mudanças de role/organização reflitam sem esperar expirar.
+        const lastChecked = token.roleCheckedAt as number | undefined
+        if (!lastChecked || Date.now() - lastChecked > 5 * 60 * 1000) {
+          const dbUser = await db.user.findUnique({
+            where: { id: token.id },
+            select: {
+              role: true,
+              organizationId: true,
+              name: true,
+              email: true,
+              image: true,
+            },
+          })
+          if (dbUser) {
+            token.role = dbUser.role ?? 'USER'
+            token.organizationId = dbUser.organizationId ?? undefined
+            token.name = dbUser.name ?? token.name
+            token.email = dbUser.email ?? token.email
+            token.image = dbUser.image ?? token.image
+          }
+          token.roleCheckedAt = Date.now()
+        }
       }
 
       return token
