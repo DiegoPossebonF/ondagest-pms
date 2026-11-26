@@ -22,11 +22,15 @@ export async function GET(
       return new Response(paymentError, { status: 404 })
     }
 
-    if (!payment) {
+    if (!payment || !payment.booking || !payment.organization) {
       return new Response('Pagamento não encontrado.', { status: 404 })
     }
 
-    const doc = await generateReceiptDocument(payment)
+    const doc = await generateReceiptDocument(
+      payment,
+      payment.booking,
+      payment.organization
+    )
     const buffer = await renderToBuffer(doc)
 
     // ✅ Converter Buffer para Uint8Array

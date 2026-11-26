@@ -9,6 +9,8 @@ const publicRoutes = [
   '/forgot-password',
   '/reset-password',
   '/error',
+  '/booking/voucher',
+  '/booking/receipt',
 ]
 
 // Rotas privadas (exigem login)

@@ -1,5 +1,6 @@
 'use server'
 import type { SortKey } from '@/components/booking/BookingsFiltersProvider'
+import db from '@/lib/db'
 import { activeBookingStatuses } from '@/lib/db/scopes'
 import type { BookingAllIncludes } from '@/types/booking'
 import type { BookingStatus, PaymentStatus, Prisma } from '@prisma/client'
@@ -210,22 +211,22 @@ export async function getBookingById(id: number) {
 }
 
 export async function getBookingByPublicId(publicId: string) {
-  const { db: dbData, error } = await dbWithTenant()
-  if (error) throw new Error(error)
-  if (!dbData) throw new Error('Banco de dados não disponível')
-
-  const db = dbData
-
   try {
+    // Busca pública (capability URL): o `publicId` (UUID) é a autorização.
     const booking = await db.booking.findUnique({
       where: { publicId },
       include: {
         guest: true,
-        unit: { include: { type: { include: { rates: true } } } },
+        unit: {
+          include: {
+            type: { include: { rates: { include: { type: true } } } },
+          },
+        },
         payments: { orderBy: { paidAt: 'desc' } },
         discounts: { orderBy: { createdAt: 'desc' } },
         services: { orderBy: { createdAt: 'desc' } },
         rate: { include: { type: true } },
+        organization: true,
       },
     })
 

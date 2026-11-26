@@ -1,5 +1,4 @@
-import { getUserAndOrg } from '@/app/actions/utils/get-user-and-org'
-import dayjs from '@/lib/dayjs'
+﻿import dayjs from '@/lib/dayjs'
 import { STATUS_LABELS, formatCurrency } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import type { Organization } from '@prisma/client'
@@ -274,12 +273,9 @@ const VoucherDocument: React.FC<VoucherDocumentProps> = ({
 
 export default VoucherDocument
 
-export async function generateVoucherDocument(booking: BookingAllIncludes) {
-  const user = await getUserAndOrg()
-
-  if (!user) throw new Error('Sessão não encontrada.')
-
-  if (!user.organization) throw new Error('Organização não encontrada.')
-
-  return <VoucherDocument booking={booking} organization={user.organization} />
+export async function generateVoucherDocument(
+  booking: BookingAllIncludes,
+  organization: Organization
+) {
+  return <VoucherDocument booking={booking} organization={organization} />
 }

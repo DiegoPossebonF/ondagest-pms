@@ -1,6 +1,4 @@
-import { getBookingById } from '@/app/actions/booking/actions'
-import { getUserAndOrg } from '@/app/actions/utils/get-user-and-org'
-import dayjs from '@/lib/dayjs'
+﻿import dayjs from '@/lib/dayjs'
 import { PAYMENT_TYPE_LABELS, formatCurrency } from '@/lib/utils'
 import type { BookingAllIncludes } from '@/types/booking'
 import type { Organization, Payment } from '@prisma/client'
@@ -205,23 +203,15 @@ const ReceiptDocument: React.FC<ReceiptDocumentProps> = ({
 
 export default ReceiptDocument
 
-export async function generateReceiptDocument(payment: Payment) {
-  const user = await getUserAndOrg()
-
-  if (!user) throw new Error('Sessão não encontrada.')
-
-  if (!user.organization) throw new Error('Organização não encontrada.')
-
-  const { data: booking, error: bookingError } = await getBookingById(
-    payment.bookingId
-  )
-
-  if (bookingError) throw new Error(bookingError)
-  if (!booking) throw new Error('Reserva não encontrada')
+export async function generateReceiptDocument(
+  payment: Payment,
+  booking: BookingAllIncludes,
+  organization: Organization
+) {
   return (
     <ReceiptDocument
       payment={payment}
-      organization={user.organization}
+      organization={organization}
       booking={booking}
     />
   )

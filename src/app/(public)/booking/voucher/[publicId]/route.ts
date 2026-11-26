@@ -18,11 +18,11 @@ export async function GET(
     const { data: booking, error: bookingError } =
       await getBookingByPublicId(publicId)
 
-    if (bookingError || !booking) {
+    if (bookingError || !booking || !booking.organization) {
       return new Response('Reserva nao encontrada.', { status: 404 })
     }
 
-    const doc = await generateVoucherDocument(booking)
+    const doc = await generateVoucherDocument(booking, booking.organization)
     const buffer = await renderToBuffer(doc)
 
     // ✅ Converter Buffer para Uint8Array
