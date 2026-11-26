@@ -8,6 +8,7 @@ const publicRoutes = [
   '/verify-email',
   '/forgot-password',
   '/reset-password',
+  '/error',
 ]
 
 // Rotas privadas (exigem login)

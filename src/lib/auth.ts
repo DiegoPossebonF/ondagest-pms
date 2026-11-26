@@ -6,6 +6,7 @@ const authOptions = {
   ...authConfig,
   pages: {
     signIn: '/signin',
+    error: '/error',
   },
   callbacks: {
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -39,15 +40,26 @@ const authOptions = {
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     signIn: async ({ account, profile }: any) => {
       if (account?.provider === 'google' && profile?.email) {
-        // Tenta encontrar usuário existente pelo e-mail
-        let dbUser = await db.user.findUnique({
+        // Tenta encontrar usuário existente pelo e-mail (com accounts p/ saber se já usa Google)
+        const existingUser = await db.user.findUnique({
           where: { email: profile.email },
+          include: { accounts: true },
         })
 
-        if (dbUser) {
-          if (!dbUser?.image) {
+        if (existingUser) {
+          const isGoogleUser = existingUser.accounts.some(
+            a => a.provider === 'google'
+          )
+
+          // Bloqueia account takeover: só vincula a conta Google se o e-mail já
+          // foi verificado ou se o usuário já possui login Google.
+          if (!existingUser.emailVerified && !isGoogleUser) {
+            return '/error'
+          }
+
+          if (!existingUser.image) {
             await db.user.update({
-              where: { id: dbUser.id },
+              where: { id: existingUser.id },
               data: { image: profile.picture },
             })
           }
@@ -61,14 +73,15 @@ const authOptions = {
             },
           })
 
-          // 2) Cria usuário vinculado
-          dbUser = await db.user.create({
+          // 2) Cria usuário vinculado (Google já verifica o e-mail)
+          await db.user.create({
             data: {
               email: profile.email,
               name: profile.name,
               image: profile.picture,
               role: 'OWNER',
               organizationId: org.id,
+              emailVerified: new Date(),
             },
           })
         }
